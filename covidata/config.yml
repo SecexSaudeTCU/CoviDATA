@@ -1,0 +1,5 @@
+diretorio_dados: C:\Users\moniq\Documents\TCU\SecexSaude\covidata\covidata\dados
+estados:
+  url_pt_AM: http://www.transparencia.am.gov.br/covid-19/contratos/
+capitais:
+  url_pt_Manaus: https://covid19.manaus.am.gov.br/transparencia-covid-19/

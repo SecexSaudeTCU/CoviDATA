@@ -37,3 +37,11 @@ def main():
 
     pt_Belem = PortalTransparencia_Belem(config.diretorio_dados, config.url_pt_Belem)
     pt_Belem.download()
+
+    tcm_PA_1 = FileDownloader(path.join(config.diretorio_dados, 'PA', 'tcm'), config.url_tcm_PA_1,
+                            'Argus TCMPA - Fornecedores por Valor Homologado.xlsx')
+    tcm_PA_1.download()
+
+    tcm_PA_2 = FileDownloader(path.join(config.diretorio_dados, 'PA', 'tcm'), config.url_tcm_PA_2,
+                              'Argus TCMPA - Fornecedores por Quantidade de Municípios.xlsx')
+    tcm_PA_2.download()

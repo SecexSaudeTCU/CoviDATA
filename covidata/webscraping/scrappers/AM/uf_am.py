@@ -1,10 +1,11 @@
 import time
-import yaml
+from os import path
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from os import path
 
+import config
 from webscraping.selenium.downloader import SeleniumDownloader
 
 
@@ -26,6 +27,7 @@ class PortalTransparencia_AM(SeleniumDownloader):
 
         self.driver.switch_to.default_content()
         self.driver.close()
+        self.driver.quit()
 
 
 # Em tese, esta carga não precisaria ser via Selenium, porém tem a vantagem de abstrair a URL direta do arquivo, que no
@@ -42,19 +44,12 @@ class PortalTransparencia_Manaus(SeleniumDownloader):
         time.sleep(5)
 
         self.driver.close()
+        self.driver.quit()
 
 
-if __name__ == '__main__':
-    with open('../../../config.yml', "r", encoding="utf8") as ymlfile:
-        cfg = yaml.load(ymlfile)
-
-    diretorio_dados = cfg['diretorio_dados']
-
-    url_pt_AM = cfg['estados']['url_pt_AM']
-    url_pt_Manaus = cfg['capitais']['url_pt_Manaus']
-
-    pt_AM = PortalTransparencia_AM(diretorio_dados, url_pt_AM)
-    pt_Manaus = PortalTransparencia_Manaus(diretorio_dados, url_pt_Manaus)
+def main():
+    pt_AM = PortalTransparencia_AM(config.diretorio_dados, config.url_pt_AM)
+    pt_Manaus = PortalTransparencia_Manaus(config.diretorio_dados, config.url_pt_Manaus)
 
     pt_AM.download()
     pt_Manaus.download()

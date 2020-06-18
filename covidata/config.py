@@ -5,6 +5,7 @@ url_pt_CE = 'https://cearatransparente.ce.gov.br/files/downloads/transparency/co
 url_pt_PA = 'https://transparenciacovid19.pa.gov.br/covid.json'
 url_pt_AP = 'http://cosiga.ap.gov.br/api/contratos_covidV1?termo=&orgao='
 url_pt_RR = 'http://transparencia.rr.gov.br/covid/public/relatorios/despesas/covid19/xls?_token=MbNzpM8JNT4g6D6wYE0QW5cL0Q0qS2KaNn6f5HJa&exercicio=2020&uo=20601&dsuo=Fundo%20Estadual%20de%20Sa%C3%BAde&key=%242y%2410%249foy18cHU84Zv7F1KIW4zuYEH4oPEpFovVkUW7NXUkfNVOWMQHe.i'
+url_pt_RO = 'http://comprasemergenciais-covid19.ro.gov.br/Grafico/DespesasDiretasToCSV'
 
 url_pt_Manaus = 'https://covid19.manaus.am.gov.br/transparencia-covid-19/'
 url_pt_Fortaleza = 'https://transparencia.fortaleza.ce.gov.br/index.php/despesa/despesasCovid19'
@@ -15,6 +16,9 @@ url_pt_Rio_despesas_por_ato = 'http://riotransparente.rio.rj.gov.br/arquivos/Ope
 url_pt_Recife = 'http://transparencia.recife.pe.gov.br/codigos/web/estaticos/estaticos.php?nat=COV#filho'
 url_pt_Macapa = 'http://transparencia2.macapa.ap.gov.br/tipo_contrato/covid-19/'
 url_pt_BoaVista = 'https://transparencia.boavista.rr.gov.br/cpl/export/csv/covid-19'
+url_pt_PortoVelho_despesas_por_instituicao = 'https://ecidadetransparencia.portovelho.ro.gov.br/files/tmp/1592514776.csv'
+url_pt_PortoVelho_despesas_por_credor = 'https://ecidadetransparencia.portovelho.ro.gov.br/files/tmp/1592514860.csv'
+url_pt_PortoVelho_tipos_despesas = 'https://ecidadetransparencia.portovelho.ro.gov.br/files/tmp/1592514918.csv'
 
 url_tcm_PA_1 = 'http://nie-tcmpa.droppages.com/files/Argus%20TCMPA%20-%20Fornecedores%20por%20Valor%20Homologado.xlsx'
 url_tcm_PA_2 = 'http://nie-tcmpa.droppages.com/files/Argus%20TCMPA%20-%20Fornecedores%20por%20Quantidade%20de%20Munic%C3%ADpios.xlsx'

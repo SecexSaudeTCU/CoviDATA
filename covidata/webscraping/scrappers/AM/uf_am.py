@@ -10,8 +10,8 @@ from webscraping.selenium.downloader import SeleniumDownloader
 
 
 class PortalTransparencia_AM(SeleniumDownloader):
-    def __init__(self, diretorio_dados, url):
-        super().__init__(path.join(diretorio_dados, 'AM', 'portal_transparencia'), url)
+    def __init__(self, url):
+        super().__init__(path.join(config.diretorio_dados, 'AM', 'portal_transparencia'), url)
 
     def download(self):
         wait = WebDriverWait(self.driver, 30)
@@ -33,8 +33,8 @@ class PortalTransparencia_AM(SeleniumDownloader):
 # Em tese, esta carga não precisaria ser via Selenium, porém tem a vantagem de abstrair a URL direta do arquivo, que no
 # momento contém, por exemplo, "2020/06".
 class PortalTransparencia_Manaus(SeleniumDownloader):
-    def __init__(self, diretorio_dados, url):
-        super().__init__(path.join(diretorio_dados, 'AM', 'portal_transparencia', 'Manaus'), url)
+    def __init__(self, url):
+        super().__init__(path.join(config.diretorio_dados, 'AM', 'portal_transparencia', 'Manaus'), url)
 
     def download(self):
         button = self.driver.find_element_by_id('btn_csv')
@@ -48,8 +48,8 @@ class PortalTransparencia_Manaus(SeleniumDownloader):
 
 
 def main():
-    pt_AM = PortalTransparencia_AM(config.diretorio_dados, config.url_pt_AM)
-    pt_Manaus = PortalTransparencia_Manaus(config.diretorio_dados, config.url_pt_Manaus)
+    pt_AM = PortalTransparencia_AM(config.url_pt_AM)
+    pt_Manaus = PortalTransparencia_Manaus(config.url_pt_Manaus)
 
     pt_AM.download()
     pt_Manaus.download()

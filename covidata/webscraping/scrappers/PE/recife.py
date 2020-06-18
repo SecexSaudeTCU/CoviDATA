@@ -17,7 +17,7 @@ def download(url, diretorio, caminho_completo):
 
 
 def main():
-    url = 'http://transparencia.recife.pe.gov.br/codigos/web/estaticos/estaticos.php?nat=COV#filho'
+    url = config.url_pt_Recife
     page = requests.get(url)
     soup = BeautifulSoup(page.content, 'html.parser')
     results = soup.find(id='treeview2')

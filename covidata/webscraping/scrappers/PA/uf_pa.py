@@ -10,8 +10,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 class PortalTransparencia_Belem(SeleniumDownloader):
 
-    def __init__(self, diretorio_dados, url):
-        super().__init__(path.join(diretorio_dados, 'PA', 'portal_transparencia', 'Belem'), url)
+    def __init__(self, url):
+        super().__init__(path.join(config.diretorio_dados, 'PA', 'portal_transparencia', 'Belem'), url)
 
     def download(self):
         wait = WebDriverWait(self.driver, 30)
@@ -35,11 +35,11 @@ def main():
                            'covid.json')
     pt_PA.download()
 
-    pt_Belem = PortalTransparencia_Belem(config.diretorio_dados, config.url_pt_Belem)
+    pt_Belem = PortalTransparencia_Belem(config.url_pt_Belem)
     pt_Belem.download()
 
     tcm_PA_1 = FileDownloader(path.join(config.diretorio_dados, 'PA', 'tcm'), config.url_tcm_PA_1,
-                            'Argus TCMPA - Fornecedores por Valor Homologado.xlsx')
+                              'Argus TCMPA - Fornecedores por Valor Homologado.xlsx')
     tcm_PA_1.download()
 
     tcm_PA_2 = FileDownloader(path.join(config.diretorio_dados, 'PA', 'tcm'), config.url_tcm_PA_2,

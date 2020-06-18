@@ -8,8 +8,8 @@ import config
 
 class PortalTransparencia_Fortaleza(SeleniumDownloader):
 
-    def __init__(self, diretorio_dados, url):
-        super().__init__(path.join(diretorio_dados, 'CE', 'portal_transparencia', 'Fortaleza'), url)
+    def __init__(self, url):
+        super().__init__(path.join(config.diretorio_dados, 'CE', 'portal_transparencia', 'Fortaleza'), url)
 
     def download(self):
         button = self.driver.find_element_by_id('download')
@@ -27,5 +27,5 @@ def main():
                            'gasto_covid_dados_abertos.xlsx')
     pt_CE.download()
 
-    pt_Fortaleza = PortalTransparencia_Fortaleza(config.diretorio_dados, config.url_pt_Fortaleza)
+    pt_Fortaleza = PortalTransparencia_Fortaleza(config.url_pt_Fortaleza)
     pt_Fortaleza.download()

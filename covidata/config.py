@@ -3,6 +3,7 @@ diretorio_dados = 'C:\\Users\\moniq\\Documents\\TCU\\SecexSaude\\covidata\\covid
 url_pt_AM = 'http://www.transparencia.am.gov.br/covid-19/contratos/'
 url_pt_CE = 'https://cearatransparente.ce.gov.br/files/downloads/transparency/coronavirus/gasto_covid_dados_abertos.xlsx'
 url_pt_PA = 'https://transparenciacovid19.pa.gov.br/covid.json'
+url_pt_PE = 'http://web.transparencia.pe.gov.br/despesas/despesas-detalhadas-covid-19-2/'
 
 url_pt_Manaus = 'https://covid19.manaus.am.gov.br/transparencia-covid-19/'
 url_pt_Fortaleza = 'https://transparencia.fortaleza.ce.gov.br/index.php/despesa/despesasCovid19'

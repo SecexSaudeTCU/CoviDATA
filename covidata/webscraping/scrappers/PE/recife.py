@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import os
 from os import path
 import config
-
+import time
 
 def download(url, diretorio, caminho_completo):
     if not path.exists(diretorio):
@@ -17,6 +17,8 @@ def download(url, diretorio, caminho_completo):
 
 
 def main():
+    print('Portal de transparência da capital...')
+    start_time = time.time()
     url = config.url_pt_Recife
     page = requests.get(url)
     soup = BeautifulSoup(page.content, 'html.parser')
@@ -41,6 +43,7 @@ def main():
              'Matérias Escassez de Insumos', 'Matérias Prazos de Entregas']
 
     baixar_arquivos_em_dois_niveis(results, temas, nivel1='Notícias sobre aquisições e contratações')
+    print("--- %s segundos ---" % (time.time() - start_time))
 
 
 def baixar_arquivos_em_dois_niveis(results, titulos, nivel1='Publicações em Diário Oficial'):

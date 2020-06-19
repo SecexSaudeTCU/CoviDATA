@@ -4,15 +4,24 @@ from os import path
 
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
-
+import time
 
 class SeleniumDownloader(ABC):
     def __init__(self, diretorio_dados, url):
         self.driver = self.__configurar_chrome(diretorio_dados)
         self.driver.get(url)
 
-    @abstractmethod
     def download(self):
+        self._executar()
+
+        # Aguarda o download
+        time.sleep(5)
+
+        self.driver.close()
+        self.driver.quit()
+
+    @abstractmethod
+    def _executar(self):
         pass
 
     def __configurar_chrome(self, diretorio_dados):

@@ -9,6 +9,7 @@ url_pt_RO = 'http://comprasemergenciais-covid19.ro.gov.br/Grafico/DespesasDireta
 url_pt_AC = 'http://covid19.ac.gov.br/financeiro/empenhos/csv'
 url_pt_ES = 'https://coronavirus.es.gov.br/Media/Coronavirus/Transparencia/DadosAbertos/dados-contratos-emergenciais-covid-19.csv?v=49'
 url_pt_SP = 'https://www.saopaulo.sp.gov.br/coronavirus/transparencia/'
+url_pt_AL = 'http://transparencia.al.gov.br:8080/transparencia_relatorios/transparencia_relatorios/despesa/json-despesa-covid19-itens?offset=0&tipo=xls&nome_contratado=&nota_empenho=&processo=&contrato=&objeto=&orgao=&codigo_elemento=&'
 
 url_tce_AC_contratos = 'http://www.tce.ac.gov.br/covid19/Contratos-Estado.html'
 url_tce_AC_despesas = 'http://www.tce.ac.gov.br/covid19/despesa_estado_html.html'

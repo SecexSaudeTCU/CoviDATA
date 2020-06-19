@@ -7,13 +7,7 @@ from os import path
 import config
 import time
 
-def download(url, diretorio, caminho_completo):
-    if not path.exists(diretorio):
-        os.makedirs(diretorio)
-
-    r = requests.get(url)
-    with open(caminho_completo, 'wb') as f:
-        f.write(r.content)
+from webscraping.downloader import download
 
 
 def main():

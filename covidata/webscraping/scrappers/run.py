@@ -1,8 +1,8 @@
 from webscraping.scrappers.AM import uf_am
 from webscraping.scrappers.CE import uf_ce
 from webscraping.scrappers.PA import uf_pa
-from webscraping.scrappers.RJ import rio_capital
-from webscraping.scrappers.PE import recife
+from webscraping.scrappers.RJ import pt_rj_capital
+from webscraping.scrappers.PE import pt_recife
 from webscraping.scrappers.AP import uf_ap
 from webscraping.scrappers.RR import uf_rr
 from webscraping.scrappers.RO import uf_ro
@@ -30,10 +30,10 @@ if __name__ == '__main__':
     uf_pa.main()
 
     print('Recuperando dados de Pernambuco...')
-    recife.main()
+    pt_recife.main()
 
     print('Recuperando dados do Rio de Janeiro...')
-    rio_capital.main()
+    pt_rj_capital.main()
 
     print('Recuperando dados de Rondônia...')
     uf_ro.main()

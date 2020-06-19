@@ -19,3 +19,12 @@ class FileDownloader:
         r = requests.get(self.url, headers=headers)
         with open(os.path.join(self.diretorio_dados, self.nome_arquivo), 'wb') as f:
             f.write(r.content)
+
+
+def download(url, diretorio, caminho_completo):
+    if not path.exists(diretorio):
+        os.makedirs(diretorio)
+
+    r = requests.get(url)
+    with open(caminho_completo, 'wb') as f:
+        f.write(r.content)

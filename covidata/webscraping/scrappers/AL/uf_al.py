@@ -1,11 +1,13 @@
 import json
 import os
+import time
 import urllib.request
 from os import path
 
 import pandas as pd
 
 import config
+from webscraping.downloader import FileDownloader
 
 
 def pt_Maceio():
@@ -92,14 +94,14 @@ def __processar_linha_univalorada(colunas_df, elemento, key, linha):
 
 
 def main():
-    # print('Portal de transparência estadual...')
-    # start_time = time.time()
-    # pt_AL = FileDownloader(path.join(config.diretorio_dados, 'AL', 'portal_transparencia'), config.url_pt_AL,
-    #                        'DESPESAS COM COVID-19.xls')
-    # pt_AL.download()
-    # print("--- %s segundos ---" % (time.time() - start_time))
+    print('Portal de transparência estadual...')
+    start_time = time.time()
+    pt_AL = FileDownloader(path.join(config.diretorio_dados, 'AL', 'portal_transparencia'), config.url_pt_AL,
+                           'DESPESAS COM COVID-19.xls')
+    pt_AL.download()
+    print("--- %s segundos ---" % (time.time() - start_time))
 
+    print('Portal de transparência da capital...')
+    start_time = time.time()
     pt_Maceio()
-
-
-main()
+    print("--- %s segundos ---" % (time.time() - start_time))

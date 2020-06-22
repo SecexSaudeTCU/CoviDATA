@@ -9,6 +9,7 @@ from webscraping.scrappers.RO import uf_ro
 from webscraping.scrappers.AC import uf_ac
 from webscraping.scrappers.ES import uf_es
 from webscraping.scrappers.SP import tcm_sp, pt_sp, pt_sp_capital
+from webscraping.scrappers.AL import uf_al
 
 if __name__ == '__main__':
     print('Recuperando dados do Acre...')
@@ -46,3 +47,6 @@ if __name__ == '__main__':
     pt_sp.main()
     pt_sp_capital.main()
     tcm_sp.main()
+
+    print('Recuperando dados de Alagoas...')
+    uf_al.main()

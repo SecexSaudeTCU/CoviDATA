@@ -16,7 +16,7 @@ def pt_Maceio():
         if not path.exists(diretorio):
             os.makedirs(diretorio)
 
-        data = __processar_e_salvar_json(diretorio, url)
+        data = __processar_e_salvar_json(diretorio, url, 'compras.json')
 
         colunas_df_principal = []
         linhas_df_principal = []
@@ -61,15 +61,6 @@ def pt_Maceio():
         __salvar_como_planilha(df_principal, dfs_auxiliares, diretorio)
 
 
-def __processar_e_salvar_json(diretorio, url):
-    conteudo = url.read().decode()
-    dados = json.loads(conteudo)
-    data = dados['data']
-    with open(os.path.join(diretorio, 'compras.json'), 'w') as f:
-        f.write(conteudo)
-    return data
-
-
 def __salvar_como_planilha(df_principal, dfs_auxiliares, diretorio_principal):
     writer = pd.ExcelWriter(os.path.join(diretorio_principal, 'compras.xlsx'), engine='xlsxwriter')
     df_principal.to_excel(writer, sheet_name='compras')
@@ -91,7 +82,13 @@ def __processar_linha_univalorada(colunas_df, elemento, key, linha):
             colunas_df.append(key)
         linha.append(elemento[key])
 
-
+def __processar_e_salvar_json(diretorio, url, nome_arquivo):
+    conteudo = url.read().decode()
+    dados = json.loads(conteudo)
+    data = dados['data']
+    with open(os.path.join(diretorio, nome_arquivo), 'w') as f:
+        f.write(conteudo)
+    return data
 
 def main():
     print('Portal de transparência estadual...')
@@ -105,3 +102,5 @@ def main():
     start_time = time.time()
     pt_Maceio()
     print("--- %s segundos ---" % (time.time() - start_time))
+
+

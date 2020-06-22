@@ -1,42 +1,44 @@
-from webscraping.downloader import FileDownloader
-from os import path
-from webscraping.selenium.downloader import SeleniumDownloader
+import json
+import os
 import time
+from os import path
+
+import pandas as pd
+
 import config
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
+from webscraping.downloader import FileDownloader
 
 
-class PortalTransparencia_Belem(SeleniumDownloader):
+def pt_PA():
+    downloader = FileDownloader(path.join(config.diretorio_dados, 'PA', 'portal_transparencia'), config.url_pt_PA,
+                                'covid.json')
+    downloader.download()
 
-    def __init__(self, url):
-        super().__init__(path.join(config.diretorio_dados, 'PA', 'portal_transparencia', 'Belem'), url)
+    with open(os.path.join(downloader.diretorio_dados, downloader.nome_arquivo)) as json_file:
+        data = json.load(json_file)
+        registros = data['Registros']
 
-    def _executar(self):
-        wait = WebDriverWait(self.driver, 30)
+        colunas = []
+        linhas = []
 
-        frame = wait.until(EC.visibility_of_element_located((By.NAME, 'myiFrame')))
-        self.driver.switch_to.frame(frame)
+        for elemento in registros:
+            linha = []
 
-        element = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'buttons-excel')))
-        self.driver.execute_script("arguments[0].click();", element)
+            for key, value in elemento['registro'].items():
+                if not key in colunas:
+                    colunas.append(key)
+                linha.append(value)
 
-        self.driver.switch_to.default_content()
+            linhas.append(linha)
+
+        df = pd.DataFrame(linhas, columns=colunas)
+        df.to_excel(os.path.join(downloader.diretorio_dados, 'covid.xlsx'))
 
 
 def main():
     print('Portal de transparência estadual...')
     start_time = time.time()
-    pt_PA = FileDownloader(path.join(config.diretorio_dados, 'PA', 'portal_transparencia'), config.url_pt_PA,
-                           'covid.json')
-    pt_PA.download()
-    print("--- %s segundos ---" % (time.time() - start_time))
-
-    print('Portal de transparência da capital...')
-    start_time = time.time()
-    pt_Belem = PortalTransparencia_Belem(config.url_pt_Belem)
-    pt_Belem.download()
+    pt_PA()
     print("--- %s segundos ---" % (time.time() - start_time))
 
     print('Tribunal de Contas municipal...')
@@ -49,3 +51,6 @@ def main():
                               'Argus TCMPA - Fornecedores por Quantidade de Municípios.xlsx')
     tcm_PA_2.download()
     print("--- %s segundos ---" % (time.time() - start_time))
+
+
+main()

@@ -4,8 +4,6 @@ from webscraping.selenium.downloader import SeleniumDownloader
 import time
 import config
 
-#TODO: Falta o scraping do TC - por enquanto, alto custo para pouca informação.
-
 class PortalTransparencia_Fortaleza(SeleniumDownloader):
 
     def __init__(self, url):

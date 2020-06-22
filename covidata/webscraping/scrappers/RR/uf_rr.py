@@ -4,8 +4,6 @@ import config
 from webscraping.downloader import FileDownloader
 import time
 
-# TODO: Falta TCE RR
-
 def main():
     print('Portal de transparência estadual...')
     start_time = time.time()

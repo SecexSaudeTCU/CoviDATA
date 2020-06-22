@@ -1,5 +1,3 @@
-#TODO: Falta Portal de transparência de PE
-
 import requests
 from bs4 import BeautifulSoup
 import os

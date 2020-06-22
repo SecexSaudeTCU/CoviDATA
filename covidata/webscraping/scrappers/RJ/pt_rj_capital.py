@@ -4,9 +4,6 @@ import config
 from webscraping.downloader import FileDownloader
 import time
 
-# TODO: Fazer o scraping do site do TCE-RJ
-# TODO: Fazer o scraping do site do portal de transparência do estado
-
 def main():
     print('Portal de transparência da capital...')
     start_time = time.time()

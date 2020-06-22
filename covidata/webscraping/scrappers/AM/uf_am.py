@@ -13,7 +13,7 @@ class PortalTransparencia_AM(SeleniumDownloader):
     def __init__(self, url):
         super().__init__(path.join(config.diretorio_dados, 'AM', 'portal_transparencia'), url)
 
-    def download(self):
+    def _executar(self):
         wait = WebDriverWait(self.driver, 30)
 
         frame = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'page-iframe')))
@@ -22,12 +22,7 @@ class PortalTransparencia_AM(SeleniumDownloader):
         element = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'buttons-excel')))
         self.driver.execute_script("arguments[0].click();", element)
 
-        # Aguarda o download
-        time.sleep(5)
-
         self.driver.switch_to.default_content()
-        self.driver.close()
-        self.driver.quit()
 
 
 # Em tese, esta carga não precisaria ser via Selenium, porém tem a vantagem de abstrair a URL direta do arquivo, que no
@@ -36,20 +31,20 @@ class PortalTransparencia_Manaus(SeleniumDownloader):
     def __init__(self, url):
         super().__init__(path.join(config.diretorio_dados, 'AM', 'portal_transparencia', 'Manaus'), url)
 
-    def download(self):
+    def _executar(self):
         button = self.driver.find_element_by_id('btn_csv')
         button.click()
 
-        # Aguarda o download
-        time.sleep(5)
-
-        self.driver.close()
-        self.driver.quit()
-
 
 def main():
+    print('Portal de transparência estadual...')
+    start_time = time.time()
     pt_AM = PortalTransparencia_AM(config.url_pt_AM)
-    pt_Manaus = PortalTransparencia_Manaus(config.url_pt_Manaus)
-
     pt_AM.download()
+    print("--- %s segundos ---" % (time.time() - start_time))
+
+    print('Portal de transparência da capital...')
+    start_time = time.time()
+    pt_Manaus = PortalTransparencia_Manaus(config.url_pt_Manaus)
     pt_Manaus.download()
+    print("--- %s segundos ---" % (time.time() - start_time))

@@ -8,6 +8,8 @@ url_pt_RR = 'http://transparencia.rr.gov.br/covid/public/relatorios/despesas/cov
 url_pt_RO = 'http://comprasemergenciais-covid19.ro.gov.br/Grafico/DespesasDiretasToCSV'
 url_pt_AC = 'http://covid19.ac.gov.br/financeiro/empenhos/csv'
 url_pt_ES = 'https://coronavirus.es.gov.br/Media/Coronavirus/Transparencia/DadosAbertos/dados-contratos-emergenciais-covid-19.csv?v=49'
+url_pt_SP = 'https://www.saopaulo.sp.gov.br/coronavirus/transparencia/'
+url_pt_AL = 'http://transparencia.al.gov.br:8080/transparencia_relatorios/transparencia_relatorios/despesa/json-despesa-covid19-itens?offset=0&tipo=xls&nome_contratado=&nota_empenho=&processo=&contrato=&objeto=&orgao=&codigo_elemento=&'
 
 url_tce_AC_contratos = 'http://www.tce.ac.gov.br/covid19/Contratos-Estado.html'
 url_tce_AC_despesas = 'http://www.tce.ac.gov.br/covid19/despesa_estado_html.html'
@@ -28,6 +30,9 @@ url_pt_PortoVelho_despesas_por_credor = 'https://ecidadetransparencia.portovelho
 url_pt_PortoVelho_tipos_despesas = 'https://ecidadetransparencia.portovelho.ro.gov.br/files/tmp/1592514918.csv'
 url_pt_RioBranco = 'http://transparencia.riobranco.ac.gov.br/calamidade-publica/ver-abreviacao/covid-19/'
 url_pt_Vitoria = 'http://transparencia.vitoria.es.gov.br/Licitacao.Lista.RelatorioExcel.ashx?municipioID=1&numero=0&exercicio=2020&idsModalidade=0&idComissao=0&idEnquadramento=0&idsSituacao=0&idSecretaria=0&idResponsavel=0&idRequisitante=0&idsFornecedor=0&tipo=tlmDispensa&objeto=&emergencial=covid-19&pesquisa='
+url_pt_SaoPaulo = 'https://www.prefeitura.sp.gov.br/cidade/secretarias/controladoria_geral/transparencia_covid19/index.php?p=295874'
+url_pt_Maceio = 'http://www.licitacao.maceio.al.gov.br/covid/json' #fonte: http://www.licitacao.maceio.al.gov.br/
 
 url_tcm_PA_1 = 'http://nie-tcmpa.droppages.com/files/Argus%20TCMPA%20-%20Fornecedores%20por%20Valor%20Homologado.xlsx'
 url_tcm_PA_2 = 'http://nie-tcmpa.droppages.com/files/Argus%20TCMPA%20-%20Fornecedores%20por%20Quantidade%20de%20Munic%C3%ADpios.xlsx'
+url_tcm_SP = 'https://mobile.tcm.sp.gov.br/Licitacao/ListarCovid?showMenu=0'

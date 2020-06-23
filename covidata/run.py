@@ -8,7 +8,7 @@ from covidata.webscraping.scrappers.RR import uf_rr
 from covidata.webscraping.scrappers.RO import uf_ro
 from covidata.webscraping.scrappers.AC import uf_ac
 from covidata.webscraping.scrappers.ES import uf_es
-from covidata.webscraping.scrappers.SP import tcm_sp, pt_sp, pt_sp_capital
+#from covidata.webscraping.scrappers.SP import tcm_sp, pt_sp, pt_sp_capital
 from covidata.webscraping.scrappers.AL import uf_al
 from covidata.webscraping.scrappers.RJ import tce_rj
 
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     print('Recuperando dados de São Paulo...')
     pt_sp.main()
     pt_sp_capital.main()
-    tcm_sp.main()
+    #tcm_sp.main()
 
     print('Recuperando dados de Alagoas...')
     uf_al.main()

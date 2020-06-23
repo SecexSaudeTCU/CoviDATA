@@ -114,5 +114,3 @@ def __extrair_tabela(soup):
         lista_linhas.append(nova_linha)
 
     return colunas, lista_linhas
-
-main()

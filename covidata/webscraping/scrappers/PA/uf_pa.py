@@ -53,4 +53,4 @@ def main():
     print("--- %s segundos ---" % (time.time() - start_time))
 
 
-main()
+#main()

@@ -37,6 +37,3 @@ def main():
     pt_Macapa = PortalTransparencia_Macapa(config.url_pt_Macapa)
     pt_Macapa.download()
     print("--- %s segundos ---" % (time.time() - start_time))
-
-
-main()

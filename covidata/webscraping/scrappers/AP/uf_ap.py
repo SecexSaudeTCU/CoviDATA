@@ -1,9 +1,9 @@
 import time
 from os import path
 
-import config
-from webscraping.json.parser import JSONParser
-from webscraping.selenium.downloader import SeleniumDownloader
+from covidata import config
+from covidata.webscraping.json.parser import JSONParser
+from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
 
 class PortalTransparencia_AP(JSONParser):

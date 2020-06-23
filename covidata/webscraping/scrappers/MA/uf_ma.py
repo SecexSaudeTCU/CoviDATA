@@ -8,9 +8,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-import config
-from persistencia.dao import persistir
-from webscraping.selenium.downloader import SeleniumDownloader
+from covidata import config
+from covidata.persistencia.dao import persistir
+from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
 
 class TCE_MA(SeleniumDownloader):

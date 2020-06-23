@@ -2,8 +2,7 @@ import os
 from os import path
 
 import pandas as pd
-
-import config
+from covidata import config
 
 
 def persistir(df, fonte, nome, uf, cidade=''):

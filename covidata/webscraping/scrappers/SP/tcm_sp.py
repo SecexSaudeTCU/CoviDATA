@@ -7,9 +7,9 @@ from selenium import webdriver
 from selenium.common.exceptions import UnexpectedAlertPresentException
 from webdriver_manager.chrome import ChromeDriverManager
 
-import config
+from covidata import config
 import pandas as pd
-from persistencia.dao import persistir
+from covidata.persistencia.dao import persistir
 
 
 def main():

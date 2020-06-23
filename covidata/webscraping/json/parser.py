@@ -5,9 +5,9 @@ from os import path
 
 import pandas as pd
 
-import config
-from persistencia.dao import persistir_dados_hierarquicos
-from webscraping.downloader import FileDownloader
+from covidata import config
+from covidata.persistencia.dao import persistir_dados_hierarquicos
+from covidata.webscraping.downloader import FileDownloader
 
 class JSONParser(ABC):
     def __init__(self, url, campo_chave, nome_dados, fonte, uf, cidade=''):

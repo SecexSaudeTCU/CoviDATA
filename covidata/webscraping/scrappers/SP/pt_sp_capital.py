@@ -7,8 +7,8 @@ from os import path
 import requests
 from bs4 import BeautifulSoup, Tag
 
-import config
-from webscraping.downloader import download
+from covidata import config
+from covidata.webscraping.downloader import download
 
 
 def main():

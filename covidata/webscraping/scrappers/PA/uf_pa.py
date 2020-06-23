@@ -5,8 +5,8 @@ from os import path
 
 import pandas as pd
 
-import config
-from webscraping.downloader import FileDownloader
+from covidata import config
+from covidata.webscraping.downloader import FileDownloader
 
 
 def pt_PA():

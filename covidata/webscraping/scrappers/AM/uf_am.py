@@ -5,8 +5,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-import config
-from webscraping.selenium.downloader import SeleniumDownloader
+from covidata import config
+from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
 
 class PortalTransparencia_AM(SeleniumDownloader):

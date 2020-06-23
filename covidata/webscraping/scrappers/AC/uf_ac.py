@@ -5,10 +5,10 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-import config
-from persistencia.dao import persistir
-from webscraping.downloader import FileDownloader
-from webscraping.selenium.downloader import SeleniumDownloader
+from covidata import config
+from covidata.persistencia.dao import persistir
+from covidata.webscraping.downloader import FileDownloader
+from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
 
 def __extrair(url, informacao, indice):

@@ -1,9 +1,9 @@
 import time
 from os import path
 
-import config
-from webscraping.downloader import FileDownloader
-from webscraping.json.parser import JSONParser
+from covidata import config
+from covidata.webscraping.downloader import FileDownloader
+from covidata.webscraping.json.parser import JSONParser
 
 
 class PortalTransparencia_Maceio(JSONParser):

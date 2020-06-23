@@ -1,8 +1,8 @@
-from webscraping.downloader import FileDownloader
+from covidata.webscraping.downloader import FileDownloader
 from os import path
-from webscraping.selenium.downloader import SeleniumDownloader
+from covidata.webscraping.selenium.downloader import SeleniumDownloader
 import time
-import config
+from covidata import config
 
 class PortalTransparencia_Fortaleza(SeleniumDownloader):
 

@@ -2,10 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 import os
 from os import path
-import config
+from covidata import config
 import time
 
-from webscraping.downloader import download
+from covidata.webscraping.downloader import download
 
 
 def main():

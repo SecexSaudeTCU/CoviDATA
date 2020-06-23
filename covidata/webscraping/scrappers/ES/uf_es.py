@@ -1,7 +1,7 @@
 from os import path
 
-import config
-from webscraping.downloader import FileDownloader
+from covidata import config
+from covidata.webscraping.downloader import FileDownloader
 import time
 
 def main():

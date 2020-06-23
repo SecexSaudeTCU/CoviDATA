@@ -6,8 +6,8 @@ import pandas as pd
 import config
 
 
-def persistir(df, fonte, nome, uf):
-    diretorio = criar_diretorio(fonte, uf)
+def persistir(df, fonte, nome, uf, cidade=''):
+    diretorio = criar_diretorio(fonte, uf, cidade)
 
     df.to_excel(path.join(diretorio, nome + '.xlsx'))
 

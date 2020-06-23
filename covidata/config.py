@@ -19,12 +19,14 @@ url_pt_AC = 'http://covid19.ac.gov.br/financeiro/empenhos/csv'
 url_pt_ES = 'https://coronavirus.es.gov.br/Media/Coronavirus/Transparencia/DadosAbertos/dados-contratos-emergenciais-covid-19.csv?v=49'
 url_pt_SP = 'https://www.saopaulo.sp.gov.br/coronavirus/transparencia/'
 url_pt_AL = 'http://transparencia.al.gov.br:8080/transparencia_relatorios/transparencia_relatorios/despesa/json-despesa-covid19-itens?offset=0&tipo=xls&nome_contratado=&nota_empenho=&processo=&contrato=&objeto=&orgao=&codigo_elemento=&'
+url_pt_MA = 'http://www.transparencia.ma.gov.br/app/compras/covid#lista'
 
 # URLs de portais de transparência do governo estadual do Acre
 url_tce_AC_contratos = 'http://www.tce.ac.gov.br/covid19/Contratos-Estado.html'
 url_tce_AC_despesas = 'http://www.tce.ac.gov.br/covid19/despesa_estado_html.html'
 url_tce_AC_contratos_municipios = 'http://www.tce.ac.gov.br/covid19/Contratos-Municipios.html'
 url_tce_AC_despesas_municipios = 'http://www.tce.ac.gov.br/covid19/despesas_municipios_html.html'
+url_tce_MA = 'https://www6.tce.ma.gov.br/sacop/muralsite/muralcovid.zul'
 
 
 # URLSs de portais de transparência de govenos municipais (capitais)
@@ -44,6 +46,7 @@ url_pt_RioBranco = 'http://transparencia.riobranco.ac.gov.br/calamidade-publica/
 url_pt_Vitoria = 'http://transparencia.vitoria.es.gov.br/Licitacao.Lista.RelatorioExcel.ashx?municipioID=1&numero=0&exercicio=2020&idsModalidade=0&idComissao=0&idEnquadramento=0&idsSituacao=0&idSecretaria=0&idResponsavel=0&idRequisitante=0&idsFornecedor=0&tipo=tlmDispensa&objeto=&emergencial=covid-19&pesquisa='
 url_pt_SaoPaulo = 'https://www.prefeitura.sp.gov.br/cidade/secretarias/controladoria_geral/transparencia_covid19/index.php?p=295874'
 url_pt_Maceio = 'http://www.licitacao.maceio.al.gov.br/covid/json' #fonte: http://www.licitacao.maceio.al.gov.br/
+url_pt_SaoLuis = 'http://covid19.saoluis.ma.gov.br/2802'
 
 
 # URLs dos portais de transparência dos Tribunais de Contas Municipais

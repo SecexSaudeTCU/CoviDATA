@@ -18,7 +18,7 @@ def main():
     # TODO: Testar no Linux e no Mac
     locale.setlocale(locale.LC_TIME, "pt-BR")
     mes_inicial = 3
-    mes_atual = datetime.now().month
+    mes_atual = datetime.datetime.now().month
     meses = []
 
     if mes_atual > mes_inicial:

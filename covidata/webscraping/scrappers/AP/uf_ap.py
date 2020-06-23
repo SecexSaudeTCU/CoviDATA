@@ -1,4 +1,3 @@
-import json
 import time
 from os import path
 
@@ -7,7 +6,7 @@ from webscraping.json.parser import JSONParser
 from webscraping.selenium.downloader import SeleniumDownloader
 
 
-class PortalTransparencia_Amapa(JSONParser):
+class PortalTransparencia_AP(JSONParser):
 
     def __init__(self):
         super().__init__(config.url_pt_AP, 'id', 'contratacoes', 'portal_transparencia', 'AP')
@@ -19,7 +18,7 @@ class PortalTransparencia_Amapa(JSONParser):
 
 class PortalTransparencia_Macapa(SeleniumDownloader):
     def __init__(self, url):
-        super().__init__(path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'Macapá'), url)
+        super().__init__(path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'Macapa'), url)
 
     def _executar(self):
         button = self.driver.find_element_by_class_name('buttons-excel')
@@ -29,7 +28,7 @@ class PortalTransparencia_Macapa(SeleniumDownloader):
 def main():
     print('Portal de transparência estadual...')
     start_time = time.time()
-    pt_AP = PortalTransparencia_Amapa()
+    pt_AP = PortalTransparencia_AP()
     pt_AP.parse()
     print("--- %s segundos ---" % (time.time() - start_time))
 

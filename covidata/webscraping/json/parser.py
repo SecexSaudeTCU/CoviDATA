@@ -21,7 +21,7 @@ class JSONParser(ABC):
 
     def parse(self):
         nome_arquivo = self.nome_dados + '.json'
-        downloader = FileDownloader(self.diretorio, config.url_pt_AP, nome_arquivo)
+        downloader = FileDownloader(self.diretorio, self.url, nome_arquivo)
         downloader.download()
 
         with open(os.path.join(downloader.diretorio_dados, downloader.nome_arquivo)) as json_file:

@@ -1,9 +1,20 @@
+import json
 import time
 from os import path
 
 import config
-from webscraping.downloader import FileDownloader
+from webscraping.json.parser import JSONParser
 from webscraping.selenium.downloader import SeleniumDownloader
+
+
+class PortalTransparencia_Amapa(JSONParser):
+
+    def __init__(self):
+        super().__init__(config.url_pt_AP, 'id', 'contratacoes', 'portal_transparencia', 'AP')
+
+    def json_parse(self, conteudo):
+        # Neste caso, não há elemento-raiz nomeado.
+        return conteudo
 
 
 class PortalTransparencia_Macapa(SeleniumDownloader):
@@ -18,8 +29,8 @@ class PortalTransparencia_Macapa(SeleniumDownloader):
 def main():
     print('Portal de transparência estadual...')
     start_time = time.time()
-    pt_AP = FileDownloader(path.join(config.diretorio_dados, 'AP', 'portal_transparencia'), config.url_pt_AP, 'AP.json')
-    pt_AP.download()
+    pt_AP = PortalTransparencia_Amapa()
+    pt_AP.parse()
     print("--- %s segundos ---" % (time.time() - start_time))
 
     print('Portal de transparência da capital...')
@@ -27,3 +38,6 @@ def main():
     pt_Macapa = PortalTransparencia_Macapa(config.url_pt_Macapa)
     pt_Macapa.download()
     print("--- %s segundos ---" % (time.time() - start_time))
+
+
+main()

@@ -35,7 +35,8 @@ if __name__ == '__main__':
     pt_recife.main()
 
     print('Recuperando dados do Rio de Janeiro...')
-    tce_rj.main()
+    #TODO: Ver como será feita a chamada abaixo
+    #tce_rj.main()
     pt_rj_capital.main()
 
     print('Recuperando dados de Rondônia...')

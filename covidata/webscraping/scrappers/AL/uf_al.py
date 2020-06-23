@@ -9,6 +9,7 @@ import pandas as pd
 import config
 from webscraping.downloader import FileDownloader
 
+#TODO: Refatorar para usar a classe JSONParser
 
 def pt_Maceio():
     with urllib.request.urlopen(config.url_pt_Maceio) as url:
@@ -82,6 +83,7 @@ def __processar_linha_univalorada(colunas_df, elemento, key, linha):
             colunas_df.append(key)
         linha.append(elemento[key])
 
+
 def __processar_e_salvar_json(diretorio, url, nome_arquivo):
     conteudo = url.read().decode()
     dados = json.loads(conteudo)
@@ -89,6 +91,7 @@ def __processar_e_salvar_json(diretorio, url, nome_arquivo):
     with open(os.path.join(diretorio, nome_arquivo), 'w') as f:
         f.write(conteudo)
     return data
+
 
 def main():
     print('Portal de transparência estadual...')
@@ -102,5 +105,3 @@ def main():
     start_time = time.time()
     pt_Maceio()
     print("--- %s segundos ---" % (time.time() - start_time))
-
-

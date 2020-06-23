@@ -5,8 +5,9 @@ Arquivo de definição de constantes e variáveis globais utilizadas em todo o p
 import os
 
 # Define o caminho do diretório onde os dados serão armazenados
-diretorio_raiz = os.path.dirname(os.path.realpath(__file__))
+diretorio_raiz = os.path.dirname(os.path.realpath(__file__), os.pardir)
 diretorio_dados = os.path.join(diretorio_raiz, 'dados')
+print(diretorio_dados)
 
 # Urls de portais de tansparência do governos estaduais
 url_pt_AM = 'http://www.transparencia.am.gov.br/covid-19/contratos/'

@@ -20,6 +20,7 @@ url_pt_ES = 'https://coronavirus.es.gov.br/Media/Coronavirus/Transparencia/Dados
 url_pt_SP = 'https://www.saopaulo.sp.gov.br/coronavirus/transparencia/'
 url_pt_AL = 'http://transparencia.al.gov.br:8080/transparencia_relatorios/transparencia_relatorios/despesa/json-despesa-covid19-itens?offset=0&tipo=xls&nome_contratado=&nota_empenho=&processo=&contrato=&objeto=&orgao=&codigo_elemento=&'
 url_pt_MA = 'http://www.transparencia.ma.gov.br/app/compras/covid#lista'
+url_pt_TO = 'http://www.gestao.cge.to.gov.br/projetos/contratos_covid/consulta_contrato_covid_2/'
 
 # URLs de portais de transparência do governo estadual do Acre
 url_tce_AC_contratos = 'http://www.tce.ac.gov.br/covid19/Contratos-Estado.html'

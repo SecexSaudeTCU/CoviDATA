@@ -11,52 +11,55 @@ from covidata.webscraping.scrappers.ES import uf_es
 from covidata.webscraping.scrappers.SP import tcm_sp, pt_sp, pt_sp_capital
 from covidata.webscraping.scrappers.AL import uf_al
 from covidata.webscraping.scrappers.RJ import tce_rj
+from covidata.webscraping.scrappers.TO import uf_to
+import logging
 
 if __name__ == '__main__':
+    logger = logging.getLogger('covidata')
+    logger.setLevel(logging.INFO)
+    logger.addHandler(logging.StreamHandler())
 
-    print('# Recuperando dados do Acre...')
+    logger.info('# Recuperando dados do Acre...')
     uf_ac.main()
 
-    print('# Recuperando dados do Acre...')
-    uf_ac.main()
-
-    print('# Recuperando dados do Amapá...')
+    logger.info('# Recuperando dados do Amapá...')
     uf_ap.main()
 
-    print('# Recuperando dados do Amazonas...')
+    logger.info('# Recuperando dados do Amazonas...')
     uf_am.main()
 
-    print('# Recuperando dados do Ceará...')
+    logger.info('# Recuperando dados do Ceará...')
     uf_ce.main()
 
-    print('# Recuperando dados do Espírito Santo...')
+    logger.info('# Recuperando dados do Espírito Santo...')
     uf_es.main()
 
-    print('# Recuperando dados do Pará...')
+    logger.info('# Recuperando dados do Pará...')
     uf_pa.main()
     pt_belem.main()
 
     """
-    print('# Recuperando dados de Pernambuco...')
+    logger.info('# Recuperando dados de Pernambuco...')
     pt_recife.main()
     """
 
-    print('# Recuperando dados do Rio de Janeiro...')
+    logger.info('# Recuperando dados do Rio de Janeiro...')
     tce_rj.main()
     pt_rj_capital.main()
 
-    print('# Recuperando dados de Rondônia...')
+    logger.info('# Recuperando dados de Rondônia...')
     uf_ro.main()
 
-    print('# Recuperando dados de Roraima...')
+    logger.info('# Recuperando dados de Roraima...')
     uf_rr.main()
 
-    print('# Recuperando dados de São Paulo...')
+    logger.info('# Recuperando dados de São Paulo...')
     pt_sp.main()
     pt_sp_capital.main()
-    #tcm_sp.main()
+    # tcm_sp.main()
 
-    print('# Recuperando dados de Alagoas...')
+    logger.info('# Recuperando dados de Alagoas...')
     uf_al.main()
 
-
+    logger.info('# Recuperando dados de Tocantins...')
+    uf_to.main()

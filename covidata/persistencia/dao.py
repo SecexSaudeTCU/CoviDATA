@@ -10,7 +10,7 @@ def persistir(df, fonte, nome, uf, cidade=''):
 
     df.to_excel(path.join(diretorio, nome + '.xlsx'))
 
-def persistir_dados_hierarquicos(df_principal, dfs_auxiliares, fonte, nome, uf, cidade):
+def persistir_dados_hierarquicos(df_principal, dfs_auxiliares, fonte, nome, uf, cidade=''):
     diretorio = criar_diretorio(fonte, uf, cidade)
     writer = pd.ExcelWriter(os.path.join(diretorio, nome + '.xlsx'), engine='xlsxwriter')
     df_principal.to_excel(writer, sheet_name=nome)

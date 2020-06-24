@@ -9,7 +9,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from covidata import config
 import pandas as pd
-from covidata.persistencia.dao import persistir
+from covidata.persistencia.dao import persistir2
+import locale
+import logging
 
 
 def main():
@@ -33,16 +35,21 @@ def main():
     driver.quit()
 
     df = pd.DataFrame(lista_linhas, columns=colunas)
-    persistir(df, 'tcm', 'licitacoes', 'SP')
+    #persistir(df, 'tcm', 'licitacoes', 'SP')
+    persistir2(df, 'tcm', 'licitacoes', 'SP')
 
     print("--- %s segundos ---" % (time.time() - start_time))
 
 
 def __processar_pagina(driver, i, lista_linhas):
+    logger = logging.getLogger("covidata")
+    logger.info(f'Processando página {i}...')
+
     link = driver.find_element_by_link_text(str(i))
     link.click()
     # Aguarda o completo carregamento da tela
     time.sleep(20)
+
     try:
         soup = BeautifulSoup(driver.page_source, 'lxml')
     except UnexpectedAlertPresentException:
@@ -86,6 +93,9 @@ def __get_paginacao(soup):
 def __get_browser(url):
     chromeOptions = webdriver.ChromeOptions()
     chromeOptions.add_argument('--headless')
+
+    locale.setlocale(locale.LC_ALL, "pt_br")
+
     driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
     driver.get(url)
     return driver
@@ -93,7 +103,6 @@ def __get_browser(url):
 
 def __extrair_tabela(soup):
     tabela = soup.find(id='gridLicitacao_DXMainTable')
-    # linhas = tabela.find('tbody').find_all('tr', recursive=False)
     linhas = tabela.find_all('tr', recursive=False)
 
     if len(linhas) == 0:

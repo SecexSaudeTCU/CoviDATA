@@ -1,6 +1,7 @@
 import os
 from os import path
 import requests
+import logging
 
 
 class FileDownloader:
@@ -22,9 +23,11 @@ class FileDownloader:
 
 
 def download(url, diretorio, caminho_completo):
+    logger = logging.getLogger('covidata')
     if not path.exists(diretorio):
         os.makedirs(diretorio)
 
     r = requests.get(url)
     with open(caminho_completo, 'wb') as f:
+        logger.info(f'Fazendo o download do arquivo {caminho_completo}...')
         f.write(r.content)

@@ -10,23 +10,31 @@ from covidata.webscraping.scrappers.AC import uf_ac
 from covidata.webscraping.scrappers.ES import uf_es
 from covidata.webscraping.scrappers.SP import tcm_sp, pt_sp, pt_sp_capital
 from covidata.webscraping.scrappers.AL import uf_al
-from covidata.webscraping.scrappers.RJ import tce_rj
 from covidata.webscraping.scrappers.TO import uf_to
+from covidata.webscraping.scrappers.BA import uf_ba
 import logging
+import time
 
 if __name__ == '__main__':
     logger = logging.getLogger('covidata')
     logger.setLevel(logging.INFO)
     logger.addHandler(logging.StreamHandler())
 
+    start_time = time.time()
     logger.info('# Recuperando dados do Acre...')
     uf_ac.main()
+
+    logger.info('# Recuperando dados de Alagoas...')
+    uf_al.main()
 
     logger.info('# Recuperando dados do Amapá...')
     uf_ap.main()
 
     logger.info('# Recuperando dados do Amazonas...')
     uf_am.main()
+
+    logger.info('# Recuperando dados da Bahia...')
+    uf_ba.main()
 
     logger.info('# Recuperando dados do Ceará...')
     uf_ce.main()
@@ -38,10 +46,8 @@ if __name__ == '__main__':
     uf_pa.main()
     pt_belem.main()
 
-    """
     logger.info('# Recuperando dados de Pernambuco...')
     pt_recife.main()
-    """
 
     logger.info('# Recuperando dados do Rio de Janeiro...')
     tce_rj.main()
@@ -56,10 +62,9 @@ if __name__ == '__main__':
     logger.info('# Recuperando dados de São Paulo...')
     pt_sp.main()
     pt_sp_capital.main()
-    # tcm_sp.main()
-
-    logger.info('# Recuperando dados de Alagoas...')
-    uf_al.main()
+    tcm_sp.main()
 
     logger.info('# Recuperando dados de Tocantins...')
     uf_to.main()
+
+    logger.info("--- %s minutos ---" % (time.time() - start_time) / 60)

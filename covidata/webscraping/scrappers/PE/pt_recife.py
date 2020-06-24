@@ -71,7 +71,7 @@ def baixar_arquivos_lista(links, nivel1, nivel2, nivel3):
         nome_arquivo = 'arquivo' + str(arquivos) + extensao
         caminho_completo = os.path.join(diretorio, nome_arquivo)
 
-        while len(caminho_completo) >= 218:
+        while len(caminho_completo) > 218:
             qtd_caracteres_a_serem_removidos = len(caminho_completo) - 218
             diretorio = diretorio[0:len(diretorio) - qtd_caracteres_a_serem_removidos].rstrip()
 

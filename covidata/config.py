@@ -22,6 +22,7 @@ url_pt_AL = 'http://transparencia.al.gov.br:8080/transparencia_relatorios/transp
 url_pt_MA = 'http://www.transparencia.ma.gov.br/app/compras/covid#lista'
 url_pt_TO = 'http://www.gestao.cge.to.gov.br/projetos/contratos_covid/consulta_contrato_covid_2/'
 url_pt_BA = 'http://www.saude.ba.gov.br/temasdesaude/coronavirus/contratacoes-covid19/'
+url_pt_MT = 'http://consultas.transparencia.mt.gov.br/compras/contratos_covid/'
 
 # URLs de portais de transparência do governo estadual do Acre
 url_tce_AC_contratos = 'http://www.tce.ac.gov.br/covid19/Contratos-Estado.html'
@@ -48,6 +49,7 @@ url_pt_Vitoria = 'http://transparencia.vitoria.es.gov.br/Licitacao.Lista.Relator
 url_pt_SaoPaulo = 'https://www.prefeitura.sp.gov.br/cidade/secretarias/controladoria_geral/transparencia_covid19/index.php?p=295874'
 url_pt_Maceio = 'http://www.licitacao.maceio.al.gov.br/covid/json' #fonte: http://www.licitacao.maceio.al.gov.br/
 url_pt_SaoLuis = 'http://covid19.saoluis.ma.gov.br/2802'
+url_pt_Cuiaba = 'http://covid.cuiaba.mt.gov.br/publico/busca/13'
 
 
 # URLs dos portais de transparência dos Tribunais de Contas Municipais

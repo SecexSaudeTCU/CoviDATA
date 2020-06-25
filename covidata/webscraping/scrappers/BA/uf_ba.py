@@ -1,13 +1,13 @@
+import logging
 import time
 
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-from bs4 import Tag
 
 from covidata import config
 from covidata.persistencia.dao import persistir
-import logging
+
 
 def pt_ba():
     page = requests.get(config.url_pt_BA)

@@ -23,6 +23,7 @@ url_pt_MA = 'http://www.transparencia.ma.gov.br/app/compras/covid#lista'
 url_pt_TO = 'http://www.gestao.cge.to.gov.br/projetos/contratos_covid/consulta_contrato_covid_2/'
 url_pt_BA = 'http://www.saude.ba.gov.br/temasdesaude/coronavirus/contratacoes-covid19/'
 url_pt_MT = 'http://consultas.transparencia.mt.gov.br/compras/contratos_covid/'
+url_pt_GO = 'http://www.monitoramentoegestao.com.br/download_arquivos/aquisicoes.csv'
 
 # URLs de portais de transparência do governo estadual do Acre
 url_tce_AC_contratos = 'http://www.tce.ac.gov.br/covid19/Contratos-Estado.html'
@@ -56,5 +57,6 @@ url_pt_Cuiaba = 'http://covid.cuiaba.mt.gov.br/publico/busca/13'
 url_tcm_PA_1 = 'http://nie-tcmpa.droppages.com/files/Argus%20TCMPA%20-%20Fornecedores%20por%20Valor%20Homologado.xlsx'
 url_tcm_PA_2 = 'http://nie-tcmpa.droppages.com/files/Argus%20TCMPA%20-%20Fornecedores%20por%20Quantidade%20de%20Munic%C3%ADpios.xlsx'
 url_tcm_SP = 'https://mobile.tcm.sp.gov.br/Licitacao/ListarCovid?showMenu=0'
+url_tcm_GO = 'https://www.tcmgo.tc.br/coronavirus/'
 
 

@@ -9,7 +9,7 @@ from covidata import config
 from covidata.persistencia.dao import persistir
 
 
-def pt_ba():
+def pt_BA():
     page = requests.get(config.url_pt_BA)
     soup = BeautifulSoup(page.content, 'html5lib')
 
@@ -42,6 +42,6 @@ def main():
     logger = logging.getLogger('covidata')
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
-    pt_ba()
+    pt_BA()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 

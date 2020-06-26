@@ -44,10 +44,14 @@ def main():
         conteudo = registro.findAll('div')[0]
         divs = conteudo.findAll('div')
         div_descricao_registro = divs[0]
-        objeto = div_descricao_registro.findAll('p')[0].get_text()
+        objeto = div_descricao_registro.findAll('p')[0].get_text().strip()
         div_detalhes = divs[1]
         spans = div_detalhes.findAll('span')
-        tipo = spans[0].get_text()
+
+        #TODO: Remover prefixo 'Tipo:'
+        tipo = spans[0].get_text().strip()
+
+        #TODO: Remover prefixo 'Status:'
         status = spans[1].get_text()
 
         # página de detalhes
@@ -140,8 +144,8 @@ def processar_documentos(codigo_licitacao, nomes_colunas_documentos, parser_deta
             # Execita a chamada que a página executaria caso o clique fosse realizado
             onclick = linha_documento.attrs['onclick']
             codigo_fornecedor = onclick[onclick.find('(') + 1:onclick.find(',')]
-            url_documentos_fornecedores = url_base + f'18/Atas/DocumentoFornecedor/?ttCD_LICITACAO={chave}' \
-                f'&ttCD_FORNECEDOR={codigo_fornecedor}'
+            url_documentos_fornecedores = url_base + '18/Atas/DocumentoFornecedor/?ttCD_LICITACAO={chave}' \
+                                                     '&ttCD_FORNECEDOR={codigo_fornecedor}'
 
             driver_documentos_fornecedor = __get_browser(url_documentos_fornecedores)
             html = driver_documentos_fornecedor.page_source
@@ -169,6 +173,7 @@ def processar_itens(codigo_licitacao, parser_detalhes):
     div_itens = parser_detalhes.findAll('div', {'class': 'list-itens-processo'})[0]
     divs_itens = div_itens.findAll('div', {'class': 'item-processo'})
     linhas_df_itens = []
+
     for div_item in divs_itens:
         spans = div_item.findAll('span')
         codigo_item = spans[0].contents[1].string
@@ -178,14 +183,16 @@ def processar_itens(codigo_licitacao, parser_detalhes):
         melhor_lance = spans[4].contents[2].string
         svgs = spans[5].findAll('svg')
 
-        try:
-            situacao = svgs[0].get_text()
-        except IndexError:
-            print('aqui')
+        situacao = ''
+        modalidade = ''
 
-        modalidade = svgs[1].find('title').get_text()
+        if len(svgs) > 0:
+            situacao = svgs[0].get_text()
+            modalidade = svgs[1].find('title').get_text()
+
         linhas_df_itens.append(
             [codigo_licitacao, codigo_item, descricao, unidade, quantidade, melhor_lance, situacao, modalidade])
+
     return linhas_df_itens
 
 

@@ -19,5 +19,3 @@ def pt_GO():
 def main():
     pt_GO()
 
-
-main()

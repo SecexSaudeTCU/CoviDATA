@@ -24,6 +24,7 @@ url_pt_TO = 'http://www.gestao.cge.to.gov.br/projetos/contratos_covid/consulta_c
 url_pt_BA = 'http://www.saude.ba.gov.br/temasdesaude/coronavirus/contratacoes-covid19/'
 url_pt_MT = 'http://consultas.transparencia.mt.gov.br/compras/contratos_covid/'
 url_pt_GO = 'http://www.monitoramentoegestao.com.br/download_arquivos/aquisicoes.csv'
+url_pt_RS = 'https://www.compras.rs.gov.br/transparencia/editais-covid19.csv?contexto=Celic'
 
 # URLs de portais de transparência do governo estadual do Acre
 url_tce_AC_contratos = 'http://www.tce.ac.gov.br/covid19/Contratos-Estado.html'
@@ -31,6 +32,7 @@ url_tce_AC_despesas = 'http://www.tce.ac.gov.br/covid19/despesa_estado_html.html
 url_tce_AC_contratos_municipios = 'http://www.tce.ac.gov.br/covid19/Contratos-Municipios.html'
 url_tce_AC_despesas_municipios = 'http://www.tce.ac.gov.br/covid19/despesas_municipios_html.html'
 url_tce_MA = 'https://www6.tce.ma.gov.br/sacop/muralsite/muralcovid.zul'
+url_tce_RS = 'http://www1.tce.rs.gov.br/aplicprod/f?p=50500:16::XLS::::&cs=3Hn8jXEOKZFSR4U62TfOfBk7Yeas'
 
 # URLSs de portais de transparência de govenos municipais (capitais)
 url_pt_Manaus = 'https://covid19.manaus.am.gov.br/transparencia-covid-19/'
@@ -51,6 +53,7 @@ url_pt_SaoPaulo = 'https://www.prefeitura.sp.gov.br/cidade/secretarias/controlad
 url_pt_Maceio = 'http://www.licitacao.maceio.al.gov.br/covid/json' #fonte: http://www.licitacao.maceio.al.gov.br/
 url_pt_SaoLuis = 'http://covid19.saoluis.ma.gov.br/2802'
 url_pt_Cuiaba = 'http://covid.cuiaba.mt.gov.br/publico/busca/13'
+url_pt_PortoAlegre = 'http://www.portaldecompraspublicas.com.br/18/Processos/?slT=3&slO=206&slU=233325&slTag=COVID19'
 
 
 # URLs dos portais de transparência dos Tribunais de Contas Municipais

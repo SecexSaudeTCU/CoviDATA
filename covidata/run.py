@@ -13,6 +13,7 @@ from covidata.webscraping.scrappers.AL import uf_al
 from covidata.webscraping.scrappers.TO import uf_to
 from covidata.webscraping.scrappers.BA import uf_ba
 from covidata.webscraping.scrappers.MT import uf_mt
+from covidata.webscraping.scrappers.GO import uf_go
 import logging
 import time
 
@@ -42,6 +43,9 @@ if __name__ == '__main__':
 
     logger.info('# Recuperando dados do Espírito Santo...')
     uf_es.main()
+
+    logger.info('# Recuperando dados de Goiás...')
+    uf_go.main()
 
     logger.info('# Recuperando dados do Mato Grosso...')
     uf_mt.main()

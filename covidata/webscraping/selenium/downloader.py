@@ -41,3 +41,5 @@ class SeleniumDownloader(ABC):
         command_result = driver.execute("send_command", params)
 
         return driver
+
+

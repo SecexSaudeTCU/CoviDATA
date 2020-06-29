@@ -1,17 +1,15 @@
+import logging
 import re
 import time
 
+import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-from selenium import webdriver
 from selenium.common.exceptions import UnexpectedAlertPresentException
-from webdriver_manager.chrome import ChromeDriverManager
 
 from covidata import config
-import pandas as pd
 from covidata.persistencia.dao import persistir2
-import locale
-import logging
+from covidata.webscraping.selenium.selenium_util import get_browser
 
 
 def main():
@@ -25,7 +23,7 @@ def main():
     numero_paginas, pagina_atual = __get_paginacao(soup)
     colunas, lista_linhas = __extrair_tabela(soup)
 
-    driver = __get_browser(url)
+    driver = get_browser(url)
 
     for i in range(pagina_atual + 1, numero_paginas + 1):
         linhas = __processar_pagina(driver, i, lista_linhas)
@@ -88,18 +86,6 @@ def __get_paginacao(soup):
     pagina_atual = int(x[0][0])
     numero_paginas = int(x[0][1])
     return numero_paginas, pagina_atual
-
-
-def __get_browser(url):
-    chromeOptions = webdriver.ChromeOptions()
-    chromeOptions.add_argument('--headless')
-
-    locale.setlocale(locale.LC_ALL, "pt_br")
-
-    driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
-    driver.get(url)
-    return driver
-
 
 def __extrair_tabela(soup):
     tabela = soup.find(id='gridLicitacao_DXMainTable')

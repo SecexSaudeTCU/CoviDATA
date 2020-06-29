@@ -36,6 +36,7 @@ if __name__ == '__main__':
     logger.addHandler(logging.StreamHandler())
 
     start_time = time.time()
+
     logger.info('# Recuperando dados do Acre...')
     uf_ac.main()
 
@@ -92,4 +93,4 @@ if __name__ == '__main__':
     logger.info('# Recuperando dados de Tocantins...')
     uf_to.main()
 
-    logger.info("--- %s minutos ---" % (time.time() - start_time) / 60)
+    logger.info("--- %s minutos ---" % ((time.time() - start_time) / 60))

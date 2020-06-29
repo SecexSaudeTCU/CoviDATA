@@ -10,6 +10,7 @@ from covidata import config
 from covidata.persistencia.dao import persistir2
 from covidata.webscraping.downloader import download
 
+
 def pt_MT():
     page = requests.get(config.url_pt_MT)
     soup = BeautifulSoup(page.content, 'html5lib')
@@ -33,15 +34,14 @@ def pt_Cuiaba():
     page = requests.get(config.url_pt_Cuiaba)
     soup = BeautifulSoup(page.content, 'html5lib')
 
-    baixar_arquivo(soup, descricao='PLANILHA INFORMATIVA SOBRE OS GASTOS EMERGENCIAIS - SECRETARIA DE SAÚDE ',
-                   nome_arquivo='planilha_gastos_emergenciais_secretaria_saude.pdf')
-    baixar_arquivo(soup, descricao='PLANILHA INFORMATIVA SOBRE OS GASTOS EMERGENCIAIS - (SMSU- SME - SMG - SMASDH) ',
-                   nome_arquivo='planilha_gastos_emergenciais_outras_secretarias.pdf')
-    baixar_arquivo(soup, descricao='RECURSOS RECEBIDOS E APLICADOS', nome_arquivo='recursos_recebidos_aplicados.pdf')
-    baixar_arquivo(soup, descricao='DESCRITIVO DE AQUISIÇÃO DE EQUIPAMENTOS, MEDICAMENTOS, SERVIÇOS E INSUMOS.',
-                   nome_arquivo='descritivos_aquisicoes.pdf')
-
-
+    baixar_arquivo(soup, descricao='PLANILHA INFORMATIVA SOBRE OS GASTOS EMERGENCIAIS - SMASDH',
+                   nome_arquivo='planilha_gastos_emergenciais_SMASDH.pdf')
+    baixar_arquivo(soup, descricao='PLANILHA INFORMATIVA SOBRE OS GASTOS EMERGENCIAIS - SMS ',
+                   nome_arquivo='planilha_gastos_emergenciais_SMS.pdf')
+    baixar_arquivo(soup, descricao='PLANILHA INFORMATIVA SOBRE OS GASTOS EMERGENCIAIS - SMSU- SME - SMGE',
+                   nome_arquivo='planilha_gastos_emergenciais_SMSU_SME_SMGE.pdf')
+    baixar_arquivo(soup, descricao='RECURSOS RECEBIDOS E APLICADOS ', nome_arquivo='recursos_recebidos_aplicados.pdf')
+    baixar_arquivo(soup, descricao='RELAÇÃO POR ITEM ', nome_arquivo='descritivos_aquisicoes.pdf')
 
 
 def baixar_arquivo(soup, descricao, nome_arquivo):

@@ -14,7 +14,7 @@ from covidata.webscraping.scrappers.AM import uf_am
 from covidata.webscraping.scrappers.CE import uf_ce
 from covidata.webscraping.scrappers.PA import uf_pa, pt_belem
 from covidata.webscraping.scrappers.RJ import pt_rj_capital, tce_rj
-from covidata.webscraping.scrappers.PE import pt_recife
+from covidata.webscraping.scrappers.PE import pt_pe_capital
 from covidata.webscraping.scrappers.AP import uf_ap
 from covidata.webscraping.scrappers.RR import uf_rr
 from covidata.webscraping.scrappers.RO import uf_ro
@@ -26,6 +26,7 @@ from covidata.webscraping.scrappers.TO import uf_to
 from covidata.webscraping.scrappers.BA import uf_ba
 from covidata.webscraping.scrappers.MT import uf_mt
 from covidata.webscraping.scrappers.GO import uf_go
+from covidata.webscraping.scrappers.RS import uf_rs, pt_rs_capital
 import logging
 import time
 
@@ -67,11 +68,15 @@ if __name__ == '__main__':
     pt_belem.main()
 
     logger.info('# Recuperando dados de Pernambuco...')
-    pt_recife.main()
+    pt_pe_capital.main()
 
     logger.info('# Recuperando dados do Rio de Janeiro...')
     tce_rj.main()
     pt_rj_capital.main()
+
+    logger.info('# Recuerando dados do Rio Grande do Sul...')
+    uf_rs.main()
+    pt_rs_capital.main()
 
     logger.info('# Recuperando dados de Rondônia...')
     uf_ro.main()

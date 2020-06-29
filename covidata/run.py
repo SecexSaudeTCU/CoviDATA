@@ -1,3 +1,15 @@
+"""
+Extrai os dados de todos os portais para os quais o respectivo scrapper já foi implementado e salva o resultado
+na pasta dados, na raiz do projeto. Os novos scrapers devem ser adicionados ao script manualmente.
+"""
+
+import os
+import sys
+
+# Adiciona diretorio raiz ao PATH. Devido a ausência de setup.py, isto garante que as importações sempre funcionarão
+diretorio_raiz = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
+sys.path.append(diretorio_raiz)
+
 from covidata.webscraping.scrappers.AM import uf_am
 from covidata.webscraping.scrappers.CE import uf_ce
 from covidata.webscraping.scrappers.PA import uf_pa, pt_belem

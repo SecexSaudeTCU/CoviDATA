@@ -17,6 +17,8 @@ def persistir2(df, fonte, nome, uf, cidade=''):
     df.to_excel(writer, sheet_name='Sheet1', startrow=4)
     writer.save()
 
+    writer.close()
+
 def persistir_dados_hierarquicos(df_principal, dfs_auxiliares, fonte, nome, uf, cidade=''):
     diretorio = criar_diretorio(fonte, uf, cidade)
     writer = pd.ExcelWriter(os.path.join(diretorio, nome + '.xlsx'), engine='xlsxwriter')
@@ -24,6 +26,8 @@ def persistir_dados_hierarquicos(df_principal, dfs_auxiliares, fonte, nome, uf, 
     for nome, df in dfs_auxiliares.items():
         df.to_excel(writer, sheet_name=nome)
     writer.save()
+
+    writer.close()
 
 
 def criar_diretorio(fonte, uf, cidade):

@@ -12,7 +12,7 @@ class PortalTransparencia_AP(JSONParser):
     def __init__(self):
         super().__init__(config.url_pt_AP, 'id', 'contratacoes', 'portal_transparencia', 'AP')
 
-    def json_parse(self, conteudo):
+    def _get_elemento_raiz(self, conteudo):
         # Neste caso, não há elemento-raiz nomeado.
         return conteudo
 

@@ -12,7 +12,7 @@ class PortalTransparencia_Maceio(JSONParser):
     def __init__(self):
         super().__init__(config.url_pt_Maceio, 'num_processo', 'compras', 'portal_transparencia', 'AL', 'Maceio')
 
-    def json_parse(self, conteudo):
+    def _get_elemento_raiz(self, conteudo):
         return conteudo['data']
 
 

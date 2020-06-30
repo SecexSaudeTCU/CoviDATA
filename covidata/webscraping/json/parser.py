@@ -9,8 +9,26 @@ from covidata import config
 from covidata.persistencia.dao import persistir_dados_hierarquicos
 from covidata.webscraping.downloader import FileDownloader
 
+
 class JSONParser(ABC):
+    """
+    Classe utilitária abstrata responsável por manipulação de dados no formato JSON.
+    """
+
     def __init__(self, url, campo_chave, nome_dados, fonte, uf, cidade=''):
+        """
+        Construtor da classe.
+        :param url: URL do documento JSON cujo download será executado por ocasião do parsing.
+        :param campo_chave: O campo que representa o identificador único de cada elemento de um registro.  Especialmente
+            útil para relacionamentos master-detail.
+        :param nome_dados: O nome do tipo de dados (ex.: 'Licitações')
+        :param fonte: "tce", "tcm" ou "portal_transparencia".
+            Utilizado para identificar o local de salvamento das informações resultantes do parsing.
+        :param uf: Sigla da unidade federativa.  Utilizado para identificar o local de salvamento das informações
+            resultantes do parsing.
+        :param cidade:  Nome da cidade.  Utilizado para identificar o local de salvamento das informações resultantes do
+            parsing.
+        """
         self.url = url
         self.diretorio = os.path.join(config.diretorio_dados, uf, fonte, cidade)
         self.campo_chave = campo_chave
@@ -20,13 +38,19 @@ class JSONParser(ABC):
         self.cidade = cidade
 
     def parse(self):
+        """
+        Executa o parsing do arquivo JSON.  Executa o download de um arquivo de dados em formato JSON e armazena as
+        informações resultantes em um local identificado de acordo com as informações recebidas pelo construtor da
+        classe.
+        :return:
+        """
         nome_arquivo = self.nome_dados + '.json'
         downloader = FileDownloader(self.diretorio, self.url, nome_arquivo)
         downloader.download()
 
         with open(os.path.join(downloader.diretorio_dados, downloader.nome_arquivo)) as json_file:
             dados = json.load(json_file)
-            conteudo = self.json_parse(dados)
+            conteudo = self._get_elemento_raiz(dados)
 
             colunas_df_principal = []
             linhas_df_principal = []
@@ -76,7 +100,7 @@ class JSONParser(ABC):
             os.makedirs(self.diretorio)
 
         conteudo = url.read().decode()
-        data = self.json_parse(conteudo)
+        data = self._get_elemento_raiz(conteudo)
 
         with open(os.path.join(diretorio, self.nome_dados, '.json'), 'w') as f:
             f.write(conteudo)
@@ -84,7 +108,12 @@ class JSONParser(ABC):
         return data
 
     @abstractmethod
-    def json_parse(self, conteudo):
+    def _get_elemento_raiz(self, conteudo):
+        """
+        Retorna o elemento-raiz do conteúdo a ser processado, após o parsing.
+        :param conteudo: Árvore do conteúdo JSON resultante do parsing realizado anteriormente.
+        :return:
+        """
         pass
 
     def __processar_linha_univalorada(self, colunas_df, elemento, key, linha, agrupador=None):

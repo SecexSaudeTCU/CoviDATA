@@ -269,3 +269,4 @@ def main():
     pt_PortoAlegre()
 
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+

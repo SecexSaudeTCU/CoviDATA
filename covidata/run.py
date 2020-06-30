@@ -27,6 +27,7 @@ from covidata.webscraping.scrappers.BA import uf_ba
 from covidata.webscraping.scrappers.MT import uf_mt
 from covidata.webscraping.scrappers.GO import uf_go
 from covidata.webscraping.scrappers.RS import uf_rs, pt_rs_capital
+from covidata.webscraping.scrappers.PR import uf_pr
 import logging
 import time
 
@@ -67,6 +68,9 @@ if __name__ == '__main__':
     logger.info('# Recuperando dados do Pará...')
     uf_pa.main()
     pt_belem.main()
+
+    logger.info('# Recuperando dados do Paraná...')
+    uf_pr.main()
 
     logger.info('# Recuperando dados de Pernambuco...')
     pt_pe_capital.main()

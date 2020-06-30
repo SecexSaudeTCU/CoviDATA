@@ -1,18 +1,12 @@
 import datetime
-from covidata import config
 import logging
 import time
 from os import path
-from covidata.webscraping.downloader import FileDownloader
-import time
-from os import path
-
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 from covidata import config
+from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
+
 
 class PortalTransparencia_Curitiba(SeleniumDownloader):
     def __init__(self):
@@ -71,5 +65,3 @@ def main():
 
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-
-#main()

@@ -15,8 +15,8 @@ def main():
     print('Portal de transparência municipal...')
     start_time = time.time()
 
-    # TODO: Testar no Linux e no Mac
-    locale.setlocale(locale.LC_TIME, "pt-BR")
+    # TODO: Testar no Windows e no Linux
+    locale.setlocale(locale.LC_TIME, "pt_BR.UTF-8")
     mes_inicial = 3
     mes_atual = datetime.datetime.now().month
     meses = []

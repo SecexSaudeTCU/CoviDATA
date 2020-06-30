@@ -30,6 +30,7 @@ from covidata.webscraping.scrappers.RS import uf_rs, pt_rs_capital
 from covidata.webscraping.scrappers.PR import uf_pr
 from covidata.webscraping.scrappers.SC import uf_sc
 from covidata.webscraping.scrappers.MG import uf_mg
+from covidata.webscraping.scrappers.MS import uf_ms
 import logging
 import time
 
@@ -64,8 +65,11 @@ if __name__ == '__main__':
     logger.info('# Recuperando dados de Goiás...')
     uf_go.main()
 
-    logger.info('# Recuperando dados do Mato Grosso...')
+    logger.info('# Recuperando dados de Mato Grosso...')
     uf_mt.main()
+
+    logger.info('# Recuperando dados de Mato Grosso do Sul...')
+    uf_ms.main()
 
     logger.info('# Recuperando dados de Minas Gerais...')
     uf_mg.main()

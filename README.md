@@ -5,7 +5,7 @@ Web scraping de portais de transparência para obtenção de dados de contrataç
 Caso ainda não instaladas, instalar as bibliotecas selenium, webdriver-manager, beautifulsoup4, XlsxWriter, html5lib, xlwt e pandas. Em seguida, a partir de um terminal, com Git e Python (versão 3.7) disponíveis, executar os comandos a seguir:
 ```
 git clone https://github.com/SecexSaudeTCU/CoviDATA.git
-python run.py
+python CoviDATA\covidata\run.py
 ```
 
 Após término da execução, os dados extraídos dos portais terão sido salvos no diretório `covidata/dados`, separadamente

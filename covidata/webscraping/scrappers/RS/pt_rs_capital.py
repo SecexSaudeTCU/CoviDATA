@@ -270,3 +270,4 @@ def main():
 
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
+main()

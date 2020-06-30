@@ -13,7 +13,8 @@ from covidata.webscraping.selenium.selenium_util import get_browser
 
 
 def main():
-    print('Tribunal de Contas municipal...')
+    logger = logging.getLogger('covidata')
+    logger.info('Tribunal de Contas municipal...')
     start_time = time.time()
 
     url = config.url_tcm_SP
@@ -36,7 +37,7 @@ def main():
     #persistir(df, 'tcm', 'licitacoes', 'SP')
     persistir2(df, 'tcm', 'licitacoes', 'SP')
 
-    print("--- %s segundos ---" % (time.time() - start_time))
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
 
 
 def __processar_pagina(driver, i, lista_linhas):
@@ -68,7 +69,8 @@ def __checar_linhas_repetidas(driver, linhas, link, lista_linhas):
     ids = [lista_linhas[0] for linha in lista_linhas]
     if novos_ids[0] == ids[:-15]:
         # Registros repetidos - recarregamento da página não funcionou, é necessário carregar novamente.
-        print('Registros repetidos - nova tentativa de carregamento será feita...')
+        logger = logging.getLogger('covidata')
+        logger.info('Registros repetidos - nova tentativa de carregamento será feita...')
         link.click()
 
         # Aguarda o completo carregamento da tela

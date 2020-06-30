@@ -1,3 +1,4 @@
+import logging
 import time
 from os import path
 
@@ -61,21 +62,22 @@ def pt_sao_luis():
 
 
 def main():
-    print('Tribunal de contas estadual...')
+    logger = logging.getLogger('covidata')
+    logger.info('Tribunal de contas estadual...')
     start_time = time.time()
     tce_ma = TCE_MA()
     tce_ma.download()
-    print("--- %s segundos ---" % (time.time() - start_time))
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-    print('Portal de transparência estadual...')
+    logger.info('Portal de transparência estadual...')
     start_time = time.time()
     pt_ma = PortalTransparencia_MA()
     pt_ma.download()
-    print("--- %s segundos ---" % (time.time() - start_time))
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-    print('Portal de transparência da capital...')
+    logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_sao_luis()
-    print("--- %s segundos ---" % (time.time() - start_time))
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
 
 

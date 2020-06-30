@@ -1,15 +1,18 @@
+import logging
+import os
+import time
+from os import path
+
 import requests
 from bs4 import BeautifulSoup
-import os
-from os import path
-from covidata import config
-import time
 
+from covidata import config
 from covidata.webscraping.downloader import download
 
 
 def main():
-    print('Portal de transparência da capital...')
+    logger = logging.getLogger('covidata')
+    logger.info('Portal de transparência da capital...')
     start_time = time.time()
     url = config.url_pt_Recife
     page = requests.get(url)
@@ -35,7 +38,7 @@ def main():
              'Matérias Escassez de Insumos', 'Matérias Prazos de Entregas']
 
     baixar_arquivos_em_dois_niveis(results, temas, nivel1='Notícias sobre aquisições e contratações')
-    print("--- %s segundos ---" % (time.time() - start_time))
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
 
 
 def baixar_arquivos_em_dois_niveis(results, titulos, nivel1='Publicações em Diário Oficial'):

@@ -21,11 +21,14 @@ meio de dois mecanismos:
     constante do caminho no JSON correspondente a: ['results'][0]['result']['data']['dsr']['DS'][0]['ValueDicts']
 
 """
-import os
-import requests
 import json
-import pandas as pd
+import logging
+import os
 from datetime import datetime, timedelta
+
+import pandas as pd
+import requests
+
 from covidata.config import diretorio_dados
 
 
@@ -33,7 +36,8 @@ def main():
     """
     Ponto de entrada do script.
     """
-    print('Iniciando scraping do Portal de Dados TCE-RJ...')
+    logger = logging.getLogger('covidata')
+    logger.info('Iniciando scraping do Portal de Dados TCE-RJ...')
     # Realiza o web scraping da tabela principal do portal
     json = __baixa_arquivo()
 
@@ -48,7 +52,7 @@ def main():
     agora = datetime.now().strftime('%Y-%m-%d %Hh%Mm%Ss')
     nome_arquivo = os.path.join(diretorio_rj, f'tce_rj_compras_diretas_{agora}.xlsx')
     df.to_excel(nome_arquivo)
-    print('Scraping do Portal de Dados TCE-RJ concluído.')
+    logger.info('Scraping do Portal de Dados TCE-RJ concluído.')
 
 
 

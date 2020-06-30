@@ -1,6 +1,7 @@
 import calendar
 import datetime
 import locale
+import logging
 import time
 from os import path
 
@@ -12,7 +13,8 @@ from covidata.webscraping.downloader import download
 
 
 def main():
-    print('Portal de transparência municipal...')
+    logger = logging.getLogger('covidata')
+    logger.info('Portal de transparência municipal...')
     start_time = time.time()
 
     # TODO: Testar no Windows e no Linux
@@ -30,7 +32,7 @@ def main():
 
     __baixar_arquivos(meses)
 
-    print("--- %s segundos ---" % (time.time() - start_time))
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
 
 
 def __baixar_arquivos(meses):

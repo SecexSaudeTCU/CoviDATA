@@ -1,3 +1,4 @@
+import logging
 import time
 from os import path
 
@@ -57,19 +58,20 @@ def tce_ac():
 
 
 def main():
-    print('Tribunal de Contas estadual...')
+    logger = logging.getLogger('covidata')
+    logger.info('Tribunal de Contas estadual...')
     start_time = tce_ac()
-    print("--- %s segundos ---" % (time.time() - start_time))
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-    print('Portal de transparência estadual...')
+    logger.info('Portal de transparência estadual...')
     start_time = time.time()
     pt_AC = FileDownloader(path.join(config.diretorio_dados, 'AC', 'portal_transparencia'), config.url_pt_AC,
                            'empenhos.csv')
     pt_AC.download()
-    print("--- %s segundos ---" % (time.time() - start_time))
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-    print('Portal de transparência da capital...')
+    logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_RioBranco = PortalTransparencia_RioBranco(config.url_pt_RioBranco)
     pt_RioBranco.download()
-    print("--- %s segundos ---" % (time.time() - start_time))
+    logger.info("--- %s segundos ---" % (time.time() - start_time))

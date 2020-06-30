@@ -6,7 +6,7 @@ from covidata import config
 from covidata.webscraping.downloader import FileDownloader
 
 
-def pt_GO():
+def main():
     logger = logging.getLogger('covidata')
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
@@ -14,8 +14,3 @@ def pt_GO():
                            'aquisicoes.csv')
     pt_GO.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
-
-
-def main():
-    pt_GO()
-

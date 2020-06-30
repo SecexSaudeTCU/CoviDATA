@@ -1,3 +1,4 @@
+import logging
 import time
 from os import path
 
@@ -26,14 +27,15 @@ class PortalTransparencia_Macapa(SeleniumDownloader):
 
 
 def main():
-    print('Portal de transparência estadual...')
+    logger = logging.getLogger('covidata')
+    logger.info('Portal de transparência estadual...')
     start_time = time.time()
     pt_AP = PortalTransparencia_AP()
     pt_AP.parse()
-    print("--- %s segundos ---" % (time.time() - start_time))
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-    print('Portal de transparência da capital...')
+    logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_Macapa = PortalTransparencia_Macapa(config.url_pt_Macapa)
     pt_Macapa.download()
-    print("--- %s segundos ---" % (time.time() - start_time))
+    logger.info("--- %s segundos ---" % (time.time() - start_time))

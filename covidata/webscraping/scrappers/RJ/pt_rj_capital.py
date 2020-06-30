@@ -1,11 +1,12 @@
 from os import path
-
+import logging
 from covidata import config
 from covidata.webscraping.downloader import FileDownloader
 import time
 
 def main():
-    print('Portal de transparência da capital...')
+    logger = logging.getLogger('covidata')
+    logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_Rio_favorecidos = FileDownloader(
         path.join(config.diretorio_dados, 'RJ', 'portal_transparencia', 'Rio de Janeiro'),
@@ -21,4 +22,4 @@ def main():
         path.join(config.diretorio_dados, 'RJ', 'portal_transparencia', 'Rio de Janeiro'),
         config.url_pt_Rio_despesas_por_ato, '_arquivos_Open_Data_Desp_Ato_Covid19_2020.txt')
     pt_Rio_despesas_por_ato.download()
-    print("--- %s segundos ---" % (time.time() - start_time))
+    logger.info("--- %s segundos ---" % (time.time() - start_time))

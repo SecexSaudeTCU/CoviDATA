@@ -1,3 +1,4 @@
+import logging
 import time
 from os import path
 
@@ -26,8 +27,9 @@ class PortalTransparencia_Belem(SeleniumDownloader):
         self.driver.switch_to.default_content()
 
 def main():
-    print('Portal de transparência da capital...')
+    logger = logging.getLogger('covidata')
+    logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_Belem = PortalTransparencia_Belem(config.url_pt_Belem)
     pt_Belem.download()
-    print("--- %s segundos ---" % (time.time() - start_time))
+    logger.info("--- %s segundos ---" % (time.time() - start_time))

@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import time
 from os import path
@@ -36,12 +37,13 @@ def pt_PA():
 
 
 def main():
-    print('Portal de transparência estadual...')
+    logger = logging.getLogger('covidata')
+    logger.info('Portal de transparência estadual...')
     start_time = time.time()
     pt_PA()
-    print("--- %s segundos ---" % (time.time() - start_time))
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-    print('Tribunal de Contas municipal...')
+    logger.info('Tribunal de Contas municipal...')
     start_time = time.time()
     tcm_PA_1 = FileDownloader(path.join(config.diretorio_dados, 'PA', 'tcm'), config.url_tcm_PA_1,
                               'Argus TCMPA - Fornecedores por Valor Homologado.xlsx')
@@ -50,7 +52,4 @@ def main():
     tcm_PA_2 = FileDownloader(path.join(config.diretorio_dados, 'PA', 'tcm'), config.url_tcm_PA_2,
                               'Argus TCMPA - Fornecedores por Quantidade de Municípios.xlsx')
     tcm_PA_2.download()
-    print("--- %s segundos ---" % (time.time() - start_time))
-
-
-#main()
+    logger.info("--- %s segundos ---" % (time.time() - start_time))

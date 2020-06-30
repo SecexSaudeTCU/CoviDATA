@@ -1,3 +1,4 @@
+import logging
 import time
 
 import pandas as pd
@@ -9,7 +10,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from covidata import config
 from covidata.persistencia.dao import persistir_dados_hierarquicos
-import logging
 
 
 def pt_TO():

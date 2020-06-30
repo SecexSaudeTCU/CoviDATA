@@ -1,3 +1,4 @@
+import logging
 import time
 from os import path
 
@@ -26,8 +27,9 @@ class PortalTransparencia_SP(SeleniumDownloader):
 
 
 def main():
-    print('Portal de transparência estadual...')
+    logger = logging.getLogger('covidata')
+    logger.info('Portal de transparência estadual...')
     start_time = time.time()
     pt_SP = PortalTransparencia_SP(config.url_pt_SP)
     pt_SP.download()
-    print("--- %s segundos ---" % (time.time() - start_time))
+    logger.info("--- %s segundos ---" % (time.time() - start_time))

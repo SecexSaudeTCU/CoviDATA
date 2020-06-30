@@ -27,6 +27,7 @@ url_pt_MT = 'http://consultas.transparencia.mt.gov.br/compras/contratos_covid/'
 url_pt_GO = 'http://www.monitoramentoegestao.com.br/download_arquivos/aquisicoes.csv'
 url_pt_RS = 'https://www.compras.rs.gov.br/transparencia/editais-covid19.csv?contexto=Celic'
 url_pt_PR = 'http://www.coronavirus.pr.gov.br/sites/cadastrocovid19/arquivos_restritos/files/documento/'
+url_pt_SC = 'http://www.transparencia.sc.gov.br/data/documentos/exportcsv?anomesinifiltro=202001&anomesfimfiltro=202012&visao=empenho&indicador=0&tipoexecucaofiltro%5B%5D=0&covid19filtro%5B%5D=0&'
 
 # URLs de portais de transparência do governo estadual do Acre
 url_tce_AC_contratos = 'http://www.tce.ac.gov.br/covid19/Contratos-Estado.html'
@@ -58,6 +59,7 @@ url_pt_Cuiaba = 'http://covid.cuiaba.mt.gov.br/publico/busca/13'
 url_pt_PortoAlegre = 'http://www.portaldecompraspublicas.com.br/18/Processos/?slT=3&slO=206&slU=233325&slTag=COVID19'
 url_pt_Curitiba_contratacoes = 'https://mid.curitiba.pr.gov.br/conteudos/coronavirus/transparencia/licitacoes_contratacoes.csv'
 url_pt_Curitiba_aquisicoes = 'https://www.transparencia.curitiba.pr.gov.br/sgp/DespesasCovid19.aspx'
+url_pt_Florianopolis = 'http://portal.pmf.sc.gov.br/transparencia/arquivos/Aquisicao%20e%20contratos.csv'
 
 # URLs dos portais de transparência dos Tribunais de Contas Municipais
 url_tcm_PA_1 = 'http://nie-tcmpa.droppages.com/files/Argus%20TCMPA%20-%20Fornecedores%20por%20Valor%20Homologado.xlsx'

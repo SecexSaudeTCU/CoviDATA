@@ -13,7 +13,8 @@ def get_browser(url):
     chromeOptions = webdriver.ChromeOptions()
     chromeOptions.add_argument('--headless')
 
-    locale.setlocale(locale.LC_ALL, "pt_br")
+    #locale.setlocale(locale.LC_ALL, "pt_br")
+    locale.setlocale(locale.LC_ALL, "pt_BR.UTF-8")
 
     driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
     driver.get(url)

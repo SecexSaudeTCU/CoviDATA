@@ -9,7 +9,7 @@ from selenium.common.exceptions import UnexpectedAlertPresentException
 
 from covidata import config
 from covidata.persistencia.dao import persistir2
-from covidata.webscraping.selenium.selenium_util import get_browser
+from covidata.webscraping.selenium.selenium_util import configurar_browser
 
 
 def main():
@@ -24,7 +24,8 @@ def main():
     numero_paginas, pagina_atual = __get_paginacao(soup)
     colunas, lista_linhas = __extrair_tabela(soup)
 
-    driver = get_browser(url)
+    driver = configurar_browser()
+    driver.get(url)
 
     for i in range(pagina_atual + 1, numero_paginas + 1):
         linhas = __processar_pagina(driver, i, lista_linhas)

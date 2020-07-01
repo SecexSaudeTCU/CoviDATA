@@ -11,7 +11,7 @@ import re
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
 
-from covidata.webscraping.selenium.selenium_util import get_browser
+from covidata.webscraping.selenium.selenium_util import configurar_browser
 from covidata.persistencia.dao import persistir_dados_hierarquicos
 
 
@@ -30,20 +30,21 @@ def pt_PortoAlegre():
     linhas_df_documentos = []
     linhas_df_itens = []
 
+    driver = configurar_browser()
+
     linhas_df_documentos, linhas_df_itens, nomes_colunas_documentos = __processar_pagina(linhas_df,
                                                                                          linhas_df_documentos,
                                                                                          linhas_df_itens,
                                                                                          nomes_colunas_documentos,
-                                                                                         parser,
-                                                                                         url_base)
+                                                                                         parser, url_base, driver)
 
     for pagina in proximas_paginas:
-        parser = __parse(pagina)
+        parser = __parse(driver, pagina)
         linhas_df_documentos, linhas_df_itens, nomes_colunas_documentos = __processar_pagina(linhas_df,
                                                                                              linhas_df_documentos,
                                                                                              linhas_df_itens,
                                                                                              nomes_colunas_documentos,
-                                                                                             parser, url_base)
+                                                                                             parser, url_base, driver)
 
     nomes_colunas = ['Número da licitação', 'Objeto', 'Tipo', 'Status', 'Aplicar o Decreto 10.024/2019',
                      'Início de propostas', 'Final de propostas', 'Limite para impugnações', 'Data de Abertura',
@@ -97,7 +98,8 @@ def __get_paginacao_itens(parser, url_base, codigo_interno_licitacao):
         return []
 
 
-def __processar_pagina(linhas_df, linhas_df_documentos, linhas_df_itens, nomes_colunas_documentos, parser, url_base):
+def __processar_pagina(linhas_df, linhas_df_documentos, linhas_df_itens, nomes_colunas_documentos, parser, url_base,
+                       driver):
     registros = parser.findAll('div', {'class': 'item-registro xs-col-12'})
 
     for registro in registros:
@@ -120,26 +122,26 @@ def __processar_pagina(linhas_df, linhas_df_documentos, linhas_df_itens, nomes_c
 
         # página de detalhes
         parser_detalhes, codigo_interno_licitacao = __processar_detalhes(numero_licitacao, linhas_df, objeto, spans,
-                                                                         status, tipo, url_base)
+                                                                         status, tipo, url_base, driver)
 
         # documentos
         linhas_df_documentos, nomes_colunas_documentos = __processar_documentos(numero_licitacao, linhas_df_documentos,
-                                                                                parser_detalhes, url_base)
+                                                                                parser_detalhes, url_base, driver)
 
         # itens
         linhas_df_itens = __processar_itens(numero_licitacao, linhas_df_itens, parser_detalhes, url_base,
-                                            codigo_interno_licitacao)
+                                            codigo_interno_licitacao, driver)
 
     return linhas_df_documentos, linhas_df_itens, nomes_colunas_documentos
 
 
-def __processar_detalhes(numero_licitacao, linhas_df, objeto, spans, status, tipo, url_base):
+def __processar_detalhes(numero_licitacao, linhas_df, objeto, spans, status, tipo, url_base, driver):
     dados_adicionais = spans[2]
     url_detalhes = dados_adicionais.findAll('a', {'title': 'Dados do Processo'})[0].attrs['href']
     codigo_interno_licitacao = url_detalhes[url_detalhes.rfind('-') + 1:url_detalhes.rfind('/')]
     url_detalhes = url_base + url_detalhes
 
-    parser_detalhes = __parse(url_detalhes)
+    parser_detalhes = __parse(driver, url_detalhes)
 
     dados_licitacao = parser_detalhes.findAll('p', {'class': 'ff1 f400 fs16 fcW'})[0]
     bs = dados_licitacao.findAll('b')
@@ -169,22 +171,22 @@ def __processar_detalhes(numero_licitacao, linhas_df, objeto, spans, status, tip
     return parser_detalhes, codigo_interno_licitacao
 
 
-def __parse(url):
-    driver = get_browser(url)
+def __parse(driver, url):
+    driver.get(url)
     html = driver.page_source
     driver.close()
     driver.quit()
     return BeautifulSoup(html, 'lxml')
 
 
-def __processar_documentos(numero_licitacao, linhas_df_documentos, parser_detalhes, url_base):
+def __processar_documentos(numero_licitacao, linhas_df_documentos, parser_detalhes, url_base, driver):
     div_documentos = parser_detalhes.findAll('div', {'class': 'col-xs-12 col-sm-6 bgMidGreen'})[0]
     url_documentos = div_documentos.findAll('a', {'title': 'Atas e demais documentos do processo'})[0].attrs['href']
     url_documentos = url_base + url_documentos
     parsed_url_documentos = urlparse(url_documentos)
     chave = parse_qs(parsed_url_documentos.query)['ttCD_CHAVE'][0]
 
-    parser_documentos = __parse(url_documentos)
+    parser_documentos = __parse(driver, url_documentos)
 
     span = parser_documentos.findAll('span', {'class': 'green'})
     numero_processo_interno = span[0].findAll('b')[0].get_text()
@@ -207,7 +209,7 @@ def __processar_documentos(numero_licitacao, linhas_df_documentos, parser_detalh
             url_documentos_fornecedores = url_base + f'18/Atas/DocumentoFornecedor/?ttCD_LICITACAO={chave}' \
                                                      f'&ttCD_FORNECEDOR={codigo_fornecedor}'
 
-            parser_documentos_fornecedor = __parse(url_documentos_fornecedores)
+            parser_documentos_fornecedor = __parse(driver, url_documentos_fornecedores)
 
             links = parser_documentos_fornecedor.findAll('a')
 
@@ -225,13 +227,13 @@ def __processar_documentos(numero_licitacao, linhas_df_documentos, parser_detalh
     return linhas_df_documentos, nomes_colunas_documentos
 
 
-def __processar_itens(numero_licitacao, linhas_df_itens, parser, url_base, codigo_interno_licitacao):
+def __processar_itens(numero_licitacao, linhas_df_itens, parser, url_base, codigo_interno_licitacao, driver):
     proximas_paginas = __get_paginacao_itens(parser, url_base, codigo_interno_licitacao)
 
     __processar_pagina_itens(numero_licitacao, linhas_df_itens, parser)
 
     for pagina in proximas_paginas:
-        parser = __parse(pagina)
+        parser = __parse(driver, pagina)
         __processar_pagina_itens(numero_licitacao, linhas_df_itens, parser)
 
     return linhas_df_itens
@@ -270,4 +272,3 @@ def main():
 
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-#main()

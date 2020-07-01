@@ -90,8 +90,7 @@ if __name__ == '__main__':
 
     logger.info('# Recuerando dados do Rio Grande do Sul...')
     uf_rs.main()
-    #TODO: Removido temporariamente devido a um bug no salvamento de arquivos Excel no Windows.
-    #pt_rs_capital.main()
+    pt_rs_capital.main()
 
     logger.info('# Recuperando dados de Rondônia...')
     uf_ro.main()

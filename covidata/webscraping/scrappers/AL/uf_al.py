@@ -25,8 +25,11 @@ def main():
     pt_AL.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
+    """
+    #TODO: Portal atualmente fora do ar.
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_Maceio = PortalTransparencia_Maceio()
     pt_Maceio.parse()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+    """

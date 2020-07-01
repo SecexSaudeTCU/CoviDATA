@@ -1,5 +1,7 @@
 """
 Rotina de extração de notícias da aba News do Google a partir de string de busca e dias de início e fim.
+
+TODO: adicionar sleep quando a consulta a uma página retornar vazia e tentar novamente antes de abortar.
 """
 
 import pandas as pd

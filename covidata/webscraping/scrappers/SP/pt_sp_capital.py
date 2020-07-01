@@ -49,6 +49,11 @@ def __baixar_arquivos(meses):
 
 def __baixar_arquivo_mensal(mes, tag):
     links = tag.find_all('a', string='Excel')
+
+    #Solução de contorno para o caso do mês de junho
+    if len(links) == 0:
+        links = tag.find_all('a', string='Excel ')
+
     if len(links) == 0:
         for sibling in tag.next_siblings:
             if isinstance(sibling, Tag):

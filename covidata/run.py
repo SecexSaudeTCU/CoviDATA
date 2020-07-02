@@ -45,7 +45,6 @@ if __name__ == '__main__':
 
     start_time = time.time()
 
-    """
     logger.info('# Recuperando dados do Acre...')
     uf_ac.main()
 
@@ -114,7 +113,6 @@ if __name__ == '__main__':
 
     logger.info('# Recuperando dados de Tocantins...')
     uf_to.main()
-    """
 
     # Salva a data/hora da extração.
     f = open(config.arquivo_data_extracao, "w+")

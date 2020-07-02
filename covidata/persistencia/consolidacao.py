@@ -176,11 +176,30 @@ COLUNAS_ITENS_EMPENHO = [EMPENHO_NUMERO, ITEM_EMPENHO_DESCRICAO, ITEM_EMPENHO_UN
                          ITEM_EMPENHO_VALOR_UNITARIO, ITEM_EMPENHO_VALOR_TOTAL]
 
 
-def consolidar(ano, colunas_adicionais_despesas, df, dicionario_dados, esfera, fonte_dados, uf,
+def consolidar(ano, colunas_adicionais_despesas, df_original, dicionario_dados, esfera, fonte_dados, uf,
                codigo_municipio_ibge, funcao_posprocessamento):
-    df_despesas, df_itens_empenho = __converter_dataframes(df, dicionario_dados, colunas_adicionais_despesas, [], uf,
+    """
+    Consolida um conjunto de informações no formato padronizado, convetendo um dataframe de um formato em outro, em
+    termos de oolunas.
+
+    :param ano: Ano da execução da despesa.
+    :param colunas_adicionais_despesas: Colunas adicionais, que não estão presentes no formato padronizado, mas que
+        ainda assim serão incluídas.
+    :param df_original: O dataframe original.
+    :param dicionario_dados: Dicionário que mapeia nomes de colunas no dataframe original nos respectivos nomes de
+        coluna no formato padronizado.
+    :param esfera: Esfera administrativa (F- Federal; E- Estadual; e M- Municipal).
+    :param fonte_dados: Fonte dos dados (ex.: TCE | TCM | Portal de Transparência - <URL para a fonte dos dados>)
+    :param uf: Sigla da unidade da federação.
+    :param codigo_municipio_ibge: Código do município do IBGE, se aplicável.
+    :param funcao_posprocessamento: Callback para função que complementa a conversão.
+    :return: df_despesas, df_itens_empenho: Tupla que representa os dois dataframes (tabelas): despesas e itens de
+        empenho.
+    """
+    df_despesas, df_itens_empenho = __converter_dataframes(df_original, dicionario_dados, colunas_adicionais_despesas,
+                                                           [], uf,
                                                            codigo_municipio_ibge, fonte_dados, ano, esfera)
-    return funcao_posprocessamento(df, df_despesas, df_itens_empenho)
+    return funcao_posprocessamento(df_original, df_despesas, df_itens_empenho)
 
 
 def __converter_dataframes(df_original, dicionario_dados, colunas_adicionais_despesas, colunas_adicionais_itens_empenho,

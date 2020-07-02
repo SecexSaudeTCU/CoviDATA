@@ -26,7 +26,7 @@ from covidata.webscraping.scrappers.TO import uf_to
 from covidata.webscraping.scrappers.BA import uf_ba
 from covidata.webscraping.scrappers.MT import uf_mt
 from covidata.webscraping.scrappers.GO import uf_go
-from covidata.webscraping.scrappers.RS import uf_rs, pt_rs_capital
+from covidata.webscraping.scrappers.RS import uf_rs
 from covidata.webscraping.scrappers.PR import uf_pr
 from covidata.webscraping.scrappers.SC import uf_sc
 from covidata.webscraping.scrappers.MG import uf_mg
@@ -88,9 +88,10 @@ if __name__ == '__main__':
     tce_rj.main()
     pt_rj_capital.main()
 
-    logger.info('# Recuerando dados do Rio Grande do Sul...')
+    logger.info('# Recuperando dados do Rio Grande do Sul...')
     uf_rs.main()
-    pt_rs_capital.main()
+    #TODO: Acesso disponível apenas por meio de API
+    #pt_rs_capital.main() (acesso disponível apenas por meio de API)
 
     logger.info('# Recuperando dados de Rondônia...')
     uf_ro.main()

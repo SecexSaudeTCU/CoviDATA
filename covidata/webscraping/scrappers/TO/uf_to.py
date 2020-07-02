@@ -9,7 +9,7 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
 from covidata import config
-from covidata.persistencia.dao import persistir_dados_hierarquicos
+from covidata.persistencia.dao import persistir
 
 
 def pt_TO():
@@ -76,18 +76,11 @@ def __persistir(colunas_total_por_orgao, colunas_total_por_processo, colunas_tot
     df_total_por_tipo_contratacao = pd.DataFrame(linhas_total_por_tipo_contratacao,
                                                  columns=colunas_total_por_tipo_contratacao)
     df_total_por_orgao = pd.DataFrame(linhas_total_por_orgao, columns=colunas_total_por_orgao)
-    persistir_dados_hierarquicos(df, {"Totais por processo": df_total_por_processo,
-                                      "Totais por tipo de contratação": df_total_por_tipo_contratacao,
-                                      "Totais por órgão": df_total_por_orgao},
-                                 'portal_transparencia', 'contratos', 'TO')
 
-
-def __get_browser(url):
-    chromeOptions = webdriver.ChromeOptions()
-    chromeOptions.add_argument('--headless')
-    driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
-    driver.get(url)
-    return driver
+    persistir(df, 'portal_transparencia', 'contratos', 'TO')
+    persistir(df_total_por_processo, 'portal_transparencia', 'contratos_totais_por_processo', 'TO')
+    persistir(df_total_por_tipo_contratacao, 'portal_transparencia', 'contratos_totais_por_tipo_contratacao', 'TO')
+    persistir(df_total_por_orgao, 'portal_transparencia', 'contratos_totais_por_orgao', 'TO')
 
 
 def main():
@@ -96,3 +89,6 @@ def main():
     start_time = time.time()
     pt_TO()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+
+main()

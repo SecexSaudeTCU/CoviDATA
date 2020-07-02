@@ -2,6 +2,7 @@ import calendar
 import datetime
 import locale
 import logging
+import platform
 import time
 from os import path
 
@@ -18,7 +19,11 @@ def main():
     start_time = time.time()
 
     # TODO: Testar no Windows e no Linux
-    locale.setlocale(locale.LC_TIME, "pt_BR.UTF-8")
+    if 'Windows' in platform.system():
+        locale.setlocale(locale.LC_TIME, "pt-BR")
+    else:
+        locale.setlocale(locale.LC_TIME, "pt_BR.UTF-8")
+
     mes_inicial = 3
     mes_atual = datetime.datetime.now().month
     meses = []

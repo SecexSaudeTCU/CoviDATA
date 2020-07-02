@@ -15,6 +15,7 @@ from covidata.webscraping.selenium.downloader import SeleniumDownloader
 def __extrair(url, informacao, indice):
     colunas, linhas_df = __extrair_tabela(url, indice)
     df = pd.DataFrame(linhas_df, columns=colunas)
+    #persistir(df, 'tce', informacao, 'AC')
     persistir(df, 'tce', informacao, 'AC')
 
 
@@ -70,8 +71,11 @@ def main():
     pt_AC.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
+    # TODO: Site com disponibilidade instável.
+    """    
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_RioBranco = PortalTransparencia_RioBranco(config.url_pt_RioBranco)
     pt_RioBranco.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+    """

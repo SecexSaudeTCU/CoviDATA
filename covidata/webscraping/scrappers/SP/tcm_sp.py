@@ -1,3 +1,4 @@
+import locale
 import logging
 import re
 import time
@@ -5,11 +6,12 @@ import time
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
 from selenium.common.exceptions import UnexpectedAlertPresentException
+from webdriver_manager.chrome import ChromeDriverManager
 
 from covidata import config
-from covidata.persistencia.dao import persistir2
-from covidata.webscraping.selenium.selenium_util import configurar_browser
+from covidata.persistencia.dao import persistir
 
 
 def main():
@@ -36,7 +38,7 @@ def main():
 
     df = pd.DataFrame(lista_linhas, columns=colunas)
     #persistir(df, 'tcm', 'licitacoes', 'SP')
-    persistir2(df, 'tcm', 'licitacoes', 'SP')
+    persistir(df, 'tcm', 'licitacoes', 'SP')
 
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
@@ -112,3 +114,11 @@ def __extrair_tabela(soup):
         lista_linhas.append(nova_linha)
 
     return colunas, lista_linhas
+
+
+def configurar_browser():
+    chromeOptions = webdriver.ChromeOptions()
+    chromeOptions.add_argument('--headless')
+    locale.setlocale(locale.LC_ALL, "pt_BR.UTF-8")
+    driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
+    return driver

@@ -58,6 +58,7 @@ def pt_sao_luis():
         lista_linhas.append(nova_linha)
 
     df = pd.DataFrame(lista_linhas, columns=colunas)
+    #persistir(df, 'portal_transparencia', 'contratacoes', 'MA', 'São Luís')
     persistir(df, 'portal_transparencia', 'contratacoes', 'MA', 'São Luís')
 
 

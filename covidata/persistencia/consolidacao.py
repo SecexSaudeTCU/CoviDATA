@@ -176,7 +176,7 @@ COLUNAS_ITENS_EMPENHO = [EMPENHO_NUMERO, ITEM_EMPENHO_DESCRICAO, ITEM_EMPENHO_UN
 
 
 def consolidar(df_original, dicionario_dados, colunas_adicionais_despesas, colunas_adicionais_itens_empenho, uf,
-               fonte_dados, data_extracao_dados, ano, esfera):
+               codigo_municipio_ibge, fonte_dados, data_extracao_dados, ano, esfera):
     """
     Consolida um dataframe no formato padronizado.
 
@@ -195,6 +195,7 @@ def consolidar(df_original, dicionario_dados, colunas_adicionais_despesas, colun
     df_despesas[DATA_EXTRACAO_DADOS] = data_extracao_dados
     df_despesas[ANO] = ano
     df_despesas[UF] = uf
+    df_despesas[COD_MUNICIPIO_IBGE] = codigo_municipio_ibge
     df_despesas[ESFERA] = esfera
 
     for coluna_padronizada, coluna_correspondente in dicionario_dados.items():

@@ -7,7 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from covidata import config
-from covidata.persistencia.dao import persistir2
+from covidata.persistencia.dao import persistir
 from covidata.webscraping.downloader import download
 
 
@@ -27,7 +27,7 @@ def pt_MT():
         linhas_df.append(colunas)
 
     df = pd.DataFrame(linhas_df, columns=nomes_colunas)
-    persistir2(df, 'portal_transparencia', 'Contratos', 'MT')
+    persistir(df, 'portal_transparencia', 'Contratos', 'MT')
 
 
 def pt_Cuiaba():

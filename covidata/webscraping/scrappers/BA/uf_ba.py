@@ -35,6 +35,7 @@ def pt_BA():
 
 
     df = pd.DataFrame(linhas, columns=nomes_colunas)
+    #persistir(df, 'portal_transparencia', 'contratos', 'BA')
     persistir(df, 'portal_transparencia', 'contratos', 'BA')
 
 

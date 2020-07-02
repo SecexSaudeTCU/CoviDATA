@@ -1,4 +1,5 @@
 import pandas as pd
+from covidata import config
 
 ANO_PADRAO = 2020
 
@@ -175,15 +176,15 @@ COLUNAS_ITENS_EMPENHO = [EMPENHO_NUMERO, ITEM_EMPENHO_DESCRICAO, ITEM_EMPENHO_UN
                          ITEM_EMPENHO_VALOR_UNITARIO, ITEM_EMPENHO_VALOR_TOTAL]
 
 
-def consolidar(ano, colunas_adicionais_despesas, data_extracao, df, dicionario_dados, esfera, fonte_dados, uf,
+def consolidar(ano, colunas_adicionais_despesas, df, dicionario_dados, esfera, fonte_dados, uf,
                codigo_municipio_ibge, funcao_posprocessamento):
     df_despesas, df_itens_empenho = __converter_dataframes(df, dicionario_dados, colunas_adicionais_despesas, [], uf,
-                                                           codigo_municipio_ibge, fonte_dados, data_extracao, ano,
-                                                           esfera)
+                                                           codigo_municipio_ibge, fonte_dados, ano, esfera)
     return funcao_posprocessamento(df, df_despesas, df_itens_empenho)
 
-def __converter_dataframes(df_original, dicionario_dados, colunas_adicionais_despesas, colunas_adicionais_itens_empenho, uf,
-                           codigo_municipio_ibge, fonte_dados, data_extracao_dados, ano, esfera):
+
+def __converter_dataframes(df_original, dicionario_dados, colunas_adicionais_despesas, colunas_adicionais_itens_empenho,
+                           uf, codigo_municipio_ibge, fonte_dados, ano, esfera):
     df_despesas = pd.DataFrame(columns=COLUNAS_DESPESAS + colunas_adicionais_despesas)
     df_itens_empenho = pd.DataFrame(columns=COLUNAS_ITENS_EMPENHO + colunas_adicionais_itens_empenho)
 
@@ -200,7 +201,8 @@ def __converter_dataframes(df_original, dicionario_dados, colunas_adicionais_des
         df_itens_empenho[coluna] = df_original[coluna]
 
     df_despesas[FONTE_DADOS] = fonte_dados
-    df_despesas[DATA_EXTRACAO_DADOS] = data_extracao_dados
+
+    df_despesas[DATA_EXTRACAO_DADOS] = __get_data_extracao()
     df_despesas[ANO] = ano
     df_despesas[UF] = uf
     df_despesas[COD_MUNICIPIO_IBGE] = codigo_municipio_ibge
@@ -208,3 +210,12 @@ def __converter_dataframes(df_original, dicionario_dados, colunas_adicionais_des
 
     return df_despesas, df_itens_empenho
 
+
+def __get_data_extracao():
+    data_extracao_dados = ''
+    f = open(config.arquivo_data_extracao, "r")
+
+    if f.mode == 'r':
+        data_extracao_dados = f.read()
+
+    return data_extracao_dados

@@ -1,19 +1,27 @@
-from covidata.persistencia import consolidacao
-from covidata import config
-import datetime
-import pandas as pd
 from os import path
+
+import numpy as np
+import pandas as pd
+
+from covidata import config
+from covidata.persistencia import consolidacao
+from covidata.persistencia.consolidacao import consolidar
 
 
 def pos_processar(df_original, df_despesas, df_itens_empenho):
-    df_despesas = df_despesas.fillna(0)
-    df_despesas = df_despesas.astype(
-        {consolidacao.FONTE_RECURSOS_COD: int, consolidacao.EMPENHO_NUMERO: int, consolidacao.FAVORECIDO_COD: int})
-    df = df_original.fillna(0)
-    df = df[['\nCPF/CNPJ\n']].astype(int)
+    # Elimina a última linha, que só contém um totalizador
+    df_despesas = df_despesas.drop(df_despesas.index[-1])
+    df_despesas = df_despesas.astype({consolidacao.FAVORECIDO_COD: np.uint64})
+    df_despesas = df_despesas.astype({consolidacao.FAVORECIDO_COD: str})
+    df_despesas = df_despesas.astype({consolidacao.EMPENHO_NUMERO: np.uint64})
+    df_despesas = df_despesas.astype({consolidacao.EMPENHO_NUMERO: str})
+    df_despesas.fillna('')
+
+    df = df_original.fillna('NA')
+    df = df[['\nCPF/CNPJ\n']].astype(str)
 
     for i in range(0, len(df)):
-        cpf_cnpj = str(df.loc[i, '\nCPF/CNPJ\n'])
+        cpf_cnpj = df.loc[i, '\nCPF/CNPJ\n']
 
         if len(cpf_cnpj) == 11:
             df_despesas.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CPF
@@ -33,25 +41,16 @@ def main():
     tipo_fonte = 'tce'
     # TODO: Sugerir uma nova coluna 'TIPO_FONTE'
     fonte_dados = consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_despesas
-    # TODO: Incluir rotina que recupera a data de extração a partir de um arquivo texto
-    data_extracao = datetime.datetime.now()
     # TODO: Nem sempre esta informação está presente
     ano = consolidacao.ANO_PADRAO
     uf = 'AC'
     esfera = consolidacao.ESFERA_ESTADUAL
-    codigo_municipio_ibge = 'NA'
-    nome_arquivo = 'despesas.xlsx'
-    df = pd.read_excel(path.join(config.diretorio_dados, uf, tipo_fonte, nome_arquivo))
-    df_despesas, df_itens_empenho = consolidar(ano, colunas_adicionais_despesas, data_extracao, df, dicionario_dados,
-                                               esfera, fonte_dados, uf, codigo_municipio_ibge)
-
-
-def consolidar(ano, colunas_adicionais_despesas, data_extracao, df, dicionario_dados, esfera, fonte_dados, uf,
-               codigo_municipio_ibge):
-    df_despesas, df_itens_empenho = consolidacao.consolidar(df, dicionario_dados, colunas_adicionais_despesas, [], uf,
-                                                            codigo_municipio_ibge, fonte_dados, data_extracao, ano,
-                                                            esfera)
-    return pos_processar(df, df_despesas, df_itens_empenho)
+    codigo_municipio_ibge = ''
+    nome_arquivo = 'despesas.xls'
+    df = pd.read_excel(path.join(config.diretorio_dados, uf, tipo_fonte, nome_arquivo), header=4)
+    df_despesas, _ = consolidar(ano, colunas_adicionais_despesas, df, dicionario_dados, esfera, fonte_dados, uf,
+                                codigo_municipio_ibge, pos_processar)
+    df_despesas.to_excel(path.join(config.diretorio_dados, 'consolidados', 'TCE_AC_despesas.xlsx'))
 
 
 main()

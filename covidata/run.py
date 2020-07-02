@@ -33,14 +33,19 @@ from covidata.webscraping.scrappers.MG import uf_mg
 from covidata.webscraping.scrappers.MS import uf_ms
 import logging
 import time
+import datetime
+from covidata import config
 
 if __name__ == '__main__':
     logger = logging.getLogger('covidata')
     logger.setLevel(logging.INFO)
     logger.addHandler(logging.StreamHandler())
 
+    data_extracao = datetime.datetime.now()
+
     start_time = time.time()
 
+    """
     logger.info('# Recuperando dados do Acre...')
     uf_ac.main()
 
@@ -90,8 +95,8 @@ if __name__ == '__main__':
 
     logger.info('# Recuperando dados do Rio Grande do Sul...')
     uf_rs.main()
-    #TODO: Acesso disponível apenas por meio de API
-    #pt_rs_capital.main() (acesso disponível apenas por meio de API)
+    # TODO: Acesso disponível apenas por meio de API
+    # pt_rs_capital.main() (acesso disponível apenas por meio de API)
 
     logger.info('# Recuperando dados de Rondônia...')
     uf_ro.main()
@@ -109,5 +114,10 @@ if __name__ == '__main__':
 
     logger.info('# Recuperando dados de Tocantins...')
     uf_to.main()
+    """
+
+    # Salva a data/hora da extração.
+    f = open(config.arquivo_data_extracao, "w+")
+    f.write(str(data_extracao))
 
     logger.info("--- %s minutos ---" % ((time.time() - start_time) / 60))

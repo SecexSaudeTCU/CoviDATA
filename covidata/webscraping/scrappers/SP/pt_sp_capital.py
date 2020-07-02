@@ -18,10 +18,10 @@ def main():
     logger.info('Portal de transparência municipal...')
     start_time = time.time()
 
-    # TODO: Testar no Windows e no Linux
     if 'Windows' in platform.system():
         locale.setlocale(locale.LC_TIME, "pt-BR")
     else:
+        # TODO: Testar no Mac OS e no Linux
         locale.setlocale(locale.LC_TIME, "pt_BR.UTF-8")
 
     mes_inicial = 3

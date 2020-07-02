@@ -8,6 +8,9 @@ import pathlib
 diretorio_raiz = pathlib.Path(__file__).parent.parent
 diretorio_dados = diretorio_raiz.joinpath('dados')
 
+# Arquivo que contém a data/hora em que a extração foi iniciada.
+arquivo_data_extracao = diretorio_dados.joinpath('data.txt')
+
 # Urls de portais de tansparência do governos estaduais
 url_pt_AM = 'http://www.transparencia.am.gov.br/covid-19/contratos/'
 url_pt_CE = 'https://cearatransparente.ce.gov.br/files/downloads/transparency/coronavirus/gasto_covid_dados_abertos.xlsx'

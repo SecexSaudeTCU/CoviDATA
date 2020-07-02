@@ -175,28 +175,17 @@ COLUNAS_ITENS_EMPENHO = [EMPENHO_NUMERO, ITEM_EMPENHO_DESCRICAO, ITEM_EMPENHO_UN
                          ITEM_EMPENHO_VALOR_UNITARIO, ITEM_EMPENHO_VALOR_TOTAL]
 
 
-def consolidar(df_original, dicionario_dados, colunas_adicionais_despesas, colunas_adicionais_itens_empenho, uf,
-               codigo_municipio_ibge, fonte_dados, data_extracao_dados, ano, esfera):
-    """
-    Consolida um dataframe no formato padronizado.
+def consolidar(ano, colunas_adicionais_despesas, data_extracao, df, dicionario_dados, esfera, fonte_dados, uf,
+               codigo_municipio_ibge, funcao_posprocessamento):
+    df_despesas, df_itens_empenho = __converter_dataframes(df, dicionario_dados, colunas_adicionais_despesas, [], uf,
+                                                           codigo_municipio_ibge, fonte_dados, data_extracao, ano,
+                                                           esfera)
+    return funcao_posprocessamento(df, df_despesas, df_itens_empenho)
 
-    :param df_original: Dataframe original.
-    :param dicionario_dados: Mapeamento entre os nomes das colunas esperadas no formato padronizado e os nomes
-        correspondentes no dataframe original.
-    :param colunas_adicionais_despesas: Nomes das colunas que possuem informações adicionais relativas a despesas.
-    :param colunas_adicionais_itens_empenho: Nomes das colunas que possue informações adicionais relativas a itens de
-        empenho.
-    :param uf: Unidade federativa.
-    """
+def __converter_dataframes(df_original, dicionario_dados, colunas_adicionais_despesas, colunas_adicionais_itens_empenho, uf,
+                           codigo_municipio_ibge, fonte_dados, data_extracao_dados, ano, esfera):
     df_despesas = pd.DataFrame(columns=COLUNAS_DESPESAS + colunas_adicionais_despesas)
     df_itens_empenho = pd.DataFrame(columns=COLUNAS_ITENS_EMPENHO + colunas_adicionais_itens_empenho)
-
-    df_despesas[FONTE_DADOS] = fonte_dados
-    df_despesas[DATA_EXTRACAO_DADOS] = data_extracao_dados
-    df_despesas[ANO] = ano
-    df_despesas[UF] = uf
-    df_despesas[COD_MUNICIPIO_IBGE] = codigo_municipio_ibge
-    df_despesas[ESFERA] = esfera
 
     for coluna_padronizada, coluna_correspondente in dicionario_dados.items():
         if coluna_padronizada in COLUNAS_DESPESAS:
@@ -210,4 +199,12 @@ def consolidar(df_original, dicionario_dados, colunas_adicionais_despesas, colun
     for coluna in colunas_adicionais_itens_empenho:
         df_itens_empenho[coluna] = df_original[coluna]
 
+    df_despesas[FONTE_DADOS] = fonte_dados
+    df_despesas[DATA_EXTRACAO_DADOS] = data_extracao_dados
+    df_despesas[ANO] = ano
+    df_despesas[UF] = uf
+    df_despesas[COD_MUNICIPIO_IBGE] = codigo_municipio_ibge
+    df_despesas[ESFERA] = esfera
+
     return df_despesas, df_itens_empenho
+

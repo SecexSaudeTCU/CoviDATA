@@ -1,0 +1,17 @@
+Arquivos suportados:
+
+TCE_<UF>_despesas.xlsx
+TCE_<UF>_itens_empenho.xlsx
+
+TCM_<UF>_despesas.xlsx
+TCM_<UF>_itens_empenho.xlsx
+
+PT_<UF>_despesas.xlsx
+PT_<UF>_itens_empenho.xlsx
+
+PT_<UF>_capital_despesas.xlsx
+PT_<UF>_capital_itens_empenho.xlsx
+
+(Se formos utilizar uma planilha única):
+geral_despesas.xlsx
+geral_itens_empenho.xlsx

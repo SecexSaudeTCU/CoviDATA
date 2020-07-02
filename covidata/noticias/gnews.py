@@ -1,16 +1,16 @@
 """
 Rotina de extração de notícias da aba News do Google a partir de string de busca e dias de início e fim.
 
-TODO: adicionar sleep quando a consulta a uma página retornar vazia e tentar novamente antes de abortar.
 """
 
 import pandas as pd
 import urllib
+import time
 from datetime import date
 from GoogleNews import GoogleNews
 
 
-def extrai_noticias_google(q, dia_inicio, dia_fim, num_limite_paginas=1, lang='pt-BR'):
+def extrai_noticias_google(q, dia_inicio, dia_fim, num_limite_paginas=1, lang='pt-BR', sleep=1, tentativas=5):
     """
     Retorna data frame com as notícias obtidas na aba News do Google
 
@@ -27,6 +27,12 @@ def extrai_noticias_google(q, dia_inicio, dia_fim, num_limite_paginas=1, lang='p
 
         lang : str
             Código da lingua para realização da busca (padrão pt-BR)
+
+        sleep : int
+            Número de segundos para esperar entre tentativas após cada erro de obtenção de página
+
+        tentativas : int
+            Número de tentativas de obnteção de uma página antes de se considerar a extração concluída
 
     Retorno
     -------
@@ -68,10 +74,23 @@ def extrai_noticias_google(q, dia_inicio, dia_fim, num_limite_paginas=1, lang='p
 
         print(len(gn.result()), gn.result())
 
-        # Enterrompe a execução se nenhum resultado tiver sido retornado na última página
+        # Caso a consulta à página não tenha gerado resultados
         if gn.result() == []:
-            print(f'A consulta à página {i} não retornou nehnum resulto')
-            break
+            print(f'A consulta à página {i} não retornou nehnum resultado')
+
+            # Diminui o contador de tentaivas
+            tentativas = tentativas - 1
+            print(f'*** Há {tentativas} restantes ***')
+
+            # Caso o número de tentativas tenha chegado a zero, interrompe a execução
+            if tentativas < 1:
+                break
+
+            # Caso contrário
+            else:
+                # Pausa script por sleep segundos antes de buscar a próxima página
+                print(f'Execução interrompida por {sleep} segundos')
+                time.sleep(sleep)
 
         # Apaga cache do resultado
         gn.clear()
@@ -93,7 +112,7 @@ if __name__ == '__main__':
     num_limite_paginas = 100
 
     # Realiza busca
-    df = extrai_noticias_google(q, dia_inicio, dia_fim, num_limite_paginas=num_limite_paginas)
+    df = extrai_noticias_google(q, dia_inicio, dia_fim, num_limite_paginas=num_limite_paginas, sleep=10, tentativas=10)
 
     # Salva resultados
     df.to_excel(f'noticias_n_{len(df)}.xlsx')

@@ -34,7 +34,7 @@ url_pt_SC_despesas = 'http://www.transparencia.sc.gov.br/data/despesa/exportcsv?
 url_pt_MG = 'http://www.transparencia.mg.gov.br/covid-19/compras-contratos'
 url_pt_MS = 'http://www.comprascoronavirus.ms.gov.br/'
 url_pt_SE = 'http://www.transparenciasergipe.se.gov.br/TRS/Covid/Despesas.xhtml'
-
+url_pt_PB = 'http://transparencia.pb.gov.br/coronavirus/?rpt=contratoslst_covid'
 
 # URLs de portais de transparência do governo estadual do Acre
 url_tce_AC_contratos = 'http://www.tce.ac.gov.br/covid19/Contratos-Estado.html'

@@ -6,7 +6,7 @@ def get_municipios_por_uf(sigla_uf):
     """
     Retorna um dicionário que mapeia nomes de municípios nos respectivos códigos.
     :param sigla_uf: A sigla da unidade da federação.
-    :return: Dicionário que mapeia nomes de municípios nos respectivos códigos.
+    :return: Dicionário que mapeia nomes de municípios (em caracteres maiúsculos) nos respectivos códigos.
     """
     id_uf = __get_id_uf_por_sigla(sigla_uf)
 
@@ -16,7 +16,7 @@ def get_municipios_por_uf(sigla_uf):
     mapa_municipio_id = dict()
 
     for municipio in resultado:
-        mapa_municipio_id[municipio['nome']] = municipio['id']
+        mapa_municipio_id[municipio['nome'].upper()] = municipio['id']
 
     return mapa_municipio_id
 

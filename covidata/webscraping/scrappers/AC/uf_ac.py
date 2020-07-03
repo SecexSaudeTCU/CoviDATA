@@ -15,7 +15,6 @@ from covidata.webscraping.selenium.downloader import SeleniumDownloader
 def __extrair(url, informacao, indice):
     colunas, linhas_df = __extrair_tabela(url, indice)
     df = pd.DataFrame(linhas_df, columns=colunas)
-    #persistir(df, 'tce', informacao, 'AC')
     persistir(df, 'tce', informacao, 'AC')
 
 

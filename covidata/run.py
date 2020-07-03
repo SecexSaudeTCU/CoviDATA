@@ -5,6 +5,9 @@ na pasta dados, na raiz do projeto. Os novos scrapers devem ser adicionados ao s
 
 import os
 import sys
+import logging
+import time
+import datetime
 
 # Adiciona diretorio raiz ao PATH. Devido a ausência de setup.py, isto garante que as importações sempre funcionarão
 diretorio_raiz = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
@@ -31,10 +34,9 @@ from covidata.webscraping.scrappers.PR import uf_pr
 from covidata.webscraping.scrappers.SC import uf_sc
 from covidata.webscraping.scrappers.MG import uf_mg
 from covidata.webscraping.scrappers.MS import uf_ms
-import logging
-import time
-import datetime
+from covidata.webscraping.scrappers.SE import uf_se
 from covidata import config
+
 
 if __name__ == '__main__':
     logger = logging.getLogger('covidata')
@@ -45,74 +47,77 @@ if __name__ == '__main__':
 
     start_time = time.time()
 
-    logger.info('# Recuperando dados do Acre...')
-    uf_ac.main()
+    # logger.info('# Recuperando dados do Acre...')
+    # uf_ac.main()
+    #
+    # logger.info('# Recuperando dados de Alagoas...')
+    # uf_al.main()
+    #
+    # logger.info('# Recuperando dados do Amapá...')
+    # uf_ap.main()
+    #
+    # logger.info('# Recuperando dados do Amazonas...')
+    # uf_am.main()
+    #
+    # logger.info('# Recuperando dados da Bahia...')
+    # uf_ba.main()
+    #
+    # logger.info('# Recuperando dados do Ceará...')
+    # uf_ce.main()
+    #
+    # logger.info('# Recuperando dados do Espírito Santo...')
+    # uf_es.main()
+    #
+    # logger.info('# Recuperando dados de Goiás...')
+    # uf_go.main()
+    #
+    # logger.info('# Recuperando dados de Mato Grosso...')
+    # uf_mt.main()
+    #
+    # logger.info('# Recuperando dados de Mato Grosso do Sul...')
+    # uf_ms.main()
+    #
+    # logger.info('# Recuperando dados de Minas Gerais...')
+    # uf_mg.main()
+    #
+    # logger.info('# Recuperando dados do Pará...')
+    # uf_pa.main()
+    # pt_belem.main()
+    #
+    # logger.info('# Recuperando dados do Paraná...')
+    # uf_pr.main()
+    #
+    # logger.info('# Recuperando dados de Pernambuco...')
+    # pt_pe_capital.main()
+    #
+    # logger.info('# Recuperando dados do Rio de Janeiro...')
+    # tce_rj.main()
+    # pt_rj_capital.main()
+    #
+    # logger.info('# Recuperando dados do Rio Grande do Sul...')
+    # uf_rs.main()
+    # # TODO: Acesso disponível apenas por meio de API
+    # # pt_rs_capital.main() (acesso disponível apenas por meio de API)
+    #
+    # logger.info('# Recuperando dados de Rondônia...')
+    # uf_ro.main()
+    #
+    # logger.info('# Recuperando dados de Roraima...')
+    # uf_rr.main()
+    #
+    # logger.info('# Recuperando dados de Santa Catarina...')
+    # uf_sc.main()
+    #
+    # logger.info('# Recuperando dados de São Paulo...')
+    # pt_sp.main()
+    # pt_sp_capital.main()
+    # tcm_sp.main()
+    #
+    # logger.info('# Recuperando dados de Tocantins...')
+    # uf_to.main()
 
-    logger.info('# Recuperando dados de Alagoas...')
-    uf_al.main()
-
-    logger.info('# Recuperando dados do Amapá...')
-    uf_ap.main()
-
-    logger.info('# Recuperando dados do Amazonas...')
-    uf_am.main()
-
-    logger.info('# Recuperando dados da Bahia...')
-    uf_ba.main()
-
-    logger.info('# Recuperando dados do Ceará...')
-    uf_ce.main()
-
-    logger.info('# Recuperando dados do Espírito Santo...')
-    uf_es.main()
-
-    logger.info('# Recuperando dados de Goiás...')
-    uf_go.main()
-
-    logger.info('# Recuperando dados de Mato Grosso...')
-    uf_mt.main()
-
-    logger.info('# Recuperando dados de Mato Grosso do Sul...')
-    uf_ms.main()
-
-    logger.info('# Recuperando dados de Minas Gerais...')
-    uf_mg.main()
-
-    logger.info('# Recuperando dados do Pará...')
-    uf_pa.main()
-    pt_belem.main()
-
-    logger.info('# Recuperando dados do Paraná...')
-    uf_pr.main()
-
-    logger.info('# Recuperando dados de Pernambuco...')
-    pt_pe_capital.main()
-
-    logger.info('# Recuperando dados do Rio de Janeiro...')
-    tce_rj.main()
-    pt_rj_capital.main()
-
-    logger.info('# Recuperando dados do Rio Grande do Sul...')
-    uf_rs.main()
-    # TODO: Acesso disponível apenas por meio de API
-    # pt_rs_capital.main() (acesso disponível apenas por meio de API)
-
-    logger.info('# Recuperando dados de Rondônia...')
-    uf_ro.main()
-
-    logger.info('# Recuperando dados de Roraima...')
-    uf_rr.main()
-
-    logger.info('# Recuperando dados de Santa Catarina...')
-    uf_sc.main()
-
-    logger.info('# Recuperando dados de São Paulo...')
-    pt_sp.main()
-    pt_sp_capital.main()
-    tcm_sp.main()
-
-    logger.info('# Recuperando dados de Tocantins...')
-    uf_to.main()
+    logger.info('# Recuperando dados de Sergipe...')
+    uf_se.main()
 
     # Salva a data/hora da extração.
     f = open(config.arquivo_data_extracao, "w+")

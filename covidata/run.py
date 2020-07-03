@@ -5,6 +5,9 @@ na pasta dados, na raiz do projeto. Os novos scrapers devem ser adicionados ao s
 
 import os
 import sys
+import logging
+import time
+import datetime
 
 # Adiciona diretorio raiz ao PATH. Devido a ausência de setup.py, isto garante que as importações sempre funcionarão
 diretorio_raiz = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
@@ -31,10 +34,10 @@ from covidata.webscraping.scrappers.PR import uf_pr
 from covidata.webscraping.scrappers.SC import uf_sc
 from covidata.webscraping.scrappers.MG import uf_mg
 from covidata.webscraping.scrappers.MS import uf_ms
-import logging
-import time
-import datetime
+from covidata.webscraping.scrappers.SE import uf_se
+from covidata.webscraping.scrappers.PB import uf_pb
 from covidata import config
+
 
 if __name__ == '__main__':
     logger = logging.getLogger('covidata')
@@ -113,6 +116,12 @@ if __name__ == '__main__':
 
     logger.info('# Recuperando dados de Tocantins...')
     uf_to.main()
+
+    logger.info('# Recuperando dados de Sergipe...')
+    uf_se.main()
+
+    logger.info('# Recuperando dados de Paraíba...')
+    uf_pb.main()
 
     # Salva a data/hora da extração.
     f = open(config.arquivo_data_extracao, "w+")

@@ -33,6 +33,8 @@ url_pt_SC_contratos = 'http://dados.sc.gov.br/dataset/dfc9ffcd-0f0d-4d92-9b5f-30
 url_pt_SC_despesas = 'http://www.transparencia.sc.gov.br/data/despesa/exportcsv?anomesinifiltro%5B%5D=202001&anomesfimfiltro%5B%5D=202012&agrupamentos%5B%5D=orgao&indicador=3779&'
 url_pt_MG = 'http://www.transparencia.mg.gov.br/covid-19/compras-contratos'
 url_pt_MS = 'http://www.comprascoronavirus.ms.gov.br/'
+url_pt_SE = 'http://www.transparenciasergipe.se.gov.br/TRS/Covid/Despesas.xhtml'
+url_pt_PB = 'http://transparencia.pb.gov.br/coronavirus/?rpt=contratoslst_covid'
 
 # URLs de portais de transparência do governo estadual do Acre
 url_tce_AC_contratos = 'http://www.tce.ac.gov.br/covid19/Contratos-Estado.html'
@@ -67,6 +69,7 @@ url_pt_Curitiba_aquisicoes = 'https://www.transparencia.curitiba.pr.gov.br/sgp/D
 url_pt_Florianopolis = 'http://portal.pmf.sc.gov.br/transparencia/arquivos/Aquisicao%20e%20contratos.csv'
 url_pt_BeloHorizonte = 'https://prefeitura.pbh.gov.br/sites/default/files/estrutura-de-governo/controladoria/transparencia/covid19/contratacaocorona.xlsx'
 url_pt_CampoGrande = 'https://transparenciacovid.campogrande.ms.gov.br/despesas/'
+url_pt_Aracaju = 'https://transparencia.aracaju.se.gov.br/prefeitura/covid19/covid19-despesas/'
 
 # URLs dos portais de transparência dos Tribunais de Contas Municipais
 url_tcm_PA_1 = 'http://nie-tcmpa.droppages.com/files/Argus%20TCMPA%20-%20Fornecedores%20por%20Valor%20Homologado.xlsx'

@@ -53,6 +53,7 @@ class SeleniumDownloader(ABC):
         prefs = {"download.default_directory": diretorio_dados}
         chromeOptions.add_experimental_option("prefs", prefs)
         chromeOptions.add_argument('--headless')
+        #chromeOptions.add_argument('--start-maximized')
 
         driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
 

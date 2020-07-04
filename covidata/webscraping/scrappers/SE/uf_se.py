@@ -43,8 +43,8 @@ class PortalTransparencia_SE(SeleniumDownloader):
 
     # Sobrescreve o construtor da class "SeleniumDownloader"
     def __init__(self):
-        super().__init__(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE',
-                         'portal_transparencia', 'Sergipe'), config.url_pt_SE)
+        super().__init__(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE', 'portal_transparencia', 'Sergipe'),
+                         config.url_pt_SE)
 
     # Implementa localmente o método interno e vazio da class "SeleniumDownloader"
     def _executar(self):
@@ -80,7 +80,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt234"]/span[2]').click()
 
             # On hold por 5 segundos
-            time.sleep(5)
+            time.sleep(3)
 
             # Lê o arquivo "csv" de empenhos baixado para o mês "month"
             df_empenho_mes = pd.read_csv(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE',
@@ -108,7 +108,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt257"]/span[2]').click()
 
             # On hold por 5 segundos
-            time.sleep(5)
+            time.sleep(3)
 
             # Lê o arquivo "csv" de liquidações baixado para o mês "month"
             df_liquidacao_mes = pd.read_csv(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE',
@@ -135,7 +135,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt276"]/span[2]').click()
 
             # On hold por 5 segundos
-            time.sleep(5)
+            time.sleep(3)
 
             # Lê o arquivo "csv" de pagamentos baixado para o mês "month"
             df_pagamento_mes = pd.read_csv(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE',
@@ -176,7 +176,8 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
     # Sobrescreve o construtor da class "SeleniumDownloader"
     def __init__(self):
         super().__init__(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE', 'portal_transparencia', 'Aracaju'),
-                         'https://transparencia.aracaju.se.gov.br/prefeitura/covid19/covid19-despesas/')
+                         config.url_pt_Aracaju,
+                         browser_option='--start-maximized')
 
     # Implementa localmente o método interno e vazio da class "SeleniumDownloader"
     def _executar(self):
@@ -204,7 +205,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         self.driver.execute_script("arguments[0].click();", element)
 
         # On hold por 5 segundos
-        time.sleep(5)
+        time.sleep(3)
 
         # Seleciona o botão "XLSX" salvando o arquivo "xlsx" contendo os dados de empenho
         element = wait.until(EC.visibility_of_element_located((By.XPATH,
@@ -215,7 +216,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         self.driver.switch_to.default_content()
 
         # On hold por 5 segundos
-        time.sleep(5)
+        time.sleep(3)
 
         # Lê o arquivo "xlsx" de empenhos baixado como um objeto pandas DataFrame selecionando as colunas úteis
         df_empenho = pd.read_excel(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE', 'portal_transparencia',
@@ -249,7 +250,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         self.driver.execute_script("arguments[0].click();", element)
 
         # On hold por 5 segundos
-        time.sleep(5)
+        time.sleep(3)
 
         # Coloca o campo dropdown dos meses do ano com o valor "Selecione"
         select = Select(self.driver.find_element_by_id('ddlMesLiquidacoes'))
@@ -266,7 +267,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         self.driver.execute_script("arguments[0].click();", element)
 
         # On hold por 5 segundos
-        time.sleep(5)
+        time.sleep(3)
 
 
         # Seleciona o botão "XLSX" salvando o arquivo "xlsx" contendo os dados de liquidação
@@ -277,7 +278,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         self.driver.switch_to.default_content()
 
         # On hold por 5 segundos
-        time.sleep(5)
+        time.sleep(3)
 
         # Lê o arquivo "xlsx" de liquidações baixado como um objeto pandas DataFrame selecionando as colunas úteis
         df_liquidacao = pd.read_excel(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE', 'portal_transparencia',
@@ -313,7 +314,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         self.driver.execute_script("arguments[0].click();", element)
 
         # On hold por 5 segundos
-        time.sleep(5)
+        time.sleep(3)
 
         # Coloca o campo dropdown de meses com o valor "Selecione"
         select = Select(self.driver.find_element_by_id('ddlMesPagamentos'))
@@ -330,7 +331,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         self.driver.execute_script("arguments[0].click();", element)
 
         # On hold por 5 segundos
-        time.sleep(5)
+        time.sleep(3)
 
         # Seleciona o botão "XLSX" salvando o arquivo "xlsx" contendo os dados de liquidação
         element = wait.until(EC.visibility_of_element_located((By.XPATH,
@@ -340,7 +341,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         self.driver.switch_to.default_content()
 
         # On hold por 5 segundos
-        time.sleep(5)
+        time.sleep(3)
 
         # Lê o arquivo "xlsx" de liquidações baixado como um objeto pandas DataFrame selecionando as colunas úteis
         df_pagamento = pd.read_excel(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE', 'portal_transparencia',
@@ -387,6 +388,6 @@ def main():
 
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
-    pt_SE = PortalTransparencia_Aracaju()
-    pt_SE.download()
+    pt_Aracaju = PortalTransparencia_Aracaju()
+    pt_Aracaju.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))

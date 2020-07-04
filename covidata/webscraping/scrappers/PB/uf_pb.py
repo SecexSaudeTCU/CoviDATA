@@ -20,7 +20,8 @@ class PortalTransparencia_PB(SeleniumDownloader):
     # Sobrescreve o construtor da class "SeleniumDownloader"
     def __init__(self):
         super().__init__(path.join(str(config.diretorio_dados)[:-18], 'dados', 'PB', 'portal_transparencia', 'Paraiba'),
-                         config.url_pt_PB)
+                         config.url_pt_PB,
+                         browser_option='--start-maximized')
 
     # Implementa localmente o método interno e vazio da class "SeleniumDownloader"
     def _executar(self):

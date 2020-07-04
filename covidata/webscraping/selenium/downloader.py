@@ -13,13 +13,13 @@ class SeleniumDownloader(ABC):
     Driver.
     """
 
-    def __init__(self, diretorio_dados, url):
+    def __init__(self, diretorio_dados, url, browser_option='--headless'):
         """
         Construtor da classe
         :param diretorio_dados: Diretório onde os dados deverão ser salvos.
         :param url: URL da página do qual será executado o download.
         """
-        self.driver = self.__configurar_chrome(diretorio_dados)
+        self.driver = self.__configurar_chrome(diretorio_dados, browser_option)
         self.driver.get(url)
 
     def download(self):
@@ -45,14 +45,14 @@ class SeleniumDownloader(ABC):
         """
         pass
 
-    def __configurar_chrome(self, diretorio_dados):
+    def __configurar_chrome(self, diretorio_dados, browser_option):
         if not path.exists(diretorio_dados):
             os.makedirs(diretorio_dados)
 
         chromeOptions = webdriver.ChromeOptions()
         prefs = {"download.default_directory": diretorio_dados}
         chromeOptions.add_experimental_option("prefs", prefs)
-        chromeOptions.add_argument('--headless')
+        chromeOptions.add_argument(browser_option)
         #chromeOptions.add_argument('--start-maximized')
 
         driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)

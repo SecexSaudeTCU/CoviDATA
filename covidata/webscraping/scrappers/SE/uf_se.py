@@ -79,7 +79,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             # Seleciona o link do arquivo "csv" respectivo
             self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt234"]/span[2]').click()
 
-            # On hold por 5 segundos
+            # On hold por 3 segundos
             time.sleep(3)
 
             # Lê o arquivo "csv" de empenhos baixado para o mês "month"
@@ -107,7 +107,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             # Seleciona o link do arquivo "csv" respectivo
             self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt257"]/span[2]').click()
 
-            # On hold por 5 segundos
+            # On hold por 3 segundos
             time.sleep(3)
 
             # Lê o arquivo "csv" de liquidações baixado para o mês "month"
@@ -134,7 +134,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             # Seleciona o link do arquivo "csv" respectivo
             self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt276"]/span[2]').click()
 
-            # On hold por 5 segundos
+            # On hold por 3 segundos
             time.sleep(3)
 
             # Lê o arquivo "csv" de pagamentos baixado para o mês "month"
@@ -204,7 +204,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
                              '//*[@id="btnFiltrarEmpenhos"]')))
         self.driver.execute_script("arguments[0].click();", element)
 
-        # On hold por 5 segundos
+        # On hold por 3 segundos
         time.sleep(3)
 
         # Seleciona o botão "XLSX" salvando o arquivo "xlsx" contendo os dados de empenho
@@ -215,7 +215,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
 
         self.driver.switch_to.default_content()
 
-        # On hold por 5 segundos
+        # On hold por 3 segundos
         time.sleep(3)
 
         # Lê o arquivo "xlsx" de empenhos baixado como um objeto pandas DataFrame selecionando as colunas úteis
@@ -249,7 +249,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         element = wait.until(EC.visibility_of_element_located((By.ID, 'lnkLiquidacoes')))
         self.driver.execute_script("arguments[0].click();", element)
 
-        # On hold por 5 segundos
+        # On hold por 3 segundos
         time.sleep(3)
 
         # Coloca o campo dropdown dos meses do ano com o valor "Selecione"
@@ -266,7 +266,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
                              '//*[@id="btnFiltrarLiquidacoes"]')))
         self.driver.execute_script("arguments[0].click();", element)
 
-        # On hold por 5 segundos
+        # On hold por 3 segundos
         time.sleep(3)
 
 
@@ -277,7 +277,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
 
         self.driver.switch_to.default_content()
 
-        # On hold por 5 segundos
+        # On hold por 3 segundos
         time.sleep(3)
 
         # Lê o arquivo "xlsx" de liquidações baixado como um objeto pandas DataFrame selecionando as colunas úteis
@@ -313,7 +313,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         element = wait.until(EC.visibility_of_element_located((By.ID, 'lnkPagamentos')))
         self.driver.execute_script("arguments[0].click();", element)
 
-        # On hold por 5 segundos
+        # On hold por 3 segundos
         time.sleep(3)
 
         # Coloca o campo dropdown de meses com o valor "Selecione"
@@ -330,7 +330,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
                              '//*[@id="btnFiltrarPagamentos"]')))
         self.driver.execute_script("arguments[0].click();", element)
 
-        # On hold por 5 segundos
+        # On hold por 3 segundos
         time.sleep(3)
 
         # Seleciona o botão "XLSX" salvando o arquivo "xlsx" contendo os dados de liquidação
@@ -340,7 +340,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
 
         self.driver.switch_to.default_content()
 
-        # On hold por 5 segundos
+        # On hold por 3 segundos
         time.sleep(3)
 
         # Lê o arquivo "xlsx" de liquidações baixado como um objeto pandas DataFrame selecionando as colunas úteis

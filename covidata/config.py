@@ -70,6 +70,7 @@ url_pt_Florianopolis = 'http://portal.pmf.sc.gov.br/transparencia/arquivos/Aquis
 url_pt_BeloHorizonte = 'https://prefeitura.pbh.gov.br/sites/default/files/estrutura-de-governo/controladoria/transparencia/covid19/contratacaocorona.xlsx'
 url_pt_CampoGrande = 'https://transparenciacovid.campogrande.ms.gov.br/despesas/'
 url_pt_Aracaju = 'https://transparencia.aracaju.se.gov.br/prefeitura/covid19/covid19-despesas/'
+url_pt_JoaoPessoa = 'https://transparencia.joaopessoa.pb.gov.br/#/despesas/despesas-detalhamento?ano=2020&covid=true'
 
 # URLs dos portais de transparência dos Tribunais de Contas Municipais
 url_tcm_PA_1 = 'http://nie-tcmpa.droppages.com/files/Argus%20TCMPA%20-%20Fornecedores%20por%20Valor%20Homologado.xlsx'

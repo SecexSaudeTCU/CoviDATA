@@ -14,9 +14,18 @@ from covidata import config
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
 
-dict_meses = {'0': 'Janeiro', '1': 'Fevereiro', '2': 'Março', '3': 'Abril',
-              '4': 'Maio', '5': 'Junho', '6': 'Julho', '7': 'Agosto',
-              '8': 'Setembro', '9': 'Outubro', '10': 'Novembro', '11': 'Dezembro'}
+dict_meses = {0: 'Janeiro',
+              1: 'Fevereiro',
+              2: 'Março',
+              3: 'Abril',
+              4: 'Maio',
+              5: 'Junho',
+              6: 'Julho',
+              7: 'Agosto',
+              8: 'Setembro',
+              9: 'Outubro',
+              10: 'Novembro',
+              11: 'Dezembro'}
 
 dict_orgaos_aracaju = {12: 'SECRETARIA MUNICIPAL DE GOVERNO',
                        13: 'SECRETARIA MUNICIPAL DA FAZENDA',
@@ -91,7 +100,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             # Acrescenta a coluna "CNPJ Favorecido" ao objeto pandas DataFrame "df_empenho_mes"
             df_empenho_mes['CNPJ Favorecido'] = df_empenho_mes['Favorecido'].apply(lambda x: x.split('-')[0])
             # Acrescenta a coluna "Mês" ao objeto pandas DataFrame "df_empenho_mes"
-            df_empenho_mes['Mês'] = dict_meses[str(month)]
+            df_empenho_mes['Mês'] = dict_meses[month]
 
             # Reordena as colunas do objeto pandas DataFrame "df_empenho_mes"
             df_empenho_mes = df_empenho_mes[['Unidade', 'Nº do empenho', 'Programa', 'Elemento',
@@ -119,7 +128,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             # Acrescenta a coluna "CNPJ Favorecido" ao objeto pandas DataFrame "df_liquidacao_mes"
             df_liquidacao_mes['CNPJ Favorecido'] = df_liquidacao_mes['Favorecido'].apply(lambda x: x.split('-')[0])
             # Acrescenta a coluna "Mês" ao objeto pandas DataFrame "df_liquidacao_mes"
-            df_liquidacao_mes['Mês'] = dict_meses[str(month)]
+            df_liquidacao_mes['Mês'] = dict_meses[month]
 
             # Reordena as colunas do objeto pandas DataFrame "df_liquidacao_mes"
             df_liquidacao_mes = df_liquidacao_mes[['Unidade', 'Nº do empenho', 'Programa', 'Elemento',
@@ -146,7 +155,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             # Acrescenta a coluna "CNPJ Favorecido" ao objeto pandas DataFrame "df_pagamento_mes"
             df_pagamento_mes['CNPJ Favorecido'] = df_pagamento_mes['Favorecido'].apply(lambda x: x.split('-')[0])
             # Acrescenta a coluna "Mês" ao objeto pandas DataFrame "df_pagamento_mes"
-            df_pagamento_mes['Mês'] = dict_meses[str(month)]
+            df_pagamento_mes['Mês'] = dict_meses[month]
 
             # Reordena as colunas do objeto pandas DataFrame "df_pagamento_mes"
             df_pagamento_mes = df_pagamento_mes[['Unidade', 'Programa', 'Elemento', 'Razão Social Favorecido',
@@ -155,7 +164,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             # Concatena "df_pagamento_mes" a "df_pagamento"
             df_pagamento = pd.concat([df_pagamento, df_pagamento_mes])
 
-            # Cria arquivo "xlsx" e aloca file handler de leitura para a variável "writers"
+            # Cria arquivo "xlsx" e aloca file handler de escrita para a variável "writers"
             with pd.ExcelWriter(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE',
                                 'portal_transparencia', 'Sergipe', 'Dados_Portal_Transparencia_Sergipe.xlsx')) as writer:
                 # Salva os dados de empenhos contidos em "df_empenho" na planilha "Empenhos"
@@ -364,7 +373,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
                                      'Pago', 'Retido', 'Nota de Pagamento', 'DsEmpenho',
                                      'DsItemDespesa']]
 
-        # Cria arquivo "xlsx" e aloca file handler de leitura para a variável "writer"
+        # Cria arquivo "xlsx" e aloca file handler de escrita para a variável "writer"
         with pd.ExcelWriter(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE', 'portal_transparencia',
                             'Aracaju', 'Dados_Portal_Transparencia_Aracaju.xlsx')) as writer:
             # Salva os dados de empenhos contidos em "df_empenho" na planilha "Empenhos"

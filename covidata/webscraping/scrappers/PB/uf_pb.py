@@ -69,7 +69,7 @@ class PortalTransparencia_PB(SeleniumDownloader):
                                      'Valor']]
 
 
-        # Cria arquivo "xlsx" e aloca file handler de leitura para a variável "writer"
+        # Cria arquivo "xlsx" e aloca file handler de escrita para a variável "writer"
         with pd.ExcelWriter(path.join(str(config.diretorio_dados)[:-18], 'dados', 'PB', 'portal_transparencia',
                             'Paraiba', 'Dados_Portal_Transparencia_Paraiba.xlsx')) as writer:
             # Salva os dados de empenhos contidos em "df_contratos" na planilha "Contratos"
@@ -119,10 +119,11 @@ class PortalTransparencia_JoaoPessoa(SeleniumDownloader):
 
         # Lê o arquivo de nome "file_name" de despesas baixado como um objeto pandas DataFrame selecionando as linhas e colunas úteis
         df_despesas = pd.read_excel(path.join(str(config.diretorio_dados)[:-18], 'dados', 'PB', 'portal_transparencia', 'JoaoPessoa', file_name))
-        #usecols=[0, 3, 4, 5, 6, 7, 9, 11], skiprows=list(range(4)))
 
+        # Elimina a coluna "ano_empenho" do objeto pandas DataFrame "df_despesas"
         df_despesas.drop(columns='ano_empenho', inplace=True)
 
+        # Renomeia as colunas que especifica
         df_despesas.rename(index=str,
                            columns={'nume_empenho': 'Empenho',
                                     'data_empenho': 'Data Empenho',
@@ -139,7 +140,7 @@ class PortalTransparencia_JoaoPessoa(SeleniumDownloader):
         df_despesas['Data Empenho'] = \
             df_despesas['Data Empenho'].apply(lambda x: datetime.strptime(x[:10], '%Y-%m-%d').date().strftime('%d/%m/%Y'))
 
-        # Cria arquivo "xlsx" e aloca file handler de leitura para a variável "writer"
+        # Cria arquivo "xlsx" e aloca file handler de escrita para a variável "writer"
         with pd.ExcelWriter(path.join(str(config.diretorio_dados)[:-18], 'dados', 'PB', 'portal_transparencia',
                             'JoaoPessoa', 'Dados_Portal_Transparencia_JoaoPessoa.xlsx')) as writer:
             # Salva os dados de despesas contidos em "df_despesas" na planilha "Despesas"

@@ -36,6 +36,7 @@ url_pt_MS = 'http://www.comprascoronavirus.ms.gov.br/'
 url_pt_SE = 'http://www.transparenciasergipe.se.gov.br/TRS/Covid/Despesas.xhtml'
 url_pt_PB = 'http://transparencia.pb.gov.br/coronavirus/?rpt=contratoslst_covid'
 url_pt_DF = 'http://www.coronavirus.df.gov.br/index.php/contratacoes/'
+url_pt_RN = 'http://transparencia.rn.gov.br/covidcomprasservicos'
 
 # URLs de portais de transparência do governo estadual do Acre
 url_tce_AC_contratos = 'http://www.tce.ac.gov.br/covid19/Contratos-Estado.html'
@@ -72,6 +73,7 @@ url_pt_BeloHorizonte = 'https://prefeitura.pbh.gov.br/sites/default/files/estrut
 url_pt_CampoGrande = 'https://transparenciacovid.campogrande.ms.gov.br/despesas/'
 url_pt_Aracaju = 'https://transparencia.aracaju.se.gov.br/prefeitura/covid19/covid19-despesas/'
 url_pt_JoaoPessoa = 'https://transparencia.joaopessoa.pb.gov.br/#/despesas/despesas-detalhamento?ano=2020&covid=true'
+url_pt_Natal = 'https://www.natal.rn.gov.br/transparencia/#/despesas/despesas-covid-credor'
 
 # URLs dos portais de transparência dos Tribunais de Contas Municipais
 url_tcm_PA_1 = 'http://nie-tcmpa.droppages.com/files/Argus%20TCMPA%20-%20Fornecedores%20por%20Valor%20Homologado.xlsx'

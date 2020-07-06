@@ -52,7 +52,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
 
     # Sobrescreve o construtor da class "SeleniumDownloader"
     def __init__(self):
-        super().__init__(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE', 'portal_transparencia', 'Sergipe'),
+        super().__init__(path.join(config.diretorio_dados, 'SE', 'portal_transparencia', 'Sergipe'),
                          config.url_pt_SE)
 
     # Implementa localmente o método interno e vazio da class "SeleniumDownloader"
@@ -92,7 +92,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             time.sleep(3)
 
             # Lê o arquivo "csv" de empenhos baixado para o mês "month"
-            df_empenho_mes = pd.read_csv(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE',
+            df_empenho_mes = pd.read_csv(path.join(config.diretorio_dados, 'SE',
                                          'portal_transparencia', 'Sergipe', 'Elemento_de_Despesa.csv'))
 
             # Acrescenta a coluna "Razão Social Favorecido" ao objeto pandas DataFrame "df_empenho_mes"
@@ -120,7 +120,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             time.sleep(3)
 
             # Lê o arquivo "csv" de liquidações baixado para o mês "month"
-            df_liquidacao_mes = pd.read_csv(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE',
+            df_liquidacao_mes = pd.read_csv(path.join(config.diretorio_dados, 'SE',
                                             'portal_transparencia', 'Sergipe', 'Elemento_de_Despesa.csv'))
 
             # Acrescenta a coluna "Razão Social Favorecido" ao objeto pandas DataFrame "df_liquidacao_mes"
@@ -147,7 +147,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             time.sleep(3)
 
             # Lê o arquivo "csv" de pagamentos baixado para o mês "month"
-            df_pagamento_mes = pd.read_csv(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE',
+            df_pagamento_mes = pd.read_csv(path.join(config.diretorio_dados, 'SE',
                                            'portal_transparencia', 'Sergipe', 'Elemento_de_Despesa.csv'))
 
             # Acrescenta a coluna "Razão Social Favorecido" ao objeto pandas DataFrame "df_pagamento_mes"
@@ -165,7 +165,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             df_pagamento = pd.concat([df_pagamento, df_pagamento_mes])
 
             # Cria arquivo "xlsx" e aloca file handler de escrita para a variável "writers"
-            with pd.ExcelWriter(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE',
+            with pd.ExcelWriter(path.join(config.diretorio_dados, 'SE',
                                 'portal_transparencia', 'Sergipe', 'Dados_Portal_Transparencia_Sergipe.xlsx')) as writer:
                 # Salva os dados de empenhos contidos em "df_empenho" na planilha "Empenhos"
                 df_empenho.to_excel(writer, sheet_name='Empenhos', index=False)
@@ -175,7 +175,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
                 df_pagamento.to_excel(writer, sheet_name='Pagamentos', index=False)
 
         # Deleta o arquivo remanescente "csv" de nome "Elemento_de_Despesa"
-        os.unlink(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE',
+        os.unlink(path.join(config.diretorio_dados, 'SE',
                   'portal_transparencia', 'Sergipe', 'Elemento_de_Despesa.csv'))
 
 
@@ -184,7 +184,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
 
     # Sobrescreve o construtor da class "SeleniumDownloader"
     def __init__(self):
-        super().__init__(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE', 'portal_transparencia', 'Aracaju'),
+        super().__init__(path.join(config.diretorio_dados, 'SE', 'portal_transparencia', 'Aracaju'),
                          config.url_pt_Aracaju,
                          browser_option='--start-maximized')
 
@@ -228,7 +228,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         time.sleep(3)
 
         # Lê o arquivo "xlsx" de empenhos baixado como um objeto pandas DataFrame selecionando as colunas úteis
-        df_empenho = pd.read_excel(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE', 'portal_transparencia',
+        df_empenho = pd.read_excel(path.join(config.diretorio_dados, 'SE', 'portal_transparencia',
                                    'Aracaju', 'Município Online.xlsx'), usecols=list(range(1, 9)) + [11, 12])
 
         # Substitui o código de órgãos pelo nome
@@ -290,7 +290,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         time.sleep(3)
 
         # Lê o arquivo "xlsx" de liquidações baixado como um objeto pandas DataFrame selecionando as colunas úteis
-        df_liquidacao = pd.read_excel(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE', 'portal_transparencia',
+        df_liquidacao = pd.read_excel(path.join(config.diretorio_dados, 'SE', 'portal_transparencia',
                                       'Aracaju', 'Município Online.xlsx'), usecols=list(range(1, 11)) + [13, 14])
 
         # Substitui o código de órgãos pelo nome
@@ -353,7 +353,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         time.sleep(3)
 
         # Lê o arquivo "xlsx" de liquidações baixado como um objeto pandas DataFrame selecionando as colunas úteis
-        df_pagamento = pd.read_excel(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE', 'portal_transparencia',
+        df_pagamento = pd.read_excel(path.join(config.diretorio_dados, 'SE', 'portal_transparencia',
                                      'Aracaju', 'Município Online.xlsx'), usecols=list(range(1, 10)) + [11, 12])
 
         # Substitui o código de órgãos pelo nome
@@ -374,7 +374,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
                                      'DsItemDespesa']]
 
         # Cria arquivo "xlsx" e aloca file handler de escrita para a variável "writer"
-        with pd.ExcelWriter(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE', 'portal_transparencia',
+        with pd.ExcelWriter(path.join(config.diretorio_dados, 'SE', 'portal_transparencia',
                             'Aracaju', 'Dados_Portal_Transparencia_Aracaju.xlsx')) as writer:
             # Salva os dados de empenhos contidos em "df_empenho" na planilha "Empenhos"
             df_empenho.to_excel(writer, sheet_name='Empenhos', index=False)
@@ -384,7 +384,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
             df_pagamento.to_excel(writer, sheet_name='Pagamentos', index=False)
 
         # Deleta o arquivo "xlsx" de nome "Município Online"
-        os.unlink(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SE', 'portal_transparencia', 'Aracaju', 'Município Online.xlsx'))
+        os.unlink(path.join(config.diretorio_dados, 'SE', 'portal_transparencia', 'Aracaju', 'Município Online.xlsx'))
 
 
 def main():

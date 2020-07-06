@@ -14,7 +14,7 @@ class PortalTransparencia_DF(SeleniumDownloader):
 
     # Sobrescreve o construtor da class "SeleniumDownloader"
     def __init__(self):
-        super().__init__(path.join(str(config.diretorio_dados)[:-18], 'dados', 'DF', 'portal_transparencia',
+        super().__init__(path.join(config.diretorio_dados, 'DF', 'portal_transparencia',
                          'DistritoFederal'),
                          config.url_pt_DF)
 
@@ -28,18 +28,18 @@ class PortalTransparencia_DF(SeleniumDownloader):
         time.sleep(5)
 
         # Lê o arquivo "csv" de nome "PLANILHA-COVID" de contratos baixado como um objeto pandas DataFrame
-        df_contratos = pd.read_csv(path.join(str(config.diretorio_dados)[:-18], 'dados', 'DF', 'portal_transparencia',
+        df_contratos = pd.read_csv(path.join(config.diretorio_dados, 'DF', 'portal_transparencia',
                                    'DistritoFederal', 'PLANILHA-COVID.csv'),
                                    sep=';')
 
         # Cria arquivo "xlsx" e aloca file handler de escrita para a variável "writer"
-        with pd.ExcelWriter(path.join(str(config.diretorio_dados)[:-18], 'dados', 'DF', 'portal_transparencia',
+        with pd.ExcelWriter(path.join(config.diretorio_dados, 'DF', 'portal_transparencia',
                             'DistritoFederal', 'Dados_Portal_Transparencia_DistritoFederal.xlsx')) as writer:
             # Salva os dados de contratos contidos em "df_contratos" na planilha "Contratos"
             df_contratos.to_excel(writer, sheet_name='Contratos', index=False)
 
         # Deleta o arquivo "csv" de nome "PLANILHA-COVID"
-        os.unlink(path.join(str(config.diretorio_dados)[:-18], 'dados', 'DF', 'portal_transparencia', 'DistritoFederal',
+        os.unlink(path.join(config.diretorio_dados, 'DF', 'portal_transparencia', 'DistritoFederal',
                   'PLANILHA-COVID.csv'))
 
 

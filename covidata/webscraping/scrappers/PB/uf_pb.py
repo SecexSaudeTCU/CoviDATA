@@ -20,7 +20,7 @@ class PortalTransparencia_PB(SeleniumDownloader):
 
     # Sobrescreve o construtor da class "SeleniumDownloader"
     def __init__(self):
-        super().__init__(path.join(str(config.diretorio_dados)[:-18], 'dados', 'PB', 'portal_transparencia', 'Paraiba'),
+        super().__init__(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'Paraiba'),
                          config.url_pt_PB,
                          browser_option='--start-maximized')
 
@@ -48,7 +48,7 @@ class PortalTransparencia_PB(SeleniumDownloader):
         time.sleep(5)
         #
         # Lê o arquivo "xlsx" de contratos baixado como um objeto pandas DataFrame selecionando as linhas e colunas úteis
-        df_contratos = pd.read_excel(path.join(str(config.diretorio_dados)[:-18], 'dados', 'PB', 'portal_transparencia', 'Paraiba',
+        df_contratos = pd.read_excel(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'Paraiba',
                                      'ListaContratos.xlsx'), usecols=[0, 3, 4, 5, 6, 7, 9, 11], skiprows=list(range(4)))
 
         # Remove a última linha do objeto pandas DataFrame "df_contratos"
@@ -70,13 +70,13 @@ class PortalTransparencia_PB(SeleniumDownloader):
 
 
         # Cria arquivo "xlsx" e aloca file handler de escrita para a variável "writer"
-        with pd.ExcelWriter(path.join(str(config.diretorio_dados)[:-18], 'dados', 'PB', 'portal_transparencia',
+        with pd.ExcelWriter(path.join(config.diretorio_dados, 'PB', 'portal_transparencia',
                             'Paraiba', 'Dados_Portal_Transparencia_Paraiba.xlsx')) as writer:
             # Salva os dados de empenhos contidos em "df_contratos" na planilha "Contratos"
             df_contratos.to_excel(writer, sheet_name='Contratos', index=False)
 
         # Deleta o arquivo "xlsx" de nome "ListaContratos"
-        os.unlink(path.join(str(config.diretorio_dados)[:-18], 'dados', 'PB', 'portal_transparencia', 'Paraiba', 'ListaContratos.xlsx'))
+        os.unlink(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'Paraiba', 'ListaContratos.xlsx'))
 
 
 # Define a classe referida como herdeira da class "SeleniumDownloader"
@@ -84,7 +84,7 @@ class PortalTransparencia_JoaoPessoa(SeleniumDownloader):
 
     # Sobrescreve o construtor da class "SeleniumDownloader"
     def __init__(self):
-        super().__init__(path.join(str(config.diretorio_dados)[:-18], 'dados', 'PB', 'portal_transparencia', 'JoaoPessoa'),
+        super().__init__(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'JoaoPessoa'),
                          config.url_pt_JoaoPessoa)
 
     # Implementa localmente o método interno e vazio da class "SeleniumDownloader"
@@ -112,13 +112,13 @@ class PortalTransparencia_JoaoPessoa(SeleniumDownloader):
         time.sleep(15)
 
         # Obtém objeto list dos arquivos armazenados no path passado como argumento para a função nativa "glob"
-        list_files = glob(path.join(str(config.diretorio_dados)[:-18], 'dados', 'PB', 'portal_transparencia', 'JoaoPessoa/*'))
+        list_files = glob(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'JoaoPessoa/*'))
 
         # Obtém o primeiro elemento do objeto list que corresponde ao nome do arquivo "xlsx" baixado
         file_name = list_files[0]
 
         # Lê o arquivo de nome "file_name" de despesas baixado como um objeto pandas DataFrame selecionando as linhas e colunas úteis
-        df_despesas = pd.read_excel(path.join(str(config.diretorio_dados)[:-18], 'dados', 'PB', 'portal_transparencia', 'JoaoPessoa', file_name))
+        df_despesas = pd.read_excel(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'JoaoPessoa', file_name))
 
         # Elimina a coluna "ano_empenho" do objeto pandas DataFrame "df_despesas"
         df_despesas.drop(columns='ano_empenho', inplace=True)
@@ -141,13 +141,13 @@ class PortalTransparencia_JoaoPessoa(SeleniumDownloader):
             df_despesas['Data Empenho'].apply(lambda x: datetime.strptime(x[:10], '%Y-%m-%d').date().strftime('%d/%m/%Y'))
 
         # Cria arquivo "xlsx" e aloca file handler de escrita para a variável "writer"
-        with pd.ExcelWriter(path.join(str(config.diretorio_dados)[:-18], 'dados', 'PB', 'portal_transparencia',
+        with pd.ExcelWriter(path.join(config.diretorio_dados, 'PB', 'portal_transparencia',
                             'JoaoPessoa', 'Dados_Portal_Transparencia_JoaoPessoa.xlsx')) as writer:
             # Salva os dados de despesas contidos em "df_despesas" na planilha "Despesas"
             df_despesas.to_excel(writer, sheet_name='Despesas', index=False)
 
         # Deleta o arquivo "xlsx" de nome "file_name"
-        os.unlink(path.join(str(config.diretorio_dados)[:-18], 'dados', 'PB', 'portal_transparencia', 'JoaoPessoa', file_name))
+        os.unlink(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'JoaoPessoa', file_name))
 
 
 def main():

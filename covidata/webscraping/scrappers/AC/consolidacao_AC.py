@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 from covidata import config
-from covidata.municipios.ibge import get_municipios_por_uf
+from covidata.municipios.ibge import get_municipios_por_uf, get_codigo_municipio_por_nome
 from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar
 
@@ -16,10 +16,8 @@ from covidata.persistencia.consolidacao import consolidar
 def pos_processar_despesas(df):
     # Elimina a última linha, que só contém um totalizador
     df = df.drop(df.index[-1])
-    df = df.astype({consolidacao.CONTRATADO_CNPJ: np.uint64})
-    df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
-    df = df.astype({consolidacao.DOCUMENTO_NUMERO: np.uint64})
-    df = df.astype({consolidacao.DOCUMENTO_NUMERO: str})
+    df = df.astype({consolidacao.CONTRATADO_CNPJ: np.uint64, consolidacao.CONTRATADO_CNPJ: str,
+                    consolidacao.DOCUMENTO_NUMERO: np.uint64, consolidacao.DOCUMENTO_NUMERO: str})
     df[consolidacao.TIPO_DOCUMENTO] = 'EMPENHO'
     df.fillna('')
 
@@ -81,8 +79,8 @@ def definir_municipios(df, prefixo='PREFEITURA MUNICIPAL DE\r\n '):
 def pos_processar_dispensas(df):
     # Elimina a última linha, que só contém um totalizador
     df = df.drop(df.index[-1])
-
     df = df.rename(columns={'NÚMERO\r\n  PROCESSO': 'Nº PROCESSO'})
+    df[consolidacao.MOD_APLIC_DESCRICAO] = 'Dispensa de Licitação'
     return df
 
 
@@ -90,6 +88,15 @@ def pos_processar_dispensas_municipios(df):
     df = pos_processar_dispensas(df)
     df = definir_municipios(df, prefixo='\nPREFEITURA MUNICIPAL DE ')
     df = df.rename(columns={'DATA\r\n  DA ALIMENTAÇÃO': 'DATA DA ALIMENTAÇÃO'})
+    df[consolidacao.MOD_APLIC_DESCRICAO] = 'Dispensa de Licitação'
+    return df
+
+
+def pos_processar_portal_transparencia_capital(df):
+    # Elimina as sete últimas linhas
+    df.drop(df.tail(7).index, inplace=True)
+    df = df.astype({consolidacao.ANO: np.uint16, 'NÚMERO DO CONTRATO': np.int64})
+    df[consolidacao.MUNICIPIO_DESCRICAO] = 'RIO BRANCO'
     return df
 
 
@@ -181,6 +188,19 @@ def consolidar_dispensas_municipios():
     return df
 
 
+def consolidar_portal_transparencia_capital():
+    dicionario_dados = {consolidacao.ANO: 'Exercício', consolidacao.CONTRATADO_DESCRICAO: 'Fornecedor',
+                        consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.MOD_APLIC_DESCRICAO: 'Modalidade',
+                        consolidacao.CONTRATANTE_DESCRICAO: 'Secretaria', consolidacao.VALOR_CONTRATO: 'Valor'}
+    colunas_adicionais = ['Número do Contrato', 'Número do Processo', 'Data de Assinatura', 'Prazo de Vigência']
+    df_original = pd.read_excel(
+        path.join(config.diretorio_dados, 'AC', 'portal_transparencia', 'Rio Branco', 'webexcel.xls'), header=11)
+    df = consolidar(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+                    consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_RioBranco, 'AC',
+                    get_codigo_municipio_por_nome('Rio Branco', 'AC'), pos_processar_portal_transparencia_capital)
+    return df
+
+
 def main():
     # TODO: Pode ser recomendável unificar os formatos de CPF e CNPJ para remover pontos e hífens.
     logger = logging.getLogger('covidata')
@@ -204,5 +224,10 @@ def main():
     dispensas_municipios = consolidar_dispensas_municipios()
     despesas = despesas.append(dispensas_municipios)
 
+    pt_capital = consolidar_portal_transparencia_capital()
+    despesas = despesas.append(pt_capital)
+
     despesas.to_excel(path.join(config.diretorio_dados, 'consolidados', 'TCE_AC_despesas.xlsx'))
 
+
+main()

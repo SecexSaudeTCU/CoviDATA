@@ -300,7 +300,9 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         df_liquidacao['Unidade'].replace(dict_unidades_aracaju, inplace=True)
 
         # Renomeia colunas especificadas
-        df_liquidacao.rename(index=str, columns={'DsItemDespesa': 'DsEmpenho', 'Unnamed: 14': 'DsItemDespesa'}, inplace=True)
+        df_liquidacao.rename(index=str,
+                             columns={'DsItemDespesa': 'DsEmpenho', 'Unnamed: 14': 'DsItemDespesa'},
+                             inplace=True)
 
         # Acrescenta a coluna "Nome Favorecido" ao objeto pandas DataFrame "df_liquidacao"
         df_liquidacao['Nome Favorecido'] = df_liquidacao['Credor'].apply(lambda x: x.split(' - ')[1])

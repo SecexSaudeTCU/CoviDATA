@@ -152,14 +152,20 @@ class PortalTransparencia_JoaoPessoa(SeleniumDownloader):
 
 def main():
     logger = logging.getLogger('covidata')
+    #TODO: Erro ao tentar localizar o botao
+    """
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
     pt_PB = PortalTransparencia_PB()
     pt_PB.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+    """
 
+    #TODO: Site fora do ar
+    """
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_JoaoPessoa = PortalTransparencia_JoaoPessoa()
     pt_JoaoPessoa.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+    """

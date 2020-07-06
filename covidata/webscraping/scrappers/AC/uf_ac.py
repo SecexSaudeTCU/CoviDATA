@@ -10,6 +10,7 @@ from covidata import config
 from covidata.persistencia.dao import persistir
 from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
+from covidata.webscraping.scrappers.AC.consolidacao_AC import consolidar
 
 
 def __extrair(url, informacao, indice):
@@ -63,18 +64,23 @@ def main():
     start_time = tce_ac()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
+    #TODO: Link fora do ar
+    """
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
     pt_AC = FileDownloader(path.join(config.diretorio_dados, 'AC', 'portal_transparencia'), config.url_pt_AC,
                            'empenhos.csv')
     pt_AC.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+    """
 
-    # TODO: Site com disponibilidade instável.
-    """    
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_RioBranco = PortalTransparencia_RioBranco(config.url_pt_RioBranco)
     pt_RioBranco.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
-    """
+
+    logger.info('Consolidando as informações no layout padronizado...')
+    start_time = time.time()
+    consolidar()
+    logger.info("--- %s segundos ---" % (time.time() - start_time))

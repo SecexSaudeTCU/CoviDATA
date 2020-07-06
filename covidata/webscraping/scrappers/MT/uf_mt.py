@@ -63,4 +63,3 @@ def main():
     start_time = time.time()
     pt_Cuiaba()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
-

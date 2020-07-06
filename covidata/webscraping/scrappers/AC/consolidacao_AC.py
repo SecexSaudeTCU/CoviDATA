@@ -7,7 +7,7 @@ import pandas as pd
 from covidata import config
 from covidata.municipios.ibge import get_municipios_por_uf, get_codigo_municipio_por_nome
 from covidata.persistencia import consolidacao
-from covidata.persistencia.consolidacao import consolidar
+from covidata.persistencia.consolidacao import consolidar_layout
 
 
 # TODO: Para o portal de transparência, o arquivo CSV disponibilizado não tem os nomes das colunas, não sendo possível
@@ -45,7 +45,7 @@ def pos_processar_despesas_municipio(df):
         elif len(cpf_cnpj) > 14:
             df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
 
-    df = definir_municipios(df, prefixo='\nPrefeitura Municipal de ')
+    df = __definir_municipios(df, prefixo='\nPrefeitura Municipal de ')
 
     return df
 
@@ -60,12 +60,12 @@ def pos_processar_contratos_municipios(df):
     # Elimina as três últimas linhas
     df.drop(df.tail(2).index, inplace=True)
 
-    df = definir_municipios(df)
+    df = __definir_municipios(df)
 
     return df
 
 
-def definir_municipios(df, prefixo='PREFEITURA MUNICIPAL DE\r\n '):
+def __definir_municipios(df, prefixo='PREFEITURA MUNICIPAL DE\r\n '):
     codigos_municipios = get_municipios_por_uf('AC')
     # Define os municípios
     df[consolidacao.MUNICIPIO_DESCRICAO] = df.apply(
@@ -86,7 +86,7 @@ def pos_processar_dispensas(df):
 
 def pos_processar_dispensas_municipios(df):
     df = pos_processar_dispensas(df)
-    df = definir_municipios(df, prefixo='\nPREFEITURA MUNICIPAL DE ')
+    df = __definir_municipios(df, prefixo='\nPREFEITURA MUNICIPAL DE ')
     df = df.rename(columns={'DATA\r\n  DA ALIMENTAÇÃO': 'DATA DA ALIMENTAÇÃO'})
     df[consolidacao.MOD_APLIC_DESCRICAO] = 'Dispensa de Licitação'
     return df
@@ -110,7 +110,7 @@ def __get_nome_municipio(row, prefixo='\nPrefeitura Municipal de '):
         return ''
 
 
-def consolidar_despesas():
+def __consolidar_despesas():
     dicionario_dados = {consolidacao.DOCUMENTO_NUMERO: '\nNUMEROEMPENHO\n',
                         consolidacao.CONTRATADO_DESCRICAO: '\nRazão Social\n',
                         consolidacao.CONTRATADO_CNPJ: '\nCPF/CNPJ\n',
@@ -121,13 +121,13 @@ def consolidar_despesas():
     # TODO: Sugerir uma nova coluna 'TIPO_FONTE'
     # TODO: Nem sempre esta informação está presente
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'despesas.xls'), header=4)
-    df = consolidar(['\nTipo de Credor\n'], df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
-                    consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_despesas, 'AC', '',
-                    pos_processar_despesas)
+    df = consolidar_layout(['\nTipo de Credor\n'], df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+                           consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_despesas, 'AC', '',
+                           pos_processar_despesas)
     return df
 
 
-def consolidar_despesas_municipios():
+def __consolidar_despesas_municipios():
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: '\nPREFEITURAS MUNICIPAIS NO ESTADO DO ACRE\n',
                         consolidacao.UG_DESCRICAO: '\nPREFEITURAS MUNICIPAIS NO ESTADO DO ACRE\n',
                         consolidacao.CONTRATADO_CNPJ: '\nCNPJ/CPF\n',
@@ -135,99 +135,96 @@ def consolidar_despesas_municipios():
     colunas_adicionais = ['\nCONTRATOS/OBSERVAÇÕES\n']
 
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'despesas_municipios.xls'), header=4)
-    df = consolidar(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
-                    consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_despesas_municipios, 'AC', '',
-                    pos_processar_despesas_municipio)
+    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+                           consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_despesas_municipios, 'AC', '',
+                           pos_processar_despesas_municipio)
     return df
 
 
-def consolidar_contratos():
+def __consolidar_contratos():
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Entidade', consolidacao.DESPESA_DESCRICAO: ' Objeto ',
                         consolidacao.VALOR_CONTRATO: 'Valor R$', consolidacao.UG_DESCRICAO: 'Entidade'}
     colunas_adicionais = ['Cód.\r\n  Dispensa', 'Nº Processo', 'Data Pedido', '\xa0Fundamento Legal\xa0']
 
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'contratos.xls'), header=4)
-    df = consolidar(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
-                    consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_contratos, 'AC', '',
-                    pos_processar_contratos)
+    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+                           consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_contratos, 'AC', '',
+                           pos_processar_contratos)
     return df
 
 
-def consolidar_contratos_municipios():
+def __consolidar_contratos_municipios():
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Entidade', consolidacao.DESPESA_DESCRICAO: ' Objeto ',
                         consolidacao.VALOR_CONTRATO: 'Valor R$', consolidacao.UG_DESCRICAO: 'Entidade'}
     colunas_adicionais = ['Cód.\r\n  Dispensa', 'Nº Processo', 'Data Pedido', '\xa0Fundamento Legal\xa0']
 
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'contratos_municipios.xls'), header=4)
-    df = consolidar(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
-                    consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_contratos_municipios, 'AC', '',
-                    pos_processar_contratos_municipios)
+    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+                           consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_contratos_municipios, 'AC', '',
+                           pos_processar_contratos_municipios)
     return df
 
 
-def consolidar_dispensas():
+def __consolidar_dispensas():
     dicionario_dados = {consolidacao.DESPESA_DESCRICAO: '\nObjeto\n', consolidacao.VALOR_CONTRATO: '\nValor\r\n  R$\n',
                         consolidacao.CONTRATANTE_DESCRICAO: '\nEnte\n', consolidacao.UG_DESCRICAO: '\nEnte\n',
                         consolidacao.CONTRATADO_DESCRICAO: '\nFornecedor\n'}
     colunas_adicionais = ['\nData da Alimentação\n', '\nNúmero\r\n  Processo\n']
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'dispensas.xls'), header=4)
-    df = consolidar(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
-                    consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_despesas, 'AC', '', pos_processar_dispensas)
+    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+                           consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_despesas, 'AC', '', pos_processar_dispensas)
     return df
 
 
-def consolidar_dispensas_municipios():
+def __consolidar_dispensas_municipios():
     dicionario_dados = {consolidacao.DESPESA_DESCRICAO: '\nObjeto\n', consolidacao.VALOR_CONTRATO: '\nValor\r\n  R$\n',
                         consolidacao.CONTRATANTE_DESCRICAO: '\nEnte\n', consolidacao.UG_DESCRICAO: '\nEnte\n',
                         consolidacao.CONTRATADO_DESCRICAO: '\nFornecedor\n'}
     colunas_adicionais = ['\nData\r\n  da Alimentação\n', '\nNúmero\r\n  Processo\n']
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'dispensas_municipios.xls'), header=4)
-    df = consolidar(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
-                    consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_despesas_municipios, 'AC', '',
-                    pos_processar_dispensas_municipios)
+    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+                           consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_despesas_municipios, 'AC', '',
+                           pos_processar_dispensas_municipios)
     return df
 
 
-def consolidar_portal_transparencia_capital():
+def __consolidar_portal_transparencia_capital():
     dicionario_dados = {consolidacao.ANO: 'Exercício', consolidacao.CONTRATADO_DESCRICAO: 'Fornecedor',
                         consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.MOD_APLIC_DESCRICAO: 'Modalidade',
                         consolidacao.CONTRATANTE_DESCRICAO: 'Secretaria', consolidacao.VALOR_CONTRATO: 'Valor'}
     colunas_adicionais = ['Número do Contrato', 'Número do Processo', 'Data de Assinatura', 'Prazo de Vigência']
     df_original = pd.read_excel(
         path.join(config.diretorio_dados, 'AC', 'portal_transparencia', 'Rio Branco', 'webexcel.xls'), header=11)
-    df = consolidar(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
-                    consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_RioBranco, 'AC',
-                    get_codigo_municipio_por_nome('Rio Branco', 'AC'), pos_processar_portal_transparencia_capital)
+    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+                           consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_RioBranco, 'AC',
+                           get_codigo_municipio_por_nome('Rio Branco', 'AC'), pos_processar_portal_transparencia_capital)
     return df
 
 
-def main():
+def consolidar():
     # TODO: Pode ser recomendável unificar os formatos de CPF e CNPJ para remover pontos e hífens.
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Acre')
-    despesas = consolidar_despesas()
+    despesas = __consolidar_despesas()
 
-    despesas_municipios = consolidar_despesas_municipios()
+    despesas_municipios = __consolidar_despesas_municipios()
     despesas = despesas.append(despesas_municipios)
 
     despesas.fillna('')
 
-    contratos = consolidar_contratos()
+    contratos = __consolidar_contratos()
     despesas = despesas.append(contratos)
 
-    contratos_municipios = consolidar_contratos_municipios()
+    contratos_municipios = __consolidar_contratos_municipios()
     despesas = despesas.append(contratos_municipios)
 
-    dispensas = consolidar_dispensas()
+    dispensas = __consolidar_dispensas()
     despesas = despesas.append(dispensas)
 
-    dispensas_municipios = consolidar_dispensas_municipios()
+    dispensas_municipios = __consolidar_dispensas_municipios()
     despesas = despesas.append(dispensas_municipios)
 
-    pt_capital = consolidar_portal_transparencia_capital()
+    pt_capital = __consolidar_portal_transparencia_capital()
     despesas = despesas.append(pt_capital)
 
     despesas.to_excel(path.join(config.diretorio_dados, 'consolidados', 'TCE_AC_despesas.xlsx'))
-
-
-main()

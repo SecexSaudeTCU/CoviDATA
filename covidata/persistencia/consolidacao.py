@@ -166,11 +166,12 @@ RP_PAGO = 'RP_PAGO'
 """
 TABELA 1B – Informações de empenho por item 
 """
+####################
+## Dados principais
+####################
+
 # Número do Empenho (UG + Gestão + Empenho) (Campo chave).
 DOCUMENTO_NUMERO = 'DOCUMENTO_NUMERO'
-
-# Descrição do item de empenho.
-ITEM_EMPENHO_DESCRICAO = 'ITEM_EMPENHO_DESCRICAO'
 
 # Unidade de medida do item de empenho.
 ITEM_EMPENHO_UNIDADE_MEDIDA = 'ITEM_EMPENHO_UNIDADE_MEDIDA'
@@ -181,6 +182,13 @@ ITEM_EMPENHO_QUANTIDADE = 'ITEM_EMPENHO_QUANTIDADE'
 # Valor Unitário do item de empenho.
 ITEM_EMPENHO_VALOR_UNITARIO = 'ITEM_EMPENHO_VALOR_UNITARIO'
 
+########################
+## Dados secundários
+########################
+
+# Descrição do item de empenho.
+ITEM_EMPENHO_DESCRICAO = 'ITEM_EMPENHO_DESCRICAO'
+
 # Valor total do item de empenho.
 ITEM_EMPENHO_VALOR_TOTAL = 'ITEM_EMPENHO_VALOR_TOTAL'
 
@@ -189,8 +197,8 @@ COLUNAS_DESPESAS = [FONTE_DADOS, DATA_EXTRACAO_DADOS, UF, ESFERA, COD_IBGE_MUNIC
                     DESPESA_DESCRICAO, TIPO_DOCUMENTO, DOCUMENTO_NUMERO, DOCUMENTO_DATA]
 
 
-def consolidar(colunas_adicionais, df_original, dicionario_dados, esfera, fonte_dados, uf, codigo_municipio_ibge,
-               funcao_posprocessamento):
+def consolidar_layout(colunas_adicionais, df_original, dicionario_dados, esfera, fonte_dados, uf, codigo_municipio_ibge,
+                      funcao_posprocessamento):
     """
     Consolida um conjunto de informações no formato padronizado, convetendo um dataframe de um formato em outro, em
     termos de oolunas.
@@ -208,11 +216,12 @@ def consolidar(colunas_adicionais, df_original, dicionario_dados, esfera, fonte_
     :return: df: Dataframe resultante.
     """
     df = __converter_dataframes(df_original, dicionario_dados, colunas_adicionais, uf, codigo_municipio_ibge,
-                                         fonte_dados, esfera)
+                                fonte_dados, esfera)
     if funcao_posprocessamento:
         df = funcao_posprocessamento(df)
 
     return df
+
 
 def __converter_dataframes(df_original, dicionario_dados, colunas_adicionais, uf, codigo_municipio_ibge, fonte_dados,
                            esfera):

@@ -19,6 +19,7 @@ class SeleniumDownloader(ABC):
         :param diretorio_dados: Diretório onde os dados deverão ser salvos.
         :param url: URL da página do qual será executado o download.
         """
+
         self.driver = self.__configurar_chrome(diretorio_dados, browser_option)
         self.driver.get(url)
 

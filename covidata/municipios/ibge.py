@@ -1,5 +1,6 @@
 import requests
 import json
+from covidata import config
 
 
 def get_municipios_por_uf(sigla_uf):
@@ -10,7 +11,7 @@ def get_municipios_por_uf(sigla_uf):
     """
     id_uf = __get_id_uf_por_sigla(sigla_uf)
 
-    retorno = requests.get(f'https://servicodados.ibge.gov.br/api/v1/localidades/estados/{id_uf}/municipios')
+    retorno = requests.get(config.url_api_ibge + '/' + str(id_uf) + '/municipios')
     resultado = json.loads(retorno.content)
 
     mapa_municipio_id = dict()
@@ -20,10 +21,20 @@ def get_municipios_por_uf(sigla_uf):
 
     return mapa_municipio_id
 
+def get_codigo_municipio_por_nome(nome, sigla_uf):
+    """
+    Retorna o código de um município a partir do seu nome e da sigla do estado ao qual pertence.
+
+    :param nome: O nome do município.
+    :param sigla_uf: A sigla da unidade da federação.
+    """
+    municipios = get_municipios_por_uf(sigla_uf)
+    return municipios[nome.upper()]
 
 def __get_id_uf_por_sigla(sigla):
     # Recupera a lista de todas as UFs
-    retorno = requests.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+
+    retorno = requests.get(config.url_api_ibge)
     resultado = json.loads(retorno.content)
 
     for estado in resultado:

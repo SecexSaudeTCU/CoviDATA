@@ -40,7 +40,6 @@ from covidata.webscraping.scrappers.DF import uf_df
 from covidata.webscraping.scrappers.RN import uf_rn
 from covidata import config
 
-
 if __name__ == '__main__':
     logger = logging.getLogger('covidata')
     logger.setLevel(logging.INFO)
@@ -68,6 +67,9 @@ if __name__ == '__main__':
     logger.info('# Recuperando dados do Ceará...')
     uf_ce.main()
 
+    logger.info('# Recuperando dados de Distrito Federal...')
+    uf_df.main()
+
     logger.info('# Recuperando dados do Espírito Santo...')
     uf_es.main()
 
@@ -87,6 +89,9 @@ if __name__ == '__main__':
     uf_pa.main()
     pt_belem.main()
 
+    logger.info('# Recuperando dados de Paraíba...')
+    uf_pb.main()
+
     logger.info('# Recuperando dados do Paraná...')
     uf_pr.main()
 
@@ -96,6 +101,9 @@ if __name__ == '__main__':
     logger.info('# Recuperando dados do Rio de Janeiro...')
     tce_rj.main()
     pt_rj_capital.main()
+
+    logger.info('# Recuperando dados de Rio Grande do Norte...')
+    uf_rn.main()
 
     logger.info('# Recuperando dados do Rio Grande do Sul...')
     uf_rs.main()
@@ -111,6 +119,9 @@ if __name__ == '__main__':
     logger.info('# Recuperando dados de Santa Catarina...')
     uf_sc.main()
 
+    logger.info('# Recuperando dados de Sergipe...')
+    uf_se.main()
+
     logger.info('# Recuperando dados de São Paulo...')
     pt_sp.main()
     pt_sp_capital.main()
@@ -118,18 +129,6 @@ if __name__ == '__main__':
 
     logger.info('# Recuperando dados de Tocantins...')
     uf_to.main()
-    
-    logger.info('# Recuperando dados de Sergipe...')
-    uf_se.main()
-
-    logger.info('# Recuperando dados de Paraíba...')
-    uf_pb.main()
-
-    logger.info('# Recuperando dados de Distrito Federal...')
-    uf_df.main()
-
-    logger.info('# Recuperando dados de Rio Grande do Norte...')
-    uf_rn.main()
 
     # Salva a data/hora da extração.
     f = open(config.arquivo_data_extracao, "w+")

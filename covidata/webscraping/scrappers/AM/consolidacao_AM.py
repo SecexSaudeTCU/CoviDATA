@@ -71,7 +71,3 @@ def consolidar():
     contratos = contratos.append(materiais_capital)
 
     contratos.to_excel(path.join(config.diretorio_dados, 'consolidados', 'AM.xlsx'))
-
-
-if __name__ == '__main__':
-    consolidar()

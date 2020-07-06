@@ -8,7 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from covidata import config
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
-
+from covidata.webscraping.scrappers.AM.consolidacao_AM import consolidar
 
 class PortalTransparencia_AM(SeleniumDownloader):
     def __init__(self):
@@ -50,4 +50,9 @@ def main():
     start_time = time.time()
     pt_Manaus = PortalTransparencia_Manaus()
     pt_Manaus.download()
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+    logger.info('Consolidando as informações no layout padronizado...')
+    start_time = time.time()
+    consolidar()
     logger.info("--- %s segundos ---" % (time.time() - start_time))

@@ -5,6 +5,7 @@ from os import path
 from covidata import config
 from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.json.parser import JSONParser
+from covidata.webscraping.scrappers.AL.consolidacao_AL import consolidar
 
 
 class PortalTransparencia_Maceio(JSONParser):
@@ -29,4 +30,9 @@ def main():
     start_time = time.time()
     pt_Maceio = PortalTransparencia_Maceio()
     pt_Maceio.parse()
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+    logger.info('Consolidando as informações no layout padronizado...')
+    start_time = time.time()
+    consolidar()
     logger.info("--- %s segundos ---" % (time.time() - start_time))

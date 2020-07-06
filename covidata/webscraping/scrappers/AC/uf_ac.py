@@ -64,15 +64,12 @@ def main():
     start_time = tce_ac()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-    #TODO: Link fora do ar
-    """
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
     pt_AC = FileDownloader(path.join(config.diretorio_dados, 'AC', 'portal_transparencia'), config.url_pt_AC,
                            'empenhos.csv')
     pt_AC.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
-    """
 
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
@@ -84,3 +81,5 @@ def main():
     start_time = time.time()
     consolidar()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+main()

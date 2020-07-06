@@ -21,7 +21,7 @@ def main():
     if 'Windows' in platform.system():
         locale.setlocale(locale.LC_TIME, "pt-BR")
     else:
-        # TODO: Testar no Mac OS e no Linux
+        # TODO: Testar no Linux
         locale.setlocale(locale.LC_TIME, "pt_BR.UTF-8")
 
     mes_inicial = 3

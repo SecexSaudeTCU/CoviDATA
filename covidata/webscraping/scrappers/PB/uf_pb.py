@@ -26,13 +26,12 @@ class PortalTransparencia_PB(SeleniumDownloader):
 
     # Implementa localmente o método interno e vazio da class "SeleniumDownloader"
     def _executar(self):
-
         # Cria um objeto da class "WebDriverWait"
         wait = WebDriverWait(self.driver, 45)
 
         # Seleciona o botão "Exibir Relatório"
         element = wait.until(EC.visibility_of_element_located((By.XPATH,
-                             '//*[@id="RPTRender_ctl08_ctl00"]')))
+                                                               '//*[@id="RPTRender_ctl08_ctl00"]')))
         self.driver.execute_script("arguments[0].click();", element)
 
         # On hold por 5 segundos
@@ -49,7 +48,8 @@ class PortalTransparencia_PB(SeleniumDownloader):
         #
         # Lê o arquivo "xlsx" de contratos baixado como um objeto pandas DataFrame selecionando as linhas e colunas úteis
         df_contratos = pd.read_excel(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'Paraiba',
-                                     'ListaContratos.xlsx'), usecols=[0, 3, 4, 5, 6, 7, 9, 11], skiprows=list(range(4)))
+                                               'ListaContratos.xlsx'), usecols=[0, 3, 4, 5, 6, 7, 9, 11],
+                                     skiprows=list(range(4)))
 
         # Remove a última linha do objeto pandas DataFrame "df_contratos"
         df_contratos.drop(df_contratos.tail(1).index, inplace=True)
@@ -68,10 +68,9 @@ class PortalTransparencia_PB(SeleniumDownloader):
                                      'Nome Favorecido', 'CNPJ/CPF Favorecido', 'Objetivo',
                                      'Valor']]
 
-
         # Cria arquivo "xlsx" e aloca file handler de escrita para a variável "writer"
         with pd.ExcelWriter(path.join(config.diretorio_dados, 'PB', 'portal_transparencia',
-                            'Paraiba', 'Dados_Portal_Transparencia_Paraiba.xlsx')) as writer:
+                                      'Paraiba', 'Dados_Portal_Transparencia_Paraiba.xlsx')) as writer:
             # Salva os dados de empenhos contidos em "df_contratos" na planilha "Contratos"
             df_contratos.to_excel(writer, sheet_name='Contratos', index=False)
 
@@ -89,12 +88,12 @@ class PortalTransparencia_JoaoPessoa(SeleniumDownloader):
 
     # Implementa localmente o método interno e vazio da class "SeleniumDownloader"
     def _executar(self):
-
         # On hold por 5 segundos
         time.sleep(5)
 
         # Seleciona o botão "Pesquisar"
-        self.driver.find_element_by_xpath('/html/body/app-dashboard/div/main/div[1]/app-despesas/despesas-detalhamento/div/despesas-detalhamento-filtro/div/div/div[3]/div[2]/div/button/span[2]').click()
+        self.driver.find_element_by_xpath(
+            '/html/body/app-dashboard/div/main/div[1]/app-despesas/despesas-detalhamento/div/despesas-detalhamento-filtro/div/div/div[3]/div[2]/div/button/span[2]').click()
 
         # On hold por 10 segundos
         time.sleep(10)
@@ -118,7 +117,8 @@ class PortalTransparencia_JoaoPessoa(SeleniumDownloader):
         file_name = list_files[0]
 
         # Lê o arquivo de nome "file_name" de despesas baixado como um objeto pandas DataFrame selecionando as linhas e colunas úteis
-        df_despesas = pd.read_excel(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'JoaoPessoa', file_name))
+        df_despesas = pd.read_excel(
+            path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'JoaoPessoa', file_name))
 
         # Elimina a coluna "ano_empenho" do objeto pandas DataFrame "df_despesas"
         df_despesas.drop(columns='ano_empenho', inplace=True)
@@ -138,11 +138,12 @@ class PortalTransparencia_JoaoPessoa(SeleniumDownloader):
         # Slice da coluna de string "Data Empenho" apenas os caracteres de data (10 primeiros), em seguida...
         # os converte para datatime, em seguida para date apenas e, por fim, para string no formato "dd/mm/aaaa"
         df_despesas['Data Empenho'] = \
-            df_despesas['Data Empenho'].apply(lambda x: datetime.strptime(x[:10], '%Y-%m-%d').date().strftime('%d/%m/%Y'))
+            df_despesas['Data Empenho'].apply(
+                lambda x: datetime.strptime(x[:10], '%Y-%m-%d').date().strftime('%d/%m/%Y'))
 
         # Cria arquivo "xlsx" e aloca file handler de escrita para a variável "writer"
         with pd.ExcelWriter(path.join(config.diretorio_dados, 'PB', 'portal_transparencia',
-                            'JoaoPessoa', 'Dados_Portal_Transparencia_JoaoPessoa.xlsx')) as writer:
+                                      'JoaoPessoa', 'Dados_Portal_Transparencia_JoaoPessoa.xlsx')) as writer:
             # Salva os dados de despesas contidos em "df_despesas" na planilha "Despesas"
             df_despesas.to_excel(writer, sheet_name='Despesas', index=False)
 
@@ -152,16 +153,17 @@ class PortalTransparencia_JoaoPessoa(SeleniumDownloader):
 
 def main():
     logger = logging.getLogger('covidata')
-    #TODO: Erro ao tentar localizar o botao
-    """
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
     pt_PB = PortalTransparencia_PB()
     pt_PB.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
-    """
 
-    #TODO: Site fora do ar
+    # TODO: Erro (mesmo executando fora de run.py)
+    """
+    selenium.common.exceptions.ElementClickInterceptedException: Message: element click intercepted: Element <span class="ui-button-text ui-clickable">...</span> is not clickable at point (297, 450). Other element would receive the click: <div class="cdk-overlay-backdrop cdk-overlay-dark-backdrop cdk-overlay-backdrop-showing"></div>
+  (Session info: headless chrome=83.0.4103.116)
+    """
     """
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
@@ -169,3 +171,4 @@ def main():
     pt_JoaoPessoa.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
     """
+

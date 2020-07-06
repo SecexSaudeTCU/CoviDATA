@@ -391,19 +391,14 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
 
 def main():
     logger = logging.getLogger('covidata')
-    #TODO: Erro quando executado durante run.py
-    """
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
     pt_SE = PortalTransparencia_SE()
     pt_SE.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
-    """
-    # TODO: Erro quando executado durante run.py
-    """
+
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_Aracaju = PortalTransparencia_Aracaju()
     pt_Aracaju.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
-    """

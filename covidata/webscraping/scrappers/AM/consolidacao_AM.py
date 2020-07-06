@@ -64,7 +64,7 @@ def consolidar_materiais_capital():
 
 def consolidar():
     logger = logging.getLogger('covidata')
-    logger.info('Iniciando consolidação dados Alagoas')
+    logger.info('Iniciando consolidação dados Amazonas')
     contratos = consolidar_contratos()
 
     materiais_capital = consolidar_materiais_capital()

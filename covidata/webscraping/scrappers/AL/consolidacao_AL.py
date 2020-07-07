@@ -92,5 +92,3 @@ def consolidar():
 
     salvar(despesas, 'AL')
 
-
-consolidar()

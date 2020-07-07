@@ -7,7 +7,7 @@ import pandas as pd
 from covidata import config
 from covidata.municipios.ibge import get_municipios_por_uf, get_codigo_municipio_por_nome
 from covidata.persistencia import consolidacao
-from covidata.persistencia.consolidacao import consolidar_layout
+from covidata.persistencia.consolidacao import consolidar_layout, salvar
 
 
 # TODO: Para o portal de transparência, o arquivo CSV disponibilizado não tem os nomes das colunas, não sendo possível
@@ -228,4 +228,4 @@ def consolidar():
     pt_capital = __consolidar_portal_transparencia_capital()
     despesas = despesas.append(pt_capital)
 
-    despesas.to_excel(path.join(config.diretorio_dados, 'consolidados', 'AC.xlsx'))
+    salvar(despesas, 'AC')

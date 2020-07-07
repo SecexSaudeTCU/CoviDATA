@@ -6,7 +6,7 @@ import pandas as pd
 from covidata import config
 from covidata.municipios.ibge import get_codigo_municipio_por_nome
 from covidata.persistencia import consolidacao
-from covidata.persistencia.consolidacao import consolidar_layout
+from covidata.persistencia.consolidacao import consolidar_layout, salvar
 
 
 def pos_processar_contratos(df):
@@ -70,4 +70,4 @@ def consolidar():
     materiais_capital = consolidar_materiais_capital()
     contratos = contratos.append(materiais_capital)
 
-    contratos.to_excel(path.join(config.diretorio_dados, 'consolidados', 'AM.xlsx'))
+    salvar(contratos, 'AM')

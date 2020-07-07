@@ -1,3 +1,6 @@
+import os
+from os import path
+
 import pandas as pd
 from covidata import config
 
@@ -251,3 +254,12 @@ def __get_data_extracao():
         data_extracao_dados = f.read()
 
     return data_extracao_dados
+
+
+def salvar(df, uf, nome=''):
+    diretorio = path.join(config.diretorio_dados, 'consolidados', uf)
+
+    if not path.exists(diretorio):
+        os.makedirs(diretorio)
+
+    df.to_excel(path.join(diretorio, uf + nome + '.xlsx'))

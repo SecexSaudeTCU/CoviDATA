@@ -1,11 +1,12 @@
 import logging
+import os
 from os import path
 
 import pandas as pd
 
 from covidata import config
 from covidata.persistencia import consolidacao
-from covidata.persistencia.consolidacao import consolidar_layout
+from covidata.persistencia.consolidacao import consolidar_layout, salvar
 from covidata.municipios.ibge import get_codigo_municipio_por_nome
 
 
@@ -58,9 +59,26 @@ def __consolidar_compras_capital():
                           'orgao_sigla', 'cota', 'status', 'responsavel']
     df_original = pd.read_excel(
         path.join(config.diretorio_dados, 'AL', 'portal_transparencia', 'Maceio', 'compras.xlsx'))
+    fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Maceio
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
-                           consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Maceio, 'AL',
-                           get_codigo_municipio_por_nome('Maceió', 'AL'), pos_processar_compras_capital)
+                           fonte_dados, 'AL', get_codigo_municipio_por_nome('Maceió', 'AL'),
+                           pos_processar_compras_capital)
+
+    # Salva arquivos adicionais (informações acessórias que podem ser relevantes)
+    planilha_original = os.path.join(config.diretorio_dados, 'AL', 'portal_transparencia', 'Maceio', 'compras.xlsx')
+
+    documentos = pd.read_excel(planilha_original, sheet_name='documentos')
+    documentos[consolidacao.FONTE_DADOS] = fonte_dados
+    salvar(documentos, 'AL', '_Maceio_documentos')
+
+    homologacoes = pd.read_excel(planilha_original, sheet_name='homologacoes')
+    homologacoes[consolidacao.FONTE_DADOS] = fonte_dados
+    salvar(homologacoes, 'AL', '_Maceio_homologacoes')
+
+    atas = pd.read_excel(planilha_original, sheet_name='atas')
+    atas[consolidacao.FONTE_DADOS] = fonte_dados
+    salvar(atas, 'AL', '_Maceio_atas')
+
     return df
 
 
@@ -72,5 +90,7 @@ def consolidar():
     compras_capital = __consolidar_compras_capital()
     despesas = despesas.append(compras_capital)
 
-    despesas.to_excel(path.join(config.diretorio_dados, 'consolidados', 'AL.xlsx'))
+    salvar(despesas, 'AL')
 
+
+consolidar()

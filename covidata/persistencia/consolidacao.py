@@ -257,6 +257,13 @@ def __get_data_extracao():
 
 
 def salvar(df, uf, nome=''):
+    """
+    Salva um dataframe.
+
+    :param df O dataframe a ser salvo.
+    :param uf: A unidade da federação à qual o dataframe se refere.
+    :param nome: Nome (opcional) que permite identificar o tipo de informação à qual o dataframe se refere.
+    """
     diretorio = path.join(config.diretorio_dados, 'consolidados', uf)
 
     if not path.exists(diretorio):

@@ -5,7 +5,7 @@ from os import path
 from covidata import config
 from covidata.webscraping.json.parser import JSONParser
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
-
+from covidata.webscraping.scrappers.AP.consolidacao_AP import consolidar
 
 class PortalTransparencia_AP(JSONParser):
 
@@ -39,3 +39,9 @@ def main():
     pt_Macapa = PortalTransparencia_Macapa(config.url_pt_Macapa)
     pt_Macapa.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+    logger.info('Consolidando as informações no layout padronizado...')
+    start_time = time.time()
+    consolidar()
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
+

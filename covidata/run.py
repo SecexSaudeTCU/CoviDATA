@@ -13,27 +13,27 @@ import datetime
 diretorio_raiz = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
 sys.path.append(diretorio_raiz)
 
-# from covidata.webscraping.scrappers.AM import uf_am
-# from covidata.webscraping.scrappers.CE import uf_ce
-# from covidata.webscraping.scrappers.PA import uf_pa, pt_belem
-# from covidata.webscraping.scrappers.RJ import pt_rj_capital, tce_rj
-# from covidata.webscraping.scrappers.PE import pt_pe_capital
-# from covidata.webscraping.scrappers.AP import uf_ap
-# from covidata.webscraping.scrappers.RR import uf_rr
-# from covidata.webscraping.scrappers.RO import uf_ro
-# from covidata.webscraping.scrappers.AC import uf_ac
-# from covidata.webscraping.scrappers.ES import uf_es
-# from covidata.webscraping.scrappers.SP import tcm_sp, pt_sp, pt_sp_capital
-# from covidata.webscraping.scrappers.AL import uf_al
-# from covidata.webscraping.scrappers.TO import uf_to
-# from covidata.webscraping.scrappers.BA import uf_ba
-# from covidata.webscraping.scrappers.MT import uf_mt
-# from covidata.webscraping.scrappers.GO import uf_go
-# from covidata.webscraping.scrappers.RS import uf_rs
-# from covidata.webscraping.scrappers.PR import uf_pr
-# from covidata.webscraping.scrappers.SC import uf_sc
-# from covidata.webscraping.scrappers.MG import uf_mg
-# from covidata.webscraping.scrappers.MS import uf_ms
+from covidata.webscraping.scrappers.AM import uf_am
+from covidata.webscraping.scrappers.CE import uf_ce
+from covidata.webscraping.scrappers.PA import uf_pa, pt_belem
+from covidata.webscraping.scrappers.RJ import pt_rj_capital, tce_rj
+from covidata.webscraping.scrappers.PE import pt_pe_capital
+from covidata.webscraping.scrappers.AP import uf_ap
+from covidata.webscraping.scrappers.RR import uf_rr
+from covidata.webscraping.scrappers.RO import uf_ro
+from covidata.webscraping.scrappers.AC import uf_ac
+from covidata.webscraping.scrappers.ES import uf_es
+from covidata.webscraping.scrappers.SP import tcm_sp, pt_sp, pt_sp_capital
+from covidata.webscraping.scrappers.AL import uf_al
+from covidata.webscraping.scrappers.TO import uf_to
+from covidata.webscraping.scrappers.BA import uf_ba
+from covidata.webscraping.scrappers.MT import uf_mt
+from covidata.webscraping.scrappers.GO import uf_go
+from covidata.webscraping.scrappers.RS import uf_rs
+from covidata.webscraping.scrappers.PR import uf_pr
+from covidata.webscraping.scrappers.SC import uf_sc
+from covidata.webscraping.scrappers.MG import uf_mg
+from covidata.webscraping.scrappers.MS import uf_ms
 from covidata.webscraping.scrappers.SE import uf_se
 from covidata.webscraping.scrappers.PB import uf_pb
 from covidata.webscraping.scrappers.DF import uf_df

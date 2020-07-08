@@ -43,10 +43,12 @@ def main():
     start_time = time.time()
     pt_Macapa = PortalTransparencia_Macapa()
     pt_Macapa.download()
+
     # Renomeia o arquivo
     diretorio = path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'Macapa')
     arquivo = os.listdir(diretorio)[0]
     os.rename(path.join(diretorio, arquivo), path.join(diretorio, 'transparencia.xlsx'))
+
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     logger.info('Consolidando as informações no layout padronizado...')

@@ -404,3 +404,4 @@ def main():
     pt_Aracaju.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
+main()

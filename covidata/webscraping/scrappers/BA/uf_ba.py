@@ -35,7 +35,6 @@ def pt_BA():
 
 
     df = pd.DataFrame(linhas, columns=nomes_colunas)
-    #persistir(df, 'portal_transparencia', 'contratos', 'BA')
     persistir(df, 'portal_transparencia', 'contratos', 'BA')
 
 
@@ -44,5 +43,10 @@ def main():
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
     pt_BA()
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+    logger.info('Consolidando as informações no layout padronizado...')
+    start_time = time.time()
+    consolidar()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 

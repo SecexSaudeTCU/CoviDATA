@@ -15,6 +15,7 @@ def pos_processar_contratos(df):
         columns={'DATAASSINATURA': 'DATA DA CELEBRAÇÃO DO CONTRATO', 'LOCAL DEEXECUÇÃO': 'LOCAL DE EXECUÇÃO'})
     return df
 
+
 def pos_processar_materiais_capital(df):
     # Elimina as 17 últimas linhas, que só contêm totalizadores e legendas
     df.drop(df.tail(17).index, inplace=True)
@@ -26,7 +27,8 @@ def pos_processar_materiais_capital(df):
 
     return df
 
-def consolidar_contratos():
+
+def consolidar_contratos(data_extracao):
     dicionario_dados = {consolidacao.UG_DESCRICAO: 'UG', consolidacao.CONTRATADO_CNPJ: 'CNPJ/CPFfornecedor',
                         consolidacao.CONTRATADO_DESCRICAO: 'Nomefornecedor', consolidacao.DESPESA_DESCRICAO: 'Objeto',
                         consolidacao.CONTRATANTE_DESCRICAO: 'UG'}
@@ -37,11 +39,11 @@ def consolidar_contratos():
                   'Portal SGC - Sistema de Gestão de Contratos.xlsx'))
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_AM, 'AM', '',
-                           pos_processar_contratos)
+                           data_extracao, pos_processar_contratos)
     return df
 
 
-def consolidar_materiais_capital():
+def consolidar_materiais_capital(data_extracao):
     dicionario_dados = {consolidacao.UG_DESCRICAO: 'ÓRGÃO', consolidacao.CONTRATANTE_DESCRICAO: 'ÓRGÃO',
                         consolidacao.DESPESA_DESCRICAO: 'MATERIAL/SERVIÇO',
                         consolidacao.MOD_APLIC_DESCRICAO: 'MODALIDADE', consolidacao.ITEM_EMPENHO_QUANTIDADE: 'QTD',
@@ -58,16 +60,17 @@ def consolidar_materiais_capital():
                   'PÚBLICA-CONTROLE-PROCESSOS-COMBATE-COVID-19-MATERIAIS-2.csv'))
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                            consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Manaus, 'AM',
-                           get_codigo_municipio_por_nome('Manaus', 'AM'), pos_processar_materiais_capital)
+                           get_codigo_municipio_por_nome('Manaus', 'AM'), data_extracao,
+                           pos_processar_materiais_capital)
     return df
 
 
-def consolidar():
+def consolidar(data_extracao):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Amazonas')
-    contratos = consolidar_contratos()
+    contratos = consolidar_contratos(data_extracao)
 
-    materiais_capital = consolidar_materiais_capital()
+    materiais_capital = consolidar_materiais_capital(data_extracao)
     contratos = contratos.append(materiais_capital)
 
     salvar(contratos, 'AM')

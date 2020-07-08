@@ -397,8 +397,10 @@ def main():
     pt_SE.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
+    #TODO: Só funciona standalone (fora de run.py)
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_Aracaju = PortalTransparencia_Aracaju()
     pt_Aracaju.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+

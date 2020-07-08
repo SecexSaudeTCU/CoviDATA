@@ -44,7 +44,7 @@ def pos_processar_contratacoes_capital(df):
     return df
 
 
-def consolidar_contratacoes():
+def consolidar_contratacoes(data_extracao):
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'orgao', consolidacao.UG_DESCRICAO: 'orgao',
                         consolidacao.MOD_APLIC_DESCRICAO: 'modalidade_processo',
                         consolidacao.DESPESA_DESCRICAO: 'objeto', consolidacao.CONTRATADO_CNPJ: 'fornecedor_cnpj_cpf',
@@ -60,7 +60,7 @@ def consolidar_contratacoes():
     df_original = pd.read_excel(planilha_original)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_AP
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
-                           fonte_dados, 'AP', '', pos_processar_contratacoes)
+                           fonte_dados, 'AP', '', data_extracao, pos_processar_contratacoes)
 
     anexos = pd.read_excel(planilha_original, sheet_name='anexos')
     anexos[consolidacao.FONTE_DADOS] = fonte_dados
@@ -69,7 +69,7 @@ def consolidar_contratacoes():
     return df
 
 
-def consolidar_contratacoes_capital():
+def consolidar_contratacoes_capital(data_extracao):
     dicionario_dados = {consolidacao.CONTRATADO_CNPJ: 'Contratado - CNPJ / CPF',
                         consolidacao.DESPESA_DESCRICAO: 'Descrição de bem ou serviço',
                         consolidacao.ITEM_EMPENHO_QUANTIDADE: 'Quantidade',
@@ -80,25 +80,21 @@ def consolidar_contratacoes_capital():
                         consolidacao.VALOR_CONTRATO: 'Valor contratado', consolidacao.VALOR_PAGO: 'Valor pago',
                         consolidacao.MOD_APLIC_DESCRICAO: 'Forma / modalidade'}
     colunas_adicionais = ['Nº e Íntegra do Processo / COntrato', 'Data de Celebração / Publicação', 'Prazo Contratual']
-    planilha_original = path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'Macapa',
-                                  'Emergencial de acordo com a Lei n° 13.9792020 (Covid-19 Decreto n° 1.7112020 e 1.6922020) – Portal Transparência.xlsx')
+    planilha_original = path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'Macapa', 'transparencia.xlsx')
     df_original = pd.read_excel(planilha_original, header=1)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Macapa
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
-                           fonte_dados, 'AP', get_codigo_municipio_por_nome('Macapá', 'AP'),
+                           fonte_dados, 'AP', get_codigo_municipio_por_nome('Macapá', 'AP'), data_extracao,
                            pos_processar_contratacoes_capital)
     return df
 
 
-def consolidar():
+def consolidar(data_extracao):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Amapá')
-    contratacoes = consolidar_contratacoes()
+    contratacoes = consolidar_contratacoes(data_extracao)
 
-    contratacoes_capital = consolidar_contratacoes_capital()
+    contratacoes_capital = consolidar_contratacoes_capital(data_extracao)
     contratacoes = contratacoes.append(contratacoes_capital)
 
     salvar(contratacoes, 'AP')
-
-
-consolidar()

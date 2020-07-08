@@ -1,4 +1,6 @@
+import datetime
 import logging
+import os
 import time
 from os import path
 
@@ -6,6 +8,7 @@ from covidata import config
 from covidata.webscraping.json.parser import JSONParser
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
 from covidata.webscraping.scrappers.AP.consolidacao_AP import consolidar
+
 
 class PortalTransparencia_AP(JSONParser):
 
@@ -18,8 +21,9 @@ class PortalTransparencia_AP(JSONParser):
 
 
 class PortalTransparencia_Macapa(SeleniumDownloader):
-    def __init__(self, url):
-        super().__init__(path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'Macapa'), url)
+    def __init__(self):
+        super().__init__(path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'Macapa'),
+                         config.url_pt_Macapa)
 
     def _executar(self):
         button = self.driver.find_element_by_class_name('buttons-excel')
@@ -27,6 +31,7 @@ class PortalTransparencia_Macapa(SeleniumDownloader):
 
 
 def main():
+    data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
@@ -36,12 +41,15 @@ def main():
 
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
-    pt_Macapa = PortalTransparencia_Macapa(config.url_pt_Macapa)
+    pt_Macapa = PortalTransparencia_Macapa()
     pt_Macapa.download()
+    # Renomeia o arquivo
+    diretorio = path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'Macapa')
+    arquivo = os.listdir(diretorio)[0]
+    os.rename(path.join(diretorio, arquivo), path.join(diretorio, 'transparencia.xlsx'))
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     logger.info('Consolidando as informações no layout padronizado...')
     start_time = time.time()
-    consolidar()
+    consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
-

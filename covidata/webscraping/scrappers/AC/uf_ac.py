@@ -1,3 +1,4 @@
+import datetime
 import logging
 import time
 from os import path
@@ -59,6 +60,7 @@ def tce_ac():
 
 
 def main():
+    data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
     logger.info('Tribunal de Contas estadual...')
     start_time = tce_ac()
@@ -79,7 +81,5 @@ def main():
 
     logger.info('Consolidando as informações no layout padronizado...')
     start_time = time.time()
-    consolidar()
+    consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
-
-main()

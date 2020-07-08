@@ -8,7 +8,7 @@ from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout, salvar
 
 
-def consolidar_contratos():
+def consolidar_contratos(data_extracao):
     dicionario_dados = {consolidacao.CONTRATADO_DESCRICAO: 'CONTRATADO', consolidacao.CONTRATADO_CNPJ: 'CNPJ',
                         consolidacao.DESPESA_DESCRICAO: 'OBJETO', consolidacao.VALOR_CONTRATO: 'VALOR'}
     colunas_adicionais = ['Link para o contrato', 'Nº PROCESSO', 'Nº DO CONTRATO', 'PRAZO']
@@ -16,14 +16,14 @@ def consolidar_contratos():
     df_original = pd.read_excel(planilha_original, header=4)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_BA
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
-                           fonte_dados, 'BA', '',None)
+                           fonte_dados, 'BA', '', data_extracao, None)
     df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
     return df
 
 
-def consolidar():
+def consolidar(data_extracao):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Bahia')
-    contratos = consolidar_contratos()
+    contratos = consolidar_contratos(data_extracao)
 
     salvar(contratos, 'BA')

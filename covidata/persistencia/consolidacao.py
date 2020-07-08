@@ -201,7 +201,7 @@ COLUNAS_DESPESAS = [FONTE_DADOS, DATA_EXTRACAO_DADOS, UF, ESFERA, COD_IBGE_MUNIC
 
 
 def consolidar_layout(colunas_adicionais, df_original, dicionario_dados, esfera, fonte_dados, uf, codigo_municipio_ibge,
-                      funcao_posprocessamento):
+                      data_extracao, funcao_posprocessamento=None):
     """
     Consolida um conjunto de informações no formato padronizado, convetendo um dataframe de um formato em outro, em
     termos de oolunas.
@@ -215,11 +215,12 @@ def consolidar_layout(colunas_adicionais, df_original, dicionario_dados, esfera,
     :param codigo_municipio_ibge: Código do município do IBGE, se aplicável.
     :param fonte_dados: Fonte dos dados (ex.: TCE | TCM | Portal de Transparência - <URL para a fonte dos dados>)
     :param esfera: Esfera administrativa (F- Federal; E- Estadual; e M- Municipal).
+    :param data_extracao Data/hora em que os dados foram extraídos.
     :param funcao_posprocessamento: Callback para função que complementa a conversão.
     :return: df: Dataframe resultante.
     """
     df = __converter_dataframes(df_original, dicionario_dados, colunas_adicionais, uf, codigo_municipio_ibge,
-                                fonte_dados, esfera)
+                                fonte_dados, esfera, data_extracao)
     if funcao_posprocessamento:
         df = funcao_posprocessamento(df)
 
@@ -227,7 +228,7 @@ def consolidar_layout(colunas_adicionais, df_original, dicionario_dados, esfera,
 
 
 def __converter_dataframes(df_original, dicionario_dados, colunas_adicionais, uf, codigo_municipio_ibge, fonte_dados,
-                           esfera):
+                           esfera, data_extracao):
     df = pd.DataFrame(columns=COLUNAS_DESPESAS)
 
     for coluna_padronizada, coluna_correspondente in dicionario_dados.items():
@@ -238,22 +239,12 @@ def __converter_dataframes(df_original, dicionario_dados, colunas_adicionais, uf
 
     df[FONTE_DADOS] = fonte_dados
 
-    df[DATA_EXTRACAO_DADOS] = __get_data_extracao()
+    df[DATA_EXTRACAO_DADOS] = data_extracao
     df[UF] = uf
     df[COD_IBGE_MUNICIPIO] = codigo_municipio_ibge
     df[ESFERA] = esfera
 
     return df
-
-
-def __get_data_extracao():
-    data_extracao_dados = ''
-    f = open(config.arquivo_data_extracao, "r")
-
-    if f.mode == 'r':
-        data_extracao_dados = f.read()
-
-    return data_extracao_dados
 
 
 def salvar(df, uf, nome=''):

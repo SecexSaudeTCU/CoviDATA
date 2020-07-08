@@ -24,7 +24,7 @@ def pos_processar_despesas(df):
     return df
 
 
-def __consolidar_despesas():
+def __consolidar_despesas(data_extracao):
     dicionario_dados = {consolidacao.CONTRATADO_CNPJ: 'CPF CNPJ CONTRATADO',
                         consolidacao.ELEMENTO_DESPESA_DESCRICAO: 'ELEMENTO DESPESA',
                         consolidacao.ITEM_EMPENHO_QUANTIDADE: 'QUANTIDADE', consolidacao.DESPESA_DESCRICAO: 'OBJETO',
@@ -41,7 +41,7 @@ def __consolidar_despesas():
         path.join(config.diretorio_dados, 'AL', 'portal_transparencia', 'DESPESAS COM COVID-19.xls'), header=7)
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_AL, 'AL', '',
-                           pos_processar_despesas)
+                           data_extracao, pos_processar_despesas)
     return df
 
 
@@ -51,7 +51,7 @@ def pos_processar_compras_capital(df):
     return df
 
 
-def __consolidar_compras_capital():
+def __consolidar_compras_capital(data_extracao):
     dicionario_dados = {consolidacao.DESPESA_DESCRICAO: 'objeto', consolidacao.MOD_APLICACAO_COD: 'numero_modalidade',
                         consolidacao.ANO: 'ano_modalidade', consolidacao.MOD_APLIC_DESCRICAO: 'modalidade',
                         consolidacao.CONTRATANTE_DESCRICAO: 'orgao_nome', consolidacao.UG_DESCRICAO: 'orgao_nome'}
@@ -61,7 +61,7 @@ def __consolidar_compras_capital():
         path.join(config.diretorio_dados, 'AL', 'portal_transparencia', 'Maceio', 'compras.xlsx'))
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Maceio
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
-                           fonte_dados, 'AL', get_codigo_municipio_por_nome('Maceió', 'AL'),
+                           fonte_dados, 'AL', get_codigo_municipio_por_nome('Maceió', 'AL'), data_extracao,
                            pos_processar_compras_capital)
 
     # Salva arquivos adicionais (informações acessórias que podem ser relevantes)
@@ -82,13 +82,12 @@ def __consolidar_compras_capital():
     return df
 
 
-def consolidar():
+def consolidar(data_extracao):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Alagoas')
-    despesas = __consolidar_despesas()
+    despesas = __consolidar_despesas(data_extracao)
 
-    compras_capital = __consolidar_compras_capital()
+    compras_capital = __consolidar_compras_capital(data_extracao)
     despesas = despesas.append(compras_capital)
 
     salvar(despesas, 'AL')
-

@@ -3,11 +3,10 @@ Extrai os dados de todos os portais para os quais o respectivo scrapper já foi 
 na pasta dados, na raiz do projeto. Os novos scrapers devem ser adicionados ao script manualmente.
 """
 
+import logging
 import os
 import sys
-import logging
 import time
-import datetime
 
 # Adiciona diretorio raiz ao PATH. Devido a ausência de setup.py, isto garante que as importações sempre funcionarão
 diretorio_raiz = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
@@ -38,14 +37,11 @@ from covidata.webscraping.scrappers.SE import uf_se
 from covidata.webscraping.scrappers.PB import uf_pb
 from covidata.webscraping.scrappers.DF import uf_df
 from covidata.webscraping.scrappers.RN import uf_rn
-from covidata import config
 
 if __name__ == '__main__':
     logger = logging.getLogger('covidata')
     logger.setLevel(logging.INFO)
     logger.addHandler(logging.StreamHandler())
-
-    data_extracao = datetime.datetime.now()
 
     start_time = time.time()
 
@@ -129,9 +125,5 @@ if __name__ == '__main__':
 
     logger.info('# Recuperando dados de Tocantins...')
     uf_to.main()
-
-    # Salva a data/hora da extração.
-    f = open(config.arquivo_data_extracao, "w+")
-    f.write(str(data_extracao))
 
     logger.info("--- %s minutos ---" % ((time.time() - start_time) / 60))

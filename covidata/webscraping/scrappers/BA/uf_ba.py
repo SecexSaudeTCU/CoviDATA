@@ -1,3 +1,4 @@
+import datetime
 import logging
 import time
 
@@ -7,7 +8,7 @@ from bs4 import BeautifulSoup
 
 from covidata import config
 from covidata.persistencia.dao import persistir
-
+from covidata.webscraping.scrappers.BA.consolidacao_BA import consolidar
 
 def pt_BA():
     page = requests.get(config.url_pt_BA)
@@ -39,6 +40,7 @@ def pt_BA():
 
 
 def main():
+    data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
@@ -47,6 +49,6 @@ def main():
 
     logger.info('Consolidando as informações no layout padronizado...')
     start_time = time.time()
-    consolidar()
+    consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 

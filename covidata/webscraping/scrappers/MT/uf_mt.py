@@ -55,12 +55,10 @@ def baixar_arquivo(soup, descricao, nome_arquivo):
 def main():
     logger = logging.getLogger('covidata')
     #TODO: Erro, mesmo executando fora de run.py
-    """
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
     pt_MT()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
-    """
 
     logger.info('Portal de transparência da capital...')
     start_time = time.time()

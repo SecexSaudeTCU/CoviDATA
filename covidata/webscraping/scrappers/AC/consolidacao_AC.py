@@ -115,6 +115,7 @@ def __consolidar_despesas(data_extracao):
                         consolidacao.DOCUMENTO_DATA: '\nData do Empenho\n',
                         consolidacao.FONTE_RECURSOS_COD: '\nFonte de Recurso\n',
                         consolidacao.VALOR_EMPENHADO: '\nValor Empenhado\r\n  ($)\n',
+                        # TODO: Dúvida: Podemos assumir para VALOR_R$ o valor empenhado, quando essa informação não estiver disponível?
                         consolidacao.VALOR_CONTRATO: '\nValor Empenhado\r\n  ($)\n'}
     # TODO: Sugerir uma nova coluna 'TIPO_FONTE'
     # TODO: Nem sempre esta informação está presente

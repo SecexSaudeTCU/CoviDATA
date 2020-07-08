@@ -1,3 +1,4 @@
+import datetime
 import os
 from os import path
 import time
@@ -6,6 +7,7 @@ import logging
 import pandas as pd
 
 from covidata import config
+from covidata.webscraping.scrappers.DF.consolidacao_DF import consolidar
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
 
@@ -44,9 +46,15 @@ class PortalTransparencia_DF(SeleniumDownloader):
 
 
 def main():
+    data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
     logger.info('Portal de transparência distrital...')
     start_time = time.time()
     pt_DF = PortalTransparencia_DF()
     pt_DF.download()
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+    logger.info('Consolidando as informações no layout padronizado...')
+    start_time = time.time()
+    consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))

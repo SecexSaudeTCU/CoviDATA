@@ -36,7 +36,6 @@ def __consolidar_despesas_capital(data_extracao):
                         consolidacao.ELEMENTO_DESPESA_DESCRICAO: 'Elemento Despesa',
                         consolidacao.VALOR_EMPENHADO: 'Total Empenhado',
                         consolidacao.VALOR_LIQUIDADO: 'Total Liquidado', consolidacao.VALOR_PAGO: 'Total Pago'}
-    # TODO Renomear Processo de Origem para NÚMERO PROCESSO
     colunas_adicionais = ['Processo de Origem', 'Data', 'Categoria', 'Status']
     planilha_original = path.join(config.diretorio_dados, 'MS', 'portal_transparencia', 'Campo Grande',
                                   'Despesas – Transparência Covid19 – Prefeitura de Campo Grande.xlsx')

@@ -1,4 +1,6 @@
+import datetime
 import logging
+import os
 import time
 from os import path
 
@@ -11,6 +13,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from covidata import config
 from covidata.persistencia.dao import persistir
+from covidata.webscraping.scrappers.MA.consolidacao_MA import consolidar
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
 
@@ -53,22 +56,27 @@ def pt_sao_luis():
 
     for linha in linhas:
         data = linha.find_all("td")
-        nova_linha = [data[0].next_element.attrs['href']]
+        nova_linha = [data[1].next_element.attrs['href']]
         nova_linha += [data[i].get_text() for i in range(len(data))]
         lista_linhas.append(nova_linha)
 
     df = pd.DataFrame(lista_linhas, columns=colunas)
-    #persistir(df, 'portal_transparencia', 'contratacoes', 'MA', 'São Luís')
     persistir(df, 'portal_transparencia', 'contratacoes', 'MA', 'São Luís')
 
 
 def main():
+    data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
     logger.info('Tribunal de contas estadual...')
     start_time = time.time()
     tce_ma = TCE_MA()
     tce_ma.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+    # Renomeia o arquivo
+    diretorio = path.join(config.diretorio_dados, 'MA', 'tce')
+    arquivo = os.listdir(diretorio)[0]
+    os.rename(path.join(diretorio, arquivo), path.join(diretorio, 'licitacoes.xls'))
 
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
@@ -79,6 +87,11 @@ def main():
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_sao_luis()
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+    logger.info('Consolidando as informações no layout padronizado...')
+    start_time = time.time()
+    consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
 

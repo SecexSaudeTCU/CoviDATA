@@ -37,6 +37,7 @@ from covidata.webscraping.scrappers.SE import uf_se
 from covidata.webscraping.scrappers.PB import uf_pb
 from covidata.webscraping.scrappers.DF import uf_df
 from covidata.webscraping.scrappers.RN import uf_rn
+from covidata.webscraping.scrappers.MA import uf_ma
 
 if __name__ == '__main__':
     logger = logging.getLogger('covidata')
@@ -71,6 +72,9 @@ if __name__ == '__main__':
 
     logger.info('# Recuperando dados de Goiás...')
     uf_go.main()
+
+    logger.info('# Recuperando dados do Maranhão...')
+    uf_ma.main()
 
     logger.info('# Recuperando dados de Mato Grosso...')
     uf_mt.main()

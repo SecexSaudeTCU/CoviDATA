@@ -1,3 +1,4 @@
+import datetime
 import logging
 import time
 from os import path
@@ -8,6 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from covidata import config
 from covidata.webscraping.downloader import FileDownloader
+from covidata.webscraping.scrappers.MG.consolidacao_MG import consolidar
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
 
@@ -23,6 +25,7 @@ class PortalTransparencia_MG(SeleniumDownloader):
 
 
 def main():
+    data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
@@ -41,3 +44,7 @@ def main():
 
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
+    logger.info('Consolidando as informações no layout padronizado...')
+    start_time = time.time()
+    consolidar(data_extracao)
+    logger.info("--- %s segundos ---" % (time.time() - start_time))

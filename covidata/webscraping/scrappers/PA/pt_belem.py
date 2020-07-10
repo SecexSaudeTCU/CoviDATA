@@ -18,6 +18,9 @@ class PortalTransparencia_Belem(SeleniumDownloader):
     def _executar(self):
         wait = WebDriverWait(self.driver, 30)
 
+        #Aguarda pelo carregamento completo da página
+        time.sleep(10)
+
         frame = wait.until(EC.visibility_of_element_located((By.NAME, 'myiFrame')))
         self.driver.switch_to.frame(frame)
 

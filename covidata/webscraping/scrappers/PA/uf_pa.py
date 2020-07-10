@@ -1,3 +1,4 @@
+import datetime
 import json
 import logging
 import os
@@ -8,7 +9,8 @@ import pandas as pd
 
 from covidata import config
 from covidata.webscraping.downloader import FileDownloader
-
+from covidata.webscraping.scrappers.PA.consolidacao_PA import consolidar
+from covidata.webscraping.scrappers.PA import pt_belem
 
 def pt_PA():
     downloader = FileDownloader(path.join(config.diretorio_dados, 'PA', 'portal_transparencia'), config.url_pt_PA,
@@ -37,6 +39,7 @@ def pt_PA():
 
 
 def main():
+    data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
@@ -52,4 +55,12 @@ def main():
     tcm_PA_2 = FileDownloader(path.join(config.diretorio_dados, 'PA', 'tcm'), config.url_tcm_PA_2,
                               'Argus TCMPA - Fornecedores por Quantidade de Municípios.xlsx')
     tcm_PA_2.download()
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+    #Processamento relativo à capital
+    pt_belem.main()
+
+    logger.info('Consolidando as informações no layout padronizado...')
+    start_time = time.time()
+    consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))

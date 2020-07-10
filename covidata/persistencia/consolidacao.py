@@ -1,7 +1,9 @@
 import os
 from os import path
 
+import numpy as np
 import pandas as pd
+
 from covidata import config
 
 ANO_PADRAO = 2020
@@ -232,11 +234,13 @@ def __converter_dataframes(df_original, dicionario_dados, colunas_adicionais, uf
     df = pd.DataFrame(columns=COLUNAS_DESPESAS)
 
     for coluna_padronizada, coluna_correspondente in dicionario_dados.items():
-        df[coluna_padronizada] = df_original[coluna_correspondente]
+        #df[coluna_padronizada] = df_original.get(coluna_correspondente, '')
+        df[coluna_padronizada] = df_original.get(coluna_correspondente, np.nan)
 
     if colunas_adicionais:
         for coluna in colunas_adicionais:
-            df[coluna.upper().strip()] = df_original[coluna]
+            #df[coluna.upper().strip()] = df_original.get(coluna, '')
+            df[coluna.upper().strip()] = df_original.get(coluna, np.nan)
 
     df[FONTE_DADOS] = fonte_dados
 

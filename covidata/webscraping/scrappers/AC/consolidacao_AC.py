@@ -16,9 +16,11 @@ from covidata.persistencia.consolidacao import consolidar_layout, salvar
 def pos_processar_despesas(df):
     # Elimina a última linha, que só contém um totalizador
     df = df.drop(df.index[-1])
+
     df = df.astype({consolidacao.CONTRATADO_CNPJ: np.uint64, consolidacao.DOCUMENTO_NUMERO: np.uint64})
     df = df.astype({consolidacao.CONTRATADO_CNPJ: str, consolidacao.DOCUMENTO_NUMERO: str})
-    df[consolidacao.TIPO_DOCUMENTO] = 'EMPENHO'
+
+    df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
     df.fillna('')
 
     for i in range(0, len(df)):

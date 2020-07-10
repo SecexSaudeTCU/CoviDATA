@@ -1,3 +1,4 @@
+import datetime
 import logging
 import os
 import time
@@ -8,9 +9,11 @@ from bs4 import BeautifulSoup
 
 from covidata import config
 from covidata.webscraping.downloader import download
+from covidata.webscraping.scrappers.PE.consolidacao_PE import consolidar
 
 
 def main():
+    data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
@@ -26,22 +29,27 @@ def main():
                'Fundo Municipal da Pessoa Idosa', 'Secretaria de Educação',
                'Secretaria de Governo e Participação Social', 'Secretaria de Infraestrutura',
                'Secretaria de Saúde']
-    baixar_arquivos_em_tres_niveis(nivel1, ul_nivel2, nivel2='Com base na Lei nº 13.979/2020',
-                                   niveis3=setores)
+    __baixar_arquivos_em_tres_niveis(nivel1, ul_nivel2, nivel2='Com base na Lei nº 13.979/2020',
+                                     niveis3=setores)
 
-    baixar_arquivos_em_tres_niveis(nivel1, ul_nivel2, nivel2='Com base na Lei nº 8.666/ 1993',
-                                   niveis3=['Secretaria de Saúde'])
+    __baixar_arquivos_em_tres_niveis(nivel1, ul_nivel2, nivel2='Com base na Lei nº 8.666/ 1993',
+                                     niveis3=['Secretaria de Saúde'])
 
-    baixar_arquivos_em_dois_niveis(results, setores, nivel1='Publicações em Diário Oficial')
+    __baixar_arquivos_em_dois_niveis(results, setores, nivel1='Publicações em Diário Oficial')
 
     temas = ['Matérias Televisivas', 'Dificuldades do Mercado PrIvado', 'Matérias Preços Abusivos',
              'Matérias Escassez de Insumos', 'Matérias Prazos de Entregas']
 
-    baixar_arquivos_em_dois_niveis(results, temas, nivel1='Notícias sobre aquisições e contratações')
+    __baixar_arquivos_em_dois_niveis(results, temas, nivel1='Notícias sobre aquisições e contratações')
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+    logger.info('Consolidando as informações no layout padronizado...')
+    start_time = time.time()
+    consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
 
-def baixar_arquivos_em_dois_niveis(results, titulos, nivel1='Publicações em Diário Oficial'):
+def __baixar_arquivos_em_dois_niveis(results, titulos, nivel1='Publicações em Diário Oficial'):
     span = results.find_all('span', string=nivel1)
     ul_nivel2 = span[0].next_sibling
 
@@ -49,10 +57,10 @@ def baixar_arquivos_em_dois_niveis(results, titulos, nivel1='Publicações em Di
         span = ul_nivel2.find_all('span', string=titulo)
         lista = span[0].next_sibling
         links = lista.find_all('a')
-        baixar_arquivos_lista(links, nivel1, titulo, '')
+        __baixar_arquivos_lista(links, nivel1, titulo, '')
 
 
-def baixar_arquivos_em_tres_niveis(nivel1, ul_nivel2, nivel2, niveis3):
+def __baixar_arquivos_em_tres_niveis(nivel1, ul_nivel2, nivel2, niveis3):
     span = ul_nivel2.find_all('span', string=nivel2)
     ul = span[0].next_sibling
 
@@ -60,10 +68,10 @@ def baixar_arquivos_em_tres_niveis(nivel1, ul_nivel2, nivel2, niveis3):
         span = ul.find_all('span', string=nivel3)
         lista = span[0].next_sibling
         links = lista.find_all('a')
-        baixar_arquivos_lista(links, nivel1, nivel2, nivel3)
+        __baixar_arquivos_lista(links, nivel1, nivel2, nivel3)
 
 
-def baixar_arquivos_lista(links, nivel1, nivel2, nivel3):
+def __baixar_arquivos_lista(links, nivel1, nivel2, nivel3):
     arquivos = 0
     for link in links:
         url = link.attrs['href']

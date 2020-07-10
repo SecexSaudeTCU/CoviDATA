@@ -167,7 +167,7 @@ VALOR_PAGO = 'VALOR_PAGO'
 RP_PAGO = 'RP_PAGO'
 
 """
-TABELA 1B – Informações de empenho por item 
+TABELA 1B – Informações de empenho por item
 """
 ####################
 ## Dados principais
@@ -234,8 +234,9 @@ def __converter_dataframes(df_original, dicionario_dados, colunas_adicionais, uf
     for coluna_padronizada, coluna_correspondente in dicionario_dados.items():
         df[coluna_padronizada] = df_original[coluna_correspondente]
 
-    for coluna in colunas_adicionais:
-        df[coluna.upper().strip()] = df_original[coluna]
+    if colunas_adicionais:
+        for coluna in colunas_adicionais:
+            df[coluna.upper().strip()] = df_original[coluna]
 
     df[FONTE_DADOS] = fonte_dados
 

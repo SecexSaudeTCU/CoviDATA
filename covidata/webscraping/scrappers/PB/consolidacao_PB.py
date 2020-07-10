@@ -10,6 +10,7 @@ from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout, salvar
 
 
+
 def pre_processar_pt_PB(df):
 
     # Remove a última linha do objeto pandas DataFrame "df"
@@ -28,7 +29,9 @@ def pre_processar_pt_PB(df):
     df = df[['Contrato', 'Nº Licitação', 'Início', 'Final', 'Órgão',
              'Nome Favorecido', 'CNPJ/CPF Favorecido', 'Objetivo',
              'Valor']]
+
     return df
+
 
 def pos_processar_pt_PB(df):
 
@@ -41,9 +44,6 @@ def pos_processar_pt_PB(df):
             df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
 
     return df
-
-
-
 
 
 def consolidar_pt_PB(data_extracao):
@@ -71,6 +71,7 @@ def consolidar_pt_PB(data_extracao):
     df = consolidar_layout(colunas_adicionais, df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_PB, 'PB', '',
                            data_extracao, pos_processar_pt_PB)
+
     return df
 
 
@@ -103,9 +104,10 @@ def consolidar_pt_JoaoPessoa(data_extracao):
 def consolidar(data_extracao):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Paraíba')
+
     consolidacoes = consolidar_pt_PB(data_extracao)
     consolidacao_pt_JoaoPessoa = consolidar_pt_JoaoPessoa(data_extracao)
 
-    consolidacoes = consolidacoes.append(consolidacao_pt_JoaoPessoa)
+    consolidacoes = consolidacoes.append(consolidacao_pt_JoaoPessoa, ignore_index=True, sort=False)
 
     salvar(consolidacoes, 'PB')

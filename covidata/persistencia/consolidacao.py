@@ -261,4 +261,4 @@ def salvar(df, uf, nome=''):
     if not path.exists(diretorio):
         os.makedirs(diretorio)
 
-    df.to_excel(path.join(diretorio, uf + nome + '.xlsx'))
+    df.to_excel(path.join(diretorio, uf + nome + '.xlsx'), index=False)

@@ -9,7 +9,6 @@ import json
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-import numpy as np
 import pandas as pd
 
 from covidata import config

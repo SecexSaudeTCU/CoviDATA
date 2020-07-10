@@ -1,3 +1,4 @@
+import datetime
 import logging
 import os
 import time
@@ -9,6 +10,7 @@ from bs4 import BeautifulSoup
 from covidata import config
 from covidata.persistencia.dao import persistir
 from covidata.webscraping.downloader import download
+from covidata.webscraping.scrappers.MT.consolidacao_MT import consolidar
 
 
 def pt_MT():
@@ -53,6 +55,7 @@ def baixar_arquivo(soup, descricao, nome_arquivo):
 
 
 def main():
+    data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
@@ -62,4 +65,9 @@ def main():
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_Cuiaba()
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+    logger.info('Consolidando as informações no layout padronizado...')
+    start_time = time.time()
+    consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))

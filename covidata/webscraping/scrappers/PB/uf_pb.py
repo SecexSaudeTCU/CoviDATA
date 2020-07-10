@@ -14,6 +14,7 @@ import pandas as pd
 
 from covidata import config
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
+from covidata.webscraping.scrappers.PB.consolidacao_PB import consolidar
 
 
 # Define a classe referida como herdeira da class "SeleniumDownloader"
@@ -44,45 +45,8 @@ class PortalTransparencia_PB(SeleniumDownloader):
         # Seleciona a opção "Excel" do dropdown menu salvando o arquivo "xlsx" contendo os dados de contratos COVID-19
         self.driver.find_element_by_xpath('//*[@id="RPTRender_ctl09_ctl04_ctl00_Menu"]/div[2]/a').click()
 
-        # On hold por 5 segundos
-        time.sleep(5)
-        #
-        # Lê o arquivo "xlsx" de contratos baixado como um objeto pandas DataFrame selecionando as linhas e colunas úteis
-        df_contratos = pd.read_excel(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'Paraiba',
-                                               'ListaContratos.xlsx'), usecols=[0, 3, 4, 5, 6, 7, 9, 11],
-                                     skiprows=list(range(4)))
-
-        # Remove a última linha do objeto pandas DataFrame "df_contratos"
-        df_contratos.drop(df_contratos.tail(1).index, inplace=True)
-
-        # Converte as colunas de datas para objetos string
-        for col in np.array(['Início', 'Final']):
-            df_contratos[col] = df_contratos[col].apply(lambda x: x.strftime('%d/%m/%Y'))
-
-        # Acrescenta a coluna "Nome Favorecido" ao objeto pandas DataFrame "df_contratos"
-        df_contratos['Nome Favorecido'] = df_contratos['Contratado'].apply(lambda x: x.split(' - ')[1])
-        # Acrescenta a coluna "CNPJ/CPF Favorecido" ao objeto pandas DataFrame "df_contratos"
-        df_contratos['CNPJ/CPF Favorecido'] = df_contratos['Contratado'].apply(lambda x: x.split(' - ')[0])
-
-        # Reordena as colunas do objeto pandas DataFrame "df_contratos"
-        df_contratos = df_contratos[['Contrato', 'Nº Licitação', 'Início', 'Final', 'Órgão',
-                                     'Nome Favorecido', 'CNPJ/CPF Favorecido', 'Objetivo',
-                                     'Valor']]
-
-        # Cria arquivo "xlsx" e aloca file handler de escrita para a variável "writer"
-        with pd.ExcelWriter(path.join(config.diretorio_dados, 'PB', 'portal_transparencia',
-                                      'Paraiba', 'Dados_Portal_Transparencia_Paraiba.xlsx')) as writer:
-            # Salva os dados de empenhos contidos em "df_contratos" na planilha "Contratos"
-            df_contratos.to_excel(writer, sheet_name='Contratos', index=False)
-
-        # Deleta o arquivo "xlsx" de nome "ListaContratos"
-        os.unlink(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'Paraiba', 'ListaContratos.xlsx'))
-
 
 def pt_JoaoPessoa():
-    """
-    Ponto de entrada do script.
-    """
 
     # Realiza o web scraping da tabela principal do portal da transparência de João Pessoa
     json_content = __baixa_arquivo()
@@ -94,10 +58,8 @@ def pt_JoaoPessoa():
     diretorio_jp = os.path.join(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'JoaoPessoa'))
     if not os.path.exists(diretorio_jp): os.makedirs(diretorio_jp)
 
-    # Cria arquivo "xlsx" e aloca file handler de leitura para a variável "writer"
-    with pd.ExcelWriter(path.join(diretorio_jp, 'Dados_Portal_Transparencia_JoaoPessoa.xlsx')) as writer:
-        # Salva os dados de despesas contidos em "df_despesas" na planilha "Despesas"
-        df_despesas.to_excel(writer, sheet_name='Despesas', index=False)
+    # Salva os dados de despesas contidos em "df_despesas" num arquivo "xlsx"
+    df_despesas.to_excel(os.path.join(diretorio_jp, 'Dados_Portal_Transparencia_JoaoPessoa.xlsx'), index=False)
 
 
 def __baixa_arquivo():
@@ -105,7 +67,7 @@ def __baixa_arquivo():
     Realiza o web scraping do conteúdo da tabela principal do portal e retorna o conteúdo no formato JSON.
     """
 
-    # URL utilizada ara obnteção de dados mostrados no painel do PT João Pessoa
+    # URL utilizada para obtenção de dados mostrados no painel do PT João Pessoa
     url = 'https://transparencia.joaopessoa.pb.gov.br:8080/despesas-detalhamento'
 
     # Cabeçalhos da requisição POST
@@ -176,6 +138,7 @@ def __esquadrinha_json(json):
 
 
 def main():
+    data_extracao = datetime.now()
     logger = logging.getLogger('covidata')
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
@@ -186,4 +149,9 @@ def main():
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_JoaoPessoa()
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+    logger.info('Consolidando as informações no layout padronizado...')
+    start_time = time.time()
+    consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))

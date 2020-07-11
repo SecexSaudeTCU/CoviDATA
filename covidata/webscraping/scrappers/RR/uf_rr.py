@@ -2,6 +2,7 @@ import os
 from os import path
 import logging
 import time
+from datetime import datetime
 import requests
 import json
 
@@ -9,6 +10,7 @@ import pandas as pd
 
 from covidata import config
 from covidata.webscraping.downloader import FileDownloader
+from covidata.webscraping.scrappers.RR.consolidacao_RR import consolidar
 
 
 
@@ -107,15 +109,21 @@ def __esquadrinha_json(json):
 
 
 def main():
+    data_extracao = datetime.now()
     logger = logging.getLogger('covidata')
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
-    pt_RR = FileDownloader(path.join(config.diretorio_dados, 'RR', 'portal_transparencia'), config.url_pt_RR,
-                           'covid19_1592513934.xls')
+    pt_RR = FileDownloader(path.join(config.diretorio_dados, 'RR', 'portal_transparencia', 'Roraima'), config.url_pt_RR,
+                           'Dados_Portal_Transparencia_Roraima.xls')
     pt_RR.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_BoaVista()
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+    logger.info('Consolidando as informações no layout padronizado...')
+    start_time = time.time()
+    consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))

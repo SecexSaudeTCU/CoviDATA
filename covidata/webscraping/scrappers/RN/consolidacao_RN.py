@@ -2,7 +2,6 @@ import logging
 from os import path
 from glob import glob
 
-import numpy as np
 import pandas as pd
 
 from covidata import config
@@ -17,6 +16,8 @@ def pre_processar_pt_Natal(df):
     # Reordena as colunas do objeto pandas DataFrame "df"
     df = df[['Credor', 'CPF/CNPJ', 'Empenhado', 'Anulado', 'Liquidado', 'Pago']]
 
+    # Preenche com zeros à esquerda a coluna especificada convertida em string até ter...
+    # tamanho 14
     df['CPF/CNPJ'] = df['CPF/CNPJ'].apply(lambda x: str(x).zfill(14))
 
     return df

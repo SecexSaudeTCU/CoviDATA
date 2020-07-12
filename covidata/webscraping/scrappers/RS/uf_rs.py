@@ -19,7 +19,7 @@ def pt_RioGrandeSul():
     # Realiza o web scraping da tabela principal do portal da transparência do Rio Grande do Sul
     json = __baixa_arquivo()
 
-    # Realiza o parsing do arquivo JSON para extração dos dados da tabela e retorna um objeto pandas DataFrame
+    # Realiza o "parsing" do arquivo JSON para extração dos dados da tabela e retorna um objeto pandas DataFrame
     df_licitacoes = __esquadrinha_json(json)
 
     # Cria diretório do portal da transparência do Rio Grande do Sul
@@ -110,7 +110,7 @@ def __esquadrinha_json(json):
                            col_preco_total, col_arrematante, col_CNPJ_arrematante,
                            col_url_documentos, col_url_propostas, col_unidade_valor,
                            col_data_homologacao)),
-                      columns=['Número Licitação', 'Tipo Objeto', 'Modalidade Licitacao',
+                      columns=['Número Licitação', 'Tipo Objeto', 'Modalidade Licitação',
                                'Central Compras', 'Data Abertura', 'Situação Oferta',
                                'Número Lote', 'Situação Lote', 'Número Item',
                                'Descrição Item', 'Quantidade', 'Preço Unitário',
@@ -126,16 +126,16 @@ def main():
     data_extracao = datetime.now()
     logger = logging.getLogger('covidata')
 
+    logger.info('Portal de transparência estadual...')
+    start_time = time.time()
+    pt_RioGrandeSul()
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
+
     logger.info('Tribunal de contas estadual...')
     start_time = time.time()
     tce = FileDownloader(path.join(config.diretorio_dados, 'RS', 'tce'), config.url_tce_RS,
                            'licitações_-_covid-19.xls')
     tce.download()
-    logger.info("--- %s segundos ---" % (time.time() - start_time))
-
-    logger.info('Portal de transparência estadual...')
-    start_time = time.time()
-    pt_RioGrandeSul()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     logger.info('Consolidando as informações no layout padronizado...')

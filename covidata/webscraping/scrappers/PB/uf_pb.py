@@ -54,7 +54,7 @@ def pt_JoaoPessoa():
     df_despesas = __esquadrinha_json(json_content)
 
     # Cria diretório do portal da transparência de João Pessoa
-    diretorio_jp = os.path.join(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'JoaoPessoa'))
+    diretorio_jp = os.path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'JoaoPessoa')
     if not os.path.exists(diretorio_jp): os.makedirs(diretorio_jp)
 
     # Salva os dados de despesas contidos em "df_despesas" num arquivo "xlsx"
@@ -98,7 +98,7 @@ def __baixa_arquivo():
 
 def __esquadrinha_json(json):
     """
-    Realiza o "parsing" (esquadrinha) do arquivo JSON e retorna o conteúdo da tabela em Data Frame.
+    Realiza o parsing do arquivo JSON e retorna o conteúdo da tabela em Data Frame.
     """
 
     # Inicializa objetos list para armazenar dados contidos no "dicionário" "json"

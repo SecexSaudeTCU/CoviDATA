@@ -16,14 +16,14 @@ from covidata.webscraping.scrappers.RR.consolidacao_RR import consolidar
 
 def pt_BoaVista():
 
-    # Realiza o web scraping da tabela principal do portal da transparência de João Pessoa
+    # Realiza o web scraping da tabela principal do portal da transparência de Boa VIsta
     json = __baixa_arquivo()
 
     # Realiza o "parsing" do arquivo JSON para extração dos dados da tabela e retorna um objeto pandas DataFrame
     df_contratos = __esquadrinha_json(json)
 
-    # Cria diretório do portal da transparência de João Pessoa
-    diretorio_bv = os.path.join(path.join(config.diretorio_dados, 'RR', 'portal_transparencia', 'BoaVista'))
+    # Cria diretório do portal da transparência de Boa Vista
+    diretorio_bv = os.path.join(config.diretorio_dados, 'RR', 'portal_transparencia', 'BoaVista')
     if not os.path.exists(diretorio_bv): os.makedirs(diretorio_bv)
 
     # Salva os dados de despesas contidos em "df_contratos" num arquivo "xlsx"
@@ -35,7 +35,7 @@ def __baixa_arquivo():
     Realiza o web scraping do conteúdo da tabela principal do portal e retorna o conteúdo no formato JSON.
     """
 
-    # URL utilizada ara obtenção de dados mostrados no painel do PT Boa Vista
+    # URL utilizada para obtenção de dados mostrados no painel do PT Boa Vista
     url = 'https://transparencia.boavista.rr.gov.br/covid-19/json'
 
     # Cabeçalhos da requisição GET
@@ -53,7 +53,7 @@ def __baixa_arquivo():
 
 def __esquadrinha_json(json):
     """
-    Realiza o "parsing" (esquadrinha) do arquivo JSON e retorna o conteúdo da tabela em Data Frame.
+    Realiza o parsing do arquivo JSON e retorna o conteúdo da tabela em Data Frame.
     """
 
     # O arquivo "json" é um dicionário cuja única chave é "processos"

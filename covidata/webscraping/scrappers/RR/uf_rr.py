@@ -19,14 +19,14 @@ def pt_BoaVista():
     # Realiza o web scraping da tabela principal do portal da transparência de Boa VIsta
     json = __baixa_arquivo()
 
-    # Realiza o "parsing" do arquivo JSON para extração dos dados da tabela e retorna um objeto pandas DataFrame
+    # Realiza o parsing do arquivo JSON para extração dos dados da tabela e retorna um objeto pandas DataFrame
     df_contratos = __esquadrinha_json(json)
 
     # Cria diretório do portal da transparência de Boa Vista
     diretorio_bv = os.path.join(config.diretorio_dados, 'RR', 'portal_transparencia', 'BoaVista')
     if not os.path.exists(diretorio_bv): os.makedirs(diretorio_bv)
 
-    # Salva os dados de despesas contidos em "df_contratos" num arquivo "xlsx"
+    # Salva os dados de contratos contidos em "df_contratos" num arquivo "xlsx"
     df_contratos.to_excel(os.path.join(diretorio_bv, 'Dados_Portal_Transparencia_BoaVista.xlsx'), index=False)
 
 

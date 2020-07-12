@@ -19,7 +19,7 @@ def pt_RioGrandeSul():
     # Realiza o web scraping da tabela principal do portal da transparência do Rio Grande do Sul
     json = __baixa_arquivo()
 
-    # Realiza o "parsing" do arquivo JSON para extração dos dados da tabela e retorna um objeto pandas DataFrame
+    # Realiza o parsing do arquivo JSON para extração dos dados da tabela e retorna um objeto pandas DataFrame
     df_licitacoes = __esquadrinha_json(json)
 
     # Cria diretório do portal da transparência do Rio Grande do Sul
@@ -35,7 +35,7 @@ def __baixa_arquivo():
     Realiza o web scraping do conteúdo da tabela principal do portal e retorna o conteúdo no formato JSON.
     """
 
-    # URL utilizada ara obtenção de dados mostrados no painel do PT Boa Vista
+    # URL utilizada para obtenção de dados mostrados no painel do PT Rio Grande do Sul
     url = 'https://www.compras.rs.gov.br/transparencia/editais-covid19.json?contexto=Celic&start=0&length=100000&draw=1'
 
     # Cabeçalhos da requisição GET

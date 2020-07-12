@@ -50,7 +50,7 @@ def pt_JoaoPessoa():
     # Realiza o web scraping da tabela principal do portal da transparência de João Pessoa
     json_content = __baixa_arquivo()
 
-    # Realiza o "parsing" do arquivo JSON para extração dos dados da tabela e retorna um objeto pandas DataFrame
+    # Realiza o parsing do arquivo JSON para extração dos dados da tabela e retorna um objeto pandas DataFrame
     df_despesas = __esquadrinha_json(json_content)
 
     # Cria diretório do portal da transparência de João Pessoa

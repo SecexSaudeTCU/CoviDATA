@@ -13,8 +13,8 @@ from covidata.persistencia.consolidacao import consolidar_layout, salvar
 
 def pre_processar_pt_RR(df):
 
-    # Lê o segundo elemento do objeto list que constitui os dados como um objeto pandas DataFrame
-    df = pd.DataFrame(df[1])
+    # Lê o segundo elemento do objeto list que se constitui em um objeto pandas DataFrame
+    df = df[1]
 
     # Elimina o nível mais alto dos nomes de colunas de "df"
     df.columns = df.columns.droplevel()
@@ -104,7 +104,7 @@ def consolidar_pt_BoaVista(data_extracao):
                           'Quantidade Produto', 'PU Produto', 'Data Contrato',
                           'Prazo Execução']
 
-    # Lê o arquivo "xlsx" de nome de despesas baixado como um objeto pandas DataFrame
+    # Lê o arquivo "xlsx" de despesas baixado como um objeto pandas DataFrame
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'RR', 'portal_transparencia',
                                 'BoaVista', 'Dados_Portal_Transparencia_BoaVista.xlsx'))
 

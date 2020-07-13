@@ -1,5 +1,5 @@
 # CoviDATA
-Web scraping de portais de transparência para obtenção de dados de contratações relacionadas ao COVID-19
+Web scraping de portais de transparência para obtenção de dados de contratações relacionadas à COVID-19
 
 # Instalação e Uso
 Caso ainda não instaladas, instalar as bibliotecas selenium, webdriver-manager, beautifulsoup4, XlsxWriter, html5lib, xlwt e pandas. Em seguida, a partir de um terminal, com Git e Python (versão 3.7) disponíveis, executar os comandos a seguir:

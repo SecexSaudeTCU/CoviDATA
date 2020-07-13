@@ -1,5 +1,6 @@
 import datetime
 import logging
+import time
 from os import path
 
 import pandas as pd
@@ -16,9 +17,15 @@ def pos_processar_dados_abertos(df):
     return df
 
 
-def posprocessar_aquisicoes_capital(df):
+def pos_processar_aquisicoes_capital(df):
     df[consolidacao.MUNICIPIO_DESCRICAO] = 'Curitiba'
     df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
+    return df
+
+
+def pos_processar_licitacoes_capital(df):
+    df = pos_processar_aquisicoes_capital(df)
+    df[consolidacao.TIPO_DOCUMENTO] = consolidacao.TIPO_FAVORECIDO_CNPJ
     return df
 
 
@@ -52,12 +59,12 @@ def __consolidar_aquisicoes_capital(data_extracao):
     planilha_original = path.join(config.diretorio_dados, 'PR', 'portal_transparencia', 'Curitiba', 'aquisicoes.xlsx')
     df_original = pd.read_excel(planilha_original, header=7)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Curitiba_aquisicoes
+    codigo_municipio_ibge = get_codigo_municipio_por_nome('Curitiba', 'PR')
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
-                           fonte_dados, 'PR', get_codigo_municipio_por_nome('Curitiba', 'PR'), data_extracao,
-                           posprocessar_aquisicoes_capital)
+                           fonte_dados, 'PR', codigo_municipio_ibge, data_extracao,
+                           pos_processar_aquisicoes_capital)
     return df
 
-#TODO: TESTAR
 def __consolidar_licitacoes_capital(data_extracao):
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'ÓRGÃO', consolidacao.UG_DESCRICAO: 'ÓRGÃO',
                         consolidacao.DESPESA_DESCRICAO: 'OBJETO',
@@ -74,10 +81,11 @@ def __consolidar_licitacoes_capital(data_extracao):
                           'VIGENCIA DO CONTRATO', 'VALOR CANCELADO', 'BOLETIM DE PAGAMENTO', 'A PAGAR']
     planilha_original = path.join(config.diretorio_dados, 'PR', 'portal_transparencia', 'Curitiba',
                                   'licitacoes_contratacoes.csv')
-    df_original = pd.read_csv(planilha_original)
+    df_original = pd.read_csv(planilha_original, sep=';', header=0, encoding='ISO-8859-1')
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Curitiba_contratacoes
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
-                           fonte_dados, 'PR', get_codigo_municipio_por_nome('Curitiba', 'PR'), data_extracao)
+                           fonte_dados, 'PR', get_codigo_municipio_por_nome('Curitiba', 'PR'), data_extracao,
+                           pos_processar_licitacoes_capital)
     return df
 
 
@@ -111,9 +119,8 @@ def consolidar(data_extracao, url_fonte_aquisicoes, url_fonte_dados_abertos):
     aquisicoes_capital = __consolidar_aquisicoes_capital(data_extracao)
     aquisicoes = aquisicoes.append(aquisicoes_capital)
 
+    licitacoes_capital = __consolidar_licitacoes_capital(data_extracao)
+    aquisicoes = aquisicoes.append(licitacoes_capital)
+
     salvar(aquisicoes, 'PR')
 
-
-consolidar(datetime.datetime.now(),
-           'http://www.coronavirus.pr.gov.br/sites/cadastrocovid19/arquivos_restritos/files/documento/2020-06/aquisicoes_e_contratacoes_0.xls',
-           'http://www.coronavirus.pr.gov.br/sites/cadastrocovid19/arquivos_restritos/files/documento/2020-07/dados_abertos.xlsx')

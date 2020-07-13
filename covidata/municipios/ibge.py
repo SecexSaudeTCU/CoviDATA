@@ -1,3 +1,5 @@
+import os
+
 import requests
 import json
 from covidata import config
@@ -11,8 +13,9 @@ def get_municipios_por_uf(sigla_uf):
     """
     id_uf = __get_id_uf_por_sigla(sigla_uf)
 
-    retorno = requests.get(config.url_api_ibge + '/' + str(id_uf) + '/municipios')
-    resultado = json.loads(retorno.content)
+    #retorno = requests.get(config.url_api_ibge + '/' + str(id_uf) + '/municipios')
+    #resultado = json.loads(retorno.content)
+    resultado = __get(config.url_api_ibge + '/' + str(id_uf) + '/municipios', str(id_uf) + '.json')
 
     mapa_municipio_id = dict()
 
@@ -20,6 +23,7 @@ def get_municipios_por_uf(sigla_uf):
         mapa_municipio_id[municipio['nome'].upper()] = municipio['id']
 
     return mapa_municipio_id
+
 
 def get_codigo_municipio_por_nome(nome, sigla_uf):
     """
@@ -31,14 +35,26 @@ def get_codigo_municipio_por_nome(nome, sigla_uf):
     municipios = get_municipios_por_uf(sigla_uf)
     return municipios[nome.upper()]
 
+
 def __get_id_uf_por_sigla(sigla):
     # Recupera a lista de todas as UFs
-
-    retorno = requests.get(config.url_api_ibge)
-    resultado = json.loads(retorno.content)
+    resultado = __get(config.url_api_ibge, 'estados.json')
 
     for estado in resultado:
         if estado['sigla'] == sigla:
             return estado['id']
 
     return None
+
+
+def __get(uri, arquivo_local):
+    resultado = None
+    try:
+        retorno = requests.get(uri, timeout=10)
+        resultado = json.loads(retorno.content)
+    except requests.exceptions.ReadTimeout:
+        # Utiliza cache local
+        dirname = os.path.dirname(os.path.realpath(__file__))
+        with open(os.path.join(dirname, arquivo_local)) as json_file:
+            resultado = json.load(json_file)
+    return resultado

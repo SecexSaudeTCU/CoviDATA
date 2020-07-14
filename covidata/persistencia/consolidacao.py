@@ -127,6 +127,7 @@ SUBTITULO_DESCRICAO = 'SUBTITULO_DESCRICAO'
 MOD_APLICACAO_COD = 'MOD_APLICACAO_COD'
 
 # Descrição da Modalidade de Aplicação.
+# TODO: Pode significar modalidade de licitação?
 MOD_APLIC_DESCRICAO = 'MOD_APLIC_DESCRICAO'
 
 # Código do Grupo de Natureza de Despesa.
@@ -176,6 +177,9 @@ TABELA 1B – Informações de empenho por item
 ####################
 
 # Número do Empenho (UG + Gestão + Empenho) (Campo chave).
+# TODO: O que significa "gestão"? O número do empenho nunca está neste formato.
+# TODO: Verificar se nas planilhas já consolidadas que possuem informações de itens de empenho essa informação
+# este número está repetido.
 DOCUMENTO_NUMERO = 'DOCUMENTO_NUMERO'
 
 # Unidade de medida do item de empenho.
@@ -234,12 +238,12 @@ def __converter_dataframes(df_original, dicionario_dados, colunas_adicionais, uf
     df = pd.DataFrame(columns=COLUNAS_DESPESAS)
 
     for coluna_padronizada, coluna_correspondente in dicionario_dados.items():
-        #df[coluna_padronizada] = df_original.get(coluna_correspondente, '')
+        # df[coluna_padronizada] = df_original.get(coluna_correspondente, '')
         df[coluna_padronizada] = df_original.get(coluna_correspondente, np.nan)
 
     if colunas_adicionais:
         for coluna in colunas_adicionais:
-            #df[coluna.upper().strip()] = df_original.get(coluna, '')
+            # df[coluna.upper().strip()] = df_original.get(coluna, '')
             df[coluna.upper().strip()] = df_original.get(coluna, np.nan)
 
     df[FONTE_DADOS] = fonte_dados

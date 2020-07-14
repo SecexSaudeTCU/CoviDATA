@@ -13,9 +13,13 @@ def get_municipios_por_uf(sigla_uf):
     """
     id_uf = __get_id_uf_por_sigla(sigla_uf)
 
-    #retorno = requests.get(config.url_api_ibge + '/' + str(id_uf) + '/municipios')
-    #resultado = json.loads(retorno.content)
-    resultado = __get(config.url_api_ibge + '/' + str(id_uf) + '/municipios', str(id_uf) + '.json')
+    arquivo_fallback = str(id_uf) + '.json'
+    resultado = __get(config.url_api_ibge + '/' + str(id_uf) + '/municipios', arquivo_fallback)
+
+    # Salva o arquivo como cache, em caso de indisponibilidade futura da API.
+    dirname = os.path.dirname(os.path.realpath(__file__))
+    with open(os.path.join(dirname, arquivo_fallback), 'w') as outfile:
+        json.dump(resultado, outfile)
 
     mapa_municipio_id = dict()
 

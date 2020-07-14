@@ -23,3 +23,5 @@ def main():
         config.url_pt_Rio_despesas_por_ato, '_arquivos_Open_Data_Desp_Ato_Covid19_2020.txt')
     pt_Rio_despesas_por_ato.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+main()

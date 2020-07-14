@@ -28,7 +28,7 @@ def pre_processar_tce(df):
                        1: 'Modalidade Licitação',
                        2: 'Número Licitação',
                        3: 'Ano',
-                       4: 'Processo',
+                       4: 'Número Processo',
                        5: 'Objeto',
                        6: 'Valor Homologado',
                        7: 'Resultado Licitação',

@@ -14,6 +14,16 @@ def pos_consolidar_despesas(df):
     df = df.astype({consolidacao.CONTRATADO_CNPJ: np.uint64})
     df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
 
+    df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
+
+    for i in range(0, len(df)):
+        tamanho = len(df.loc[i, consolidacao.CONTRATADO_CNPJ])
+
+        if tamanho < 14:
+            df.loc[i, consolidacao.CONTRATADO_CNPJ] = '0' * (14 - tamanho) + df.loc[i, consolidacao.CONTRATADO_CNPJ]
+
+    return df
+
     df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
 
     return  df
@@ -50,5 +60,3 @@ def consolidar(data_extracao):
 
     salvar(despesas, 'RO')
 
-
-consolidar(datetime.datetime.now())

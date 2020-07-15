@@ -29,7 +29,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import requests
 
-from covidata.config import diretorio_dados
+from covidata.config import diretorio_dados, url_tce_RJ
 
 
 def main():
@@ -62,7 +62,7 @@ def __baixa_arquivo():
     """
 
     # URL utilizada pelo Power BI para obnteção de dados mostrados no painel do TCE-RJ
-    url = 'https://wabi-brazil-south-api.analysis.windows.net/public/reports/querydata?synchronous=true'
+    url = url_tce_RJ
 
     # Cabeçalhos da requisção POST
     headers = {"Host": "wabi-brazil-south-api.analysis.windows.net", "Connection": "keep-alive", "Content-Length": "5686", "Accept": "application/json, text/plain, */*", "RequestId": "9df85402-7893-05d0-7d11-db4e62e17f73", "X-PowerBI-ResourceKey": "9926f3ef-e5a3-4ae7-a300-3c0027b04e32", "Content-Type": "application/json;charset=UTF-8", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36", "ActivityId": "81bc4a2a-3f9c-485c-a7a2-9154c1a1e600", "Origin": "https://app.powerbi.com", "Sec-Fetch-Site": "cross-site", "Sec-Fetch-Mode": "cors", "Sec-Fetch-Dest": "empty", "Referer": "https://app.powerbi.com/view?r=eyJrIjoiOTkyNmYzZWYtZTVhMy00YWU3LWEzMDAtM2MwMDI3YjA0ZTMyIiwidCI6IjJjYmJlYmU0LTc2MzgtNDYxYi05ZjhjLTE2MmVkZGMzZDBlNCJ9", "Accept-Encoding": "gzip, deflate, br", "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7,de;q=0.6,it;q=0.5,fr;q=0.4,es;q=0.3"}

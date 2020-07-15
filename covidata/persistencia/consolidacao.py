@@ -243,7 +243,6 @@ def __converter_dataframes(df_original, dicionario_dados, colunas_adicionais, uf
 
     if colunas_adicionais:
         for coluna in colunas_adicionais:
-            # df[coluna.upper().strip()] = df_original.get(coluna, '')
             df[coluna.upper().strip()] = df_original.get(coluna, np.nan)
 
     df[FONTE_DADOS] = fonte_dados

@@ -48,6 +48,7 @@ url_tce_AC_contratos_municipios = 'http://www.tce.ac.gov.br/covid19/Contratos-Mu
 url_tce_AC_despesas_municipios = 'http://www.tce.ac.gov.br/covid19/despesas_municipios_html.html'
 url_tce_MA = 'https://www6.tce.ma.gov.br/sacop/muralsite/muralcovid.zul'
 url_tce_RS = 'http://www1.tce.rs.gov.br/aplicprod/f?p=50500:16::XLS::::&cs=3Hn8jXEOKZFSR4U62TfOfBk7Yeas'
+url_tce_RJ = 'https://wabi-brazil-south-api.analysis.windows.net/public/reports/querydata?synchronous=true'
 
 # URLSs de portais de transparência de govenos municipais (capitais)
 url_pt_Manaus = 'https://covid19.manaus.am.gov.br/transparencia-covid-19/'

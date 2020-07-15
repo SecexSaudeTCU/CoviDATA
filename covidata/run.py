@@ -15,7 +15,7 @@ sys.path.append(diretorio_raiz)
 from covidata.webscraping.scrappers.AM import uf_am
 from covidata.webscraping.scrappers.CE import uf_ce
 from covidata.webscraping.scrappers.PA import uf_pa
-from covidata.webscraping.scrappers.RJ import pt_rj_capital, tce_rj
+from covidata.webscraping.scrappers.RJ import uf_rj
 from covidata.webscraping.scrappers.PE import pt_pe_capital
 from covidata.webscraping.scrappers.AP import uf_ap
 from covidata.webscraping.scrappers.RR import uf_rr
@@ -98,8 +98,7 @@ if __name__ == '__main__':
     pt_pe_capital.main()
 
     logger.info('# Recuperando dados do Rio de Janeiro...')
-    tce_rj.main()
-    pt_rj_capital.main()
+    uf_rj.main()
 
     logger.info('# Recuperando dados de Rio Grande do Norte...')
     uf_rn.main()

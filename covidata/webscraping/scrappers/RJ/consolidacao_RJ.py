@@ -1,4 +1,3 @@
-import datetime
 import logging
 from os import path
 
@@ -81,9 +80,8 @@ def __consolidar_despesas_capital(data_extracao):
     colunas_adicionais = ['Poder', 'UO', 'NomeUO', 'Orgao', 'Processo', 'Licitacao', 'Liquidacao', 'Pagamento', 'Banco',
                           'NomeBanco', 'Agencia', 'ContaCorrente', 'NomeContaCorrente', 'ASPS', 'MDE',
                           'ExercicioContrato', 'NumeroContrato', 'Historico', 'Legislacao']
-    # TODO: Testar com arquivo .txt
     planilha_original = path.join(config.diretorio_dados, 'RJ', 'portal_transparencia', 'Rio de Janeiro',
-                                  '_arquivos_Open_Data_Desp_Ato_Covid19_2020.csv')
+                                  '_arquivos_Open_Data_Desp_Ato_Covid19_2020.txt')
     df_original = pd.read_csv(planilha_original, sep=';', encoding='ISO-8859-1')
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Rio_despesas_por_ato
     codigo_municipio_ibge = get_codigo_municipio_por_nome('Rio de Janeiro', 'RJ')
@@ -171,7 +169,6 @@ def __consolidar_favorecidos_capital(data_extracao):
                            fonte_dados, 'RJ', codigo_municipio_ibge, data_extracao, pos_processar_favorecidos_capital)
     return df
 
-#TODO: Terminar de testar
 def __consolidar_compras_diretas(data_extracao):
     dicionario_dados = {consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.CONTRATANTE_DESCRICAO: 'Unidade',
                         consolidacao.UG_DESCRICAO: 'Unidade', consolidacao.CONTRATADO_DESCRICAO: 'Fornecedor',
@@ -193,18 +190,16 @@ def consolidar(data_extracao):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Rio de Janeiro')
 
-    compras_diretas = __consolidar_compras_diretas(data_extracao)
+    #df = __consolidar_compras_diretas(data_extracao)
 
-    despesas_capital = __consolidar_despesas_capital(data_extracao)
-    compras_diretas = compras_diretas.append(despesas_capital)
+    df = __consolidar_despesas_capital(data_extracao)
+    #df = df.append(df)
 
     contratos_capital = __consolidar_contratos_capital(data_extracao)
-    compras_diretas = compras_diretas.append(contratos_capital)
+    df = df.append(contratos_capital)
 
     favorecidos_capital = __consolidar_favorecidos_capital(data_extracao)
-    compras_diretas = compras_diretas.append(favorecidos_capital)
+    df = df.append(favorecidos_capital)
 
-    salvar(compras_diretas, 'RJ')
+    salvar(df, 'RJ')
 
-
-#consolidar(datetime.datetime.now())

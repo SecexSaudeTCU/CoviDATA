@@ -1,3 +1,4 @@
+import datetime
 import logging
 import time
 
@@ -5,8 +6,6 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 from bs4 import Tag
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
 
 from covidata import config
 from covidata.persistencia.dao import persistir
@@ -53,17 +52,30 @@ def pt_TO():
                 valor = texto[texto.rfind('\n') + 1: len(texto)]
                 linhas_total_por_orgao.append([nome_orgao, valor])
             else:
-                tds = sibling.find_all('td')
-                if len(tds) >= len(nomes_colunas):
-                    # indicativo de linha de conteúdo
-                    linha = [nome_orgao]
+                trs = sibling.find_all('tr')
+                for tr in trs:
+                    tds = tr.find_all('td')
+                    if len(tds) >= len(nomes_colunas):
+                        # indicativo de linha de conteúdo
+                        linha = [nome_orgao]
 
-                    for td in tds:
-                        texto_tag = td.get_text().strip()
-                        if texto_tag != '':
-                            linha.append(texto_tag)
+                        for td in tds:
+                            texto_tag = td.get_text().strip()
+                            if texto_tag != '':
+                                linha.append(texto_tag)
 
-                    linhas.append(linha)
+                        # A quinta coluna, caso preenchida, tem que estar no formato data, e a sexta coluna,
+                        # caso prenchida, tem que ser um número.  Estas verificações têm por objetivo contornar o
+                        # problema das colunas não obrigatórias.
+                        try:
+                            datetime.datetime.strptime(linha[5], '%d/%m/%Y')
+                        except ValueError:
+                            linha.insert(5, '')
+
+                        if not linha[6].isnumeric():
+                            linha.insert(6, '')
+
+                        linhas.append(linha)
 
     __persistir(colunas_total_por_orgao, colunas_total_por_processo, colunas_total_por_tipo_contratacao, linhas,
                 linhas_total_por_orgao, linhas_total_por_processo, linhas_total_por_tipo_contratacao, nomes_colunas)
@@ -90,3 +102,5 @@ def main():
     pt_TO()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
+
+#main()

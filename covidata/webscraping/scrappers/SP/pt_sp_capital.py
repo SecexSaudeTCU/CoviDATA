@@ -5,9 +5,12 @@ import logging
 import platform
 import time
 from os import path
-
+import os
+from glob import glob
 import requests
+
 from bs4 import BeautifulSoup, Tag
+import pandas as pd
 
 from covidata import config
 from covidata.webscraping.downloader import download
@@ -36,6 +39,44 @@ def main():
         meses = meses + [__get_nome_mes(i) for i in range(1, mes_atual + 1)]
 
     __baixar_arquivos(meses)
+
+    # Obtém objeto list dos arquivos armazenados no path passado como argumento para a função nativa "glob"
+    list_files = glob(path.join(config.diretorio_dados, 'SP', 'portal_transparencia', 'São Paulo/*'))
+
+    df = pd.DataFrame(columns=['Número Processo', 'Data Publicação', 'Modalidade Licitação', 'Órgão', 'Contratada', 'CNPJ',
+                               'Objeto', 'Item', 'Quantidade', 'Unidade Item', 'PU Item', 'Preço Item',
+                               'Valor Total', 'Prazo', 'Unidade tempo', 'Local Entrega', 'Texto Publicado'])
+
+    for file_name in list_files:
+
+        if file_name.endswith('xls'):
+
+            frame = pd.read_excel(file_name)
+
+            frame.rename(columns=lambda x: x.strip(), inplace=True)
+
+            frame.rename(index=str,
+                         columns={'Processo': 'Número Processo',
+                                  'Data de Publicação': 'Data Publicação',
+                                  'Modalidade': 'Modalidade Licitação',
+                                  'Descrição': 'Unidade Item',
+                                  'Valor Unitário': 'PU Item',
+                                  'Valor total Item': 'Preço Item',
+                                  'Valor Total Contrato': 'Valor Total',
+                                  'Local': 'Local Entrega',
+                                  'Texto Públicado': 'Texto Publicado'},
+                         inplace=True)
+
+            frame = frame[['Número Processo', 'Data Publicação', 'Modalidade Licitação', 'Órgão', 'Contratada',
+                           'CNPJ', 'Objeto', 'Item', 'Quantidade', 'Unidade Item', 'PU Item', 'Preço Item',
+                           'Valor Total', 'Prazo', 'Unidade tempo', 'Local Entrega', 'Texto Publicado']]
+
+            df = pd.concat([df, frame], sort=False)
+
+            os.unlink(file_name)
+
+    df.to_excel(path.join(config.diretorio_dados, 'SP', 'portal_transparencia', 'São Paulo',
+                          'Portal_Transparencia_SP_capital.xlsx'), index=False)
 
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 

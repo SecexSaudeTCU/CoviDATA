@@ -31,13 +31,13 @@ def pre_processar_pt_SC_contratos(df):
                        'DEDESCRICAO': 'Descrição Detalhada Item',
                        'QTITEM': 'Quantidade Item',
                        'VLUNITARIO': 'PU Item',
-                       'VLINFORMADO': 'Valor Item',
+                       'VLINFORMADO': 'Preço Item',
                        'SGUNIDADEMEDIDA': 'Unidade Item',
                        'NUSERVICOMATERIAL': 'Número Serviço/Material',
                        'DESUBITEM': 'Descrição Subitem',
                        'VLUNITARIOSUBITEM': 'PU Subitem',
                        'QTSUBITEM': 'Quantidade Subitem',
-                       'VLINFORMADOSUBITEM': 'Valor Subitem',
+                       'VLINFORMADOSUBITEM': 'Preço Subitem',
                        'SGUNIDADEMEDIDASUBITEM': 'Unidade Subitem',
                        'SIGLAORGAO': 'Sigla Órgão'},
               inplace=True)
@@ -65,7 +65,7 @@ def pre_processar_pt_Florianopolis(df):
                        'Unidade': 'Unidade Objeto',
                        'Quantidade': 'Quantidade Objeto',
                        'Data de Assinatura Instumento Contratual': 'Data Assinatura Contrato',
-                       'Processo de Contratação ou Aquisição  para Download': 'Processo',
+                       'Processo de Contratação ou Aquisição  para Download': 'Número Processo',
                        'Instumento Contratual': 'Número Contrato',
                        'Modalidade de Licitação': 'Modalidade Licitação'},
               inplace=True)
@@ -106,9 +106,9 @@ def consolidar_pt_RS_contratos(data_extracao):
                           'Data Início Vigência', 'Data Fim Vigência', 'Prazo Contratual',
                           'Local Execução', 'Código Item', 'Descrição Item', 'Marca Item',
                           'Descrição Detalhada Item', 'Quantidade Item', 'PU Item',
-                          'Valor Item', 'Unidade Item', 'Número Serviço/Material',
+                          'Preço Item', 'Unidade Item', 'Número Serviço/Material',
                           'Descrição Subitem', 'PU Subitem', 'Quantidade Subitem',
-                          'Valor Subitem', 'Unidade Subitem', 'Sigla Órgão']
+                          'Preço Subitem', 'Unidade Subitem', 'Sigla Órgão']
 
     # Lê o arquivo "xlsx" de contratos baixado como um objeto pandas DataFrame
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'SC', 'portal_transparencia',
@@ -167,7 +167,7 @@ def consolidar_pt_Florianopolis(data_extracao):
     # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
     colunas_adicionais = ['Número Dispensa', 'Local Entrega', 'Unidade Objeto',
                           'Quantidade Objeto', 'Data Assinatura Contrato',
-                          'Processo', 'Número Contrato', 'Modalidade Licitação']
+                          'Número Processo', 'Número Contrato', 'Modalidade Licitação']
 
     # Lê o arquivo "csv" de despesas baixado como um objeto pandas DataFrame
     df_original = pd.read_csv(path.join(config.diretorio_dados, 'SC', 'portal_transparencia',
@@ -191,7 +191,7 @@ def consolidar_pt_Florianopolis(data_extracao):
 
 def consolidar(data_extracao):
     logger = logging.getLogger('covidata')
-    logger.info('Iniciando consolidação dados Rio Grande do Sul')
+    logger.info('Iniciando consolidação dados Santa Catarina')
 
     consolidacoes = consolidar_pt_RS_contratos(data_extracao)
     consolidacao_pt_RS_despesas = consolidar_pt_RS_despesas(data_extracao)

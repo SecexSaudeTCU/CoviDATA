@@ -15,6 +15,7 @@ def pos_processar_despesas_capital(df):
     df[consolidacao.MUNICIPIO_DESCRICAO] = 'Rio de Janeiro'
 
     # Remove notação científica
+    df.fillna('')
     df = df.astype({consolidacao.CONTRATADO_CNPJ: np.uint64, consolidacao.NUMERO_PROCESSO: np.int64})
     df = df.astype({consolidacao.CONTRATADO_CNPJ: str, consolidacao.NUMERO_PROCESSO: str})
 

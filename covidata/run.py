@@ -70,8 +70,9 @@ if __name__ == '__main__':
     logger.info('# Recuperando dados do Espírito Santo...')
     uf_es.main()
 
-    logger.info('# Recuperando dados de Goiás...')
-    uf_go.main()
+    # TODO: Site mudou
+    # logger.info('# Recuperando dados de Goiás...')
+    # uf_go.main()
 
     logger.info('# Recuperando dados do Maranhão...')
     uf_ma.main()

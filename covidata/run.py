@@ -83,7 +83,6 @@ if __name__ == '__main__':
 
     logger.info('# Recuperando dados de Mato Grosso do Sul...')
     uf_ms.main()
-    """
 
     logger.info('# Recuperando dados de Minas Gerais...')
     uf_mg.main()
@@ -102,6 +101,7 @@ if __name__ == '__main__':
 
     logger.info('# Recuperando dados do Rio de Janeiro...')
     uf_rj.main()
+    """
 
     logger.info('# Recuperando dados de Rio Grande do Norte...')
     uf_rn.main()

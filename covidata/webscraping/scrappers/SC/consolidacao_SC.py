@@ -10,9 +10,7 @@ from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout, salvar
 
 
-
 def pre_processar_pt_SC_contratos(df):
-
     # Renomeia as colunas especificadas
     df.rename(index=str,
               columns={'NUCONTRATO': 'Número Contrato',
@@ -46,7 +44,6 @@ def pre_processar_pt_SC_contratos(df):
 
 
 def pre_processar_pt_SC_despesas(df):
-
     # Renomeia as colunas especificadas
     df.rename(index=str,
               columns={'vldotacaoinicial': 'Valor Dotação Inicial',
@@ -57,7 +54,6 @@ def pre_processar_pt_SC_despesas(df):
 
 
 def pre_processar_pt_Florianopolis(df):
-
     # Renomeia as colunas especificadas
     df.rename(index=str,
               columns={'Número Dispensa de Licitação': 'Número Dispensa',
@@ -74,7 +70,6 @@ def pre_processar_pt_Florianopolis(df):
 
 
 def pos_processar_pts(df):
-
     for i in range(len(df)):
         cpf_cnpj = df.loc[str(i), consolidacao.CONTRATADO_CNPJ]
 
@@ -87,7 +82,6 @@ def pos_processar_pts(df):
 
 
 def consolidar_pt_RS_contratos(data_extracao):
-
     # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
     dicionario_dados = {consolidacao.UG_COD: 'CDUNIDADEGESTORA',
                         consolidacao.UG_DESCRICAO: 'NMUGCONTRATANTE',
@@ -97,12 +91,12 @@ def consolidar_pt_RS_contratos(data_extracao):
                         consolidacao.VALOR_CONTRATO: 'VLTOTALATUAL',
                         consolidacao.FONTE_RECURSOS_COD: 'CDFONTERECURSO',
                         consolidacao.FONTE_RECURSOS_DESCRICAO: 'NMFONTERECURSO',
-                        consolidacao.ORGAO_COD : 'CDORGAO',
-                        consolidacao.CONTRATANTE_DESCRICAO: 'NMORGAO'}
+                        consolidacao.ORGAO_COD: 'CDORGAO',
+                        consolidacao.CONTRATANTE_DESCRICAO: 'NMORGAO', consolidacao.DATA_ASSINATURA: 'Data Assinatura'}
 
     # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
     colunas_adicionais = ['Número Contrato', 'Código Gestão', 'Nome Gestão Contratante',
-                          'Modalidade Licitação', 'Número Processo', 'Data Assinatura',
+                          'Modalidade Licitação', 'Número Processo',
                           'Data Início Vigência', 'Data Fim Vigência', 'Prazo Contratual',
                           'Local Execução', 'Código Item', 'Descrição Item', 'Marca Item',
                           'Descrição Detalhada Item', 'Quantidade Item', 'PU Item',
@@ -112,7 +106,7 @@ def consolidar_pt_RS_contratos(data_extracao):
 
     # Lê o arquivo "xlsx" de contratos baixado como um objeto pandas DataFrame
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'SC', 'portal_transparencia',
-                                'contrato_item.xlsx'))
+                                          'contrato_item.xlsx'))
 
     # Chama a função "pre_processar_pt_SC_contratos" definida neste módulo
     df = pre_processar_pt_SC_contratos(df_original)
@@ -126,21 +120,19 @@ def consolidar_pt_RS_contratos(data_extracao):
 
 
 def consolidar_pt_RS_despesas(data_extracao):
-
     # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
-    dicionario_dados = {consolidacao.ORGAO_COD : 'codigoexibicao',
+    dicionario_dados = {consolidacao.ORGAO_COD: 'codigoexibicao',
                         consolidacao.CONTRATANTE_DESCRICAO: 'descricao',
                         consolidacao.VALOR_EMPENHADO: 'vlempenhado',
                         consolidacao.VALOR_LIQUIDADO: 'vlliquidado',
                         consolidacao.VALOR_PAGO: 'vlpago'}
-
 
     # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
     colunas_adicionais = ['Valor Dotação Inicial', 'Valor Dotação Atualizada']
 
     # Lê o arquivo "csv" de despesas baixado como um objeto pandas DataFrame
     df_original = pd.read_csv(path.join(config.diretorio_dados, 'SC', 'portal_transparencia',
-                              'analisedespesa.csv'),
+                                        'analisedespesa.csv'),
                               sep=';',
                               encoding='iso-8859-1')
 
@@ -162,16 +154,17 @@ def consolidar_pt_Florianopolis(data_extracao):
                         consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ do Contratado',
                         consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ do Contratado',
                         consolidacao.DESPESA_DESCRICAO: 'Objeto',
-                        consolidacao.VALOR_CONTRATO: 'Valor Global'}
+                        consolidacao.VALOR_CONTRATO: 'Valor Global',
+                        consolidacao.DATA_ASSINATURA: 'Data Assinatura Contrato'}
 
     # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
     colunas_adicionais = ['Número Dispensa', 'Local Entrega', 'Unidade Objeto',
-                          'Quantidade Objeto', 'Data Assinatura Contrato',
+                          'Quantidade Objeto',
                           'Número Processo', 'Número Contrato', 'Modalidade Licitação']
 
     # Lê o arquivo "csv" de despesas baixado como um objeto pandas DataFrame
     df_original = pd.read_csv(path.join(config.diretorio_dados, 'SC', 'portal_transparencia',
-                              'Florianopolis', 'aquisicoes.csv'),
+                                        'Florianopolis', 'aquisicoes.csv'),
                               sep=';',
                               encoding='iso-8859-1')
 
@@ -184,9 +177,6 @@ def consolidar_pt_Florianopolis(data_extracao):
                            get_codigo_municipio_por_nome('Florianópolis', 'SC'), data_extracao, pos_processar_pts)
 
     return df
-
-
-
 
 
 def consolidar(data_extracao):

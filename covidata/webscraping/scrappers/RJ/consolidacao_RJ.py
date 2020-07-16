@@ -31,8 +31,7 @@ def pos_processar_contratos_capital(df):
     __processar_tipo_favorecido(df)
 
     df = df.rename(
-        columns={'UNIDADE ORÇAMENTÁRIA EXECUTORA': 'UO', 'DESCRIÇÃO DA UNIDADE ORÇAMENTÁRIA EXECUTORA': 'NOMEUO',
-                 'ÓRGÃO EXECUTOR': 'ORGAO'})
+        columns={'UNIDADE ORÇAMENTÁRIA EXECUTORA': 'UO', 'DESCRIÇÃO DA UNIDADE ORÇAMENTÁRIA EXECUTORA': 'NOMEUO'})
     return df
 
 
@@ -44,10 +43,10 @@ def pos_processar_favorecidos_capital(df):
     df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
 
     df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
-    df = df.rename(columns={'UNIDADE ORÇAMENTÁRIA EXECUTORA': 'UO',
-                            'DESCRIÇÃO DA UNIDADE ORÇAMENTÁRIA EXECUTORA': 'NOMEUO', 'ÓRGÃO EXECUTOR': 'ORGAO',
-                            'MODALIDADE': 'MODALIDADE DE LICITAÇÃO', 'AGENCIA BANCO': 'AGENCIA',
-                            'DESCRIÇÃO DA NATUREZA': 'DESCRIÇÃO DA NATUREZA DA DESPESA'})
+    df = df.rename(
+        columns={'UNIDADE ORÇAMENTÁRIA EXECUTORA': 'UO', 'DESCRIÇÃO DA UNIDADE ORÇAMENTÁRIA EXECUTORA': 'NOMEUO',
+                 'MODALIDADE': 'MODALIDADE DE LICITAÇÃO', 'AGENCIA BANCO': 'AGENCIA',
+                 'DESCRIÇÃO DA NATUREZA': 'DESCRIÇÃO DA NATUREZA DA DESPESA'})
     return df
 
 
@@ -78,9 +77,9 @@ def __consolidar_despesas_capital(data_extracao):
                         consolidacao.DOCUMENTO_DATA: 'Data', consolidacao.TIPO_DOCUMENTO: 'TipoAto',
                         consolidacao.DESPESA_DESCRICAO: 'ObjetoContrato', consolidacao.CONTA_CORRENTE: 'ContaCorrente',
                         consolidacao.FUNDAMENTO_LEGAL: 'Legislacao', consolidacao.NUMERO_CONTRATO: 'NumeroContrato',
-                        consolidacao.NUMERO_PROCESSO: 'processo'}
-    colunas_adicionais = ['Poder', 'UO', 'NomeUO', 'Orgao', 'Licitacao', 'Liquidacao', 'Pagamento', 'Banco',
-                          'NomeBanco', 'Agencia', 'NomeContaCorrente', 'ASPS', 'MDE', 'ExercicioContrato', 'Historico']
+                        consolidacao.NUMERO_PROCESSO: 'processo', consolidacao.ORGAO_COD: 'Orgao'}
+    colunas_adicionais = ['Poder', 'UO', 'NomeUO', 'Licitacao', 'Liquidacao', 'Pagamento', 'Banco', 'NomeBanco',
+                          'Agencia', 'NomeContaCorrente', 'ASPS', 'MDE', 'ExercicioContrato', 'Historico']
     planilha_original = path.join(config.diretorio_dados, 'RJ', 'portal_transparencia', 'Rio de Janeiro',
                                   '_arquivos_Open_Data_Desp_Ato_Covid19_2020.txt')
     df_original = pd.read_csv(planilha_original, sep=';', encoding='ISO-8859-1')

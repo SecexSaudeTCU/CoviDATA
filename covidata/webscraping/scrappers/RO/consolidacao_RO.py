@@ -9,6 +9,7 @@ import pandas as pd
 from covidata.persistencia.consolidacao import consolidar_layout, salvar
 import numpy as np
 
+
 def pos_consolidar_despesas(df):
     # Remove notação científica
     df = df.astype({consolidacao.CONTRATADO_CNPJ: np.uint64})
@@ -26,7 +27,8 @@ def pos_consolidar_despesas(df):
 
     df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
 
-    return  df
+    return df
+
 
 def __consolidar_despesas(data_extracao):
     dicionario_dados = {consolidacao.ANO: 'Exercicio', consolidacao.DOCUMENTO_DATA: 'DataDocumento',
@@ -41,9 +43,9 @@ def __consolidar_despesas(data_extracao):
                         consolidacao.CONTRATADO_DESCRICAO: 'Credor',
                         consolidacao.SUBFUNCAO_DESCRICAO: 'DescricaoSubfuncao',
                         consolidacao.VALOR_EMPENHADO: 'ValorEmpenhada', consolidacao.VALOR_LIQUIDADO: 'ValorLiquidada',
-                        consolidacao.VALOR_PAGO: 'ValorPaga'}
-    colunas_adicionais = ['CodProjeto', 'EVENTO', 'N_PROCESSO_NE', 'CodEspecificacaoDespesa', 'CodOrgao', 'NomSigla',
-                          'NumEmpenho', 'DOCUMENT_NE', 'VLR_EMPENHO', 'valorDespesa', 'Status']
+                        consolidacao.VALOR_PAGO: 'ValorPaga', consolidacao.ORGAO_COD: 'CodOrgao'}
+    colunas_adicionais = ['CodProjeto', 'EVENTO', 'N_PROCESSO_NE', 'CodEspecificacaoDespesa', 'NomSigla', 'NumEmpenho',
+                          'DOCUMENT_NE', 'VLR_EMPENHO', 'valorDespesa', 'Status']
     planilha_original = path.join(config.diretorio_dados, 'RO', 'portal_transparencia', 'Despesas.CSV')
     df_original = pd.read_csv(planilha_original, sep=';', header=0, encoding='utf_16_le')
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_RO
@@ -59,4 +61,3 @@ def consolidar(data_extracao):
     despesas = __consolidar_despesas(data_extracao)
 
     salvar(despesas, 'RO')
-

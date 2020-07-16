@@ -16,11 +16,11 @@ def __consolidar_dados_portal_transparencia(data_extracao):
                         consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'VALOR TOTAL',
                         consolidacao.VALOR_CONTRATO: 'VALOR TOTAL',
                         consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'LOCAL ENTREGA/EXECUÇÃO',
-                        consolidacao.NUMERO_PROCESSO: 'PROCESSO'}
-    colunas_adicionais = ['INSTRUMENTO CONTRATUAL', 'CELEBRAÇÃO', 'VIGÊNCIA', 'PUBLICAÇÃO DODF', 'PORTAL COVID-19',
-                          'link_convenio', 'link_contrato', 'link_processo', 'link_plano_de_trabalho',
-                          'link_justificativa', 'lik_edital_credenciamento', 'link_proposta_empresa',
-                          'link_mapa_precos', 'link_projeto_basico', 'link_planilha_consolidada', 'link_termo_aditivo',
+                        consolidacao.NUMERO_PROCESSO: 'PROCESSO', consolidacao.DATA_CELEBRACAO: 'CELEBRAÇÃO'}
+    colunas_adicionais = ['INSTRUMENTO CONTRATUAL', 'VIGÊNCIA', 'PUBLICAÇÃO DODF', 'PORTAL COVID-19', 'link_convenio',
+                          'link_contrato', 'link_processo', 'link_plano_de_trabalho', 'link_justificativa',
+                          'lik_edital_credenciamento', 'link_proposta_empresa', 'link_mapa_precos',
+                          'link_projeto_basico', 'link_planilha_consolidada', 'link_termo_aditivo',
                           'link_termo_de_referência', 'link_nota_tecnica', 'link_termo_colob_emerg']
     for i in range(1, 11):
         colunas_adicionais.append(f'NE{i}')

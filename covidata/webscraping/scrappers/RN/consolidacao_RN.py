@@ -10,9 +10,7 @@ from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout, salvar
 
 
-
 def pre_processar_pt_Natal(df):
-
     # Reordena as colunas do objeto pandas DataFrame "df"
     df = df[['Credor', 'CPF/CNPJ', 'Empenhado', 'Anulado', 'Liquidado', 'Pago']]
 
@@ -24,7 +22,6 @@ def pre_processar_pt_Natal(df):
 
 
 def pos_processar_pt(df):
-
     for i in range(len(df)):
         cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
 
@@ -37,7 +34,6 @@ def pos_processar_pt(df):
 
 
 def consolidar_pt_RN(data_extracao):
-
     # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Contratante',
                         consolidacao.DESPESA_DESCRICAO: 'Objeto',
@@ -46,11 +42,10 @@ def consolidar_pt_RN(data_extracao):
                         consolidacao.VALOR_CONTRATO: 'Valor do Contrato (R$)',
                         consolidacao.CONTRATADO_CNPJ: 'CNPJ/CPF',
                         consolidacao.FONTE_RECURSOS_DESCRICAO: 'Fonte do Recurso',
-                        consolidacao.VALOR_PAGO: 'Valor Pago (R$)'}
+                        consolidacao.VALOR_PAGO: 'Valor Pago (R$)', consolidacao.DATA_ASSINATURA: 'Data Assinatura'}
 
     # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-    colunas_adicionais = ['N. Processo', 'Modalidade', 'Fundamento Legal', 'Data Assinatura',
-                          'Vigência', 'Valor anulado (R$)']
+    colunas_adicionais = ['N. Processo', 'Modalidade', 'Fundamento Legal', 'Vigência', 'Valor anulado (R$)']
 
     # Obtém objeto list dos arquivos armazenados no path passado como argumento para a função nativa "glob"
     list_files = glob(path.join(config.diretorio_dados, 'RN', 'portal_transparencia', 'RioGrandeNorte/*'))
@@ -60,8 +55,9 @@ def consolidar_pt_RN(data_extracao):
 
     # Lê o arquivo "csv" de nome "file_name" de contratos baixado como um objeto pandas DataFrame
     # Usa o parâmetro "error_bad_lines" como "False" para ignorar linhas com problema do arquivo "csv" (primeira solução)
-    df_original = pd.read_csv(path.join(config.diretorio_dados, 'RN', 'portal_transparencia', 'RioGrandeNorte', file_name),
-                              sep=';', error_bad_lines=False)
+    df_original = pd.read_csv(
+        path.join(config.diretorio_dados, 'RN', 'portal_transparencia', 'RioGrandeNorte', file_name),
+        sep=';', error_bad_lines=False)
 
     # Chama a função "consolidar_layout" definida em módulo importado
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
@@ -82,8 +78,9 @@ def consolidar_pt_Natal(data_extracao):
     colunas_adicionais = ['Anulado']
 
     # Lê o arquivo "xlsx" de nome de despesas baixado como um objeto pandas DataFrame
-    df_original = pd.read_excel(path.join(config.diretorio_dados, 'RN', 'portal_transparencia', 'Natal', 'Natal Transparente.xlsx'),
-                                skiprows=[0])
+    df_original = pd.read_excel(
+        path.join(config.diretorio_dados, 'RN', 'portal_transparencia', 'Natal', 'Natal Transparente.xlsx'),
+        skiprows=[0])
 
     # Chama a função "pre_processar_pt_Natal" definida neste módulo
     df = pre_processar_pt_Natal(df_original)

@@ -10,9 +10,7 @@ from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout, salvar
 
 
-
 def pre_processar_pt_PB(df):
-
     # Remove a última linha do objeto pandas DataFrame "df"
     df.drop(df.tail(1).index, inplace=True)
 
@@ -34,7 +32,6 @@ def pre_processar_pt_PB(df):
 
 
 def pos_processar_pt_PB(df):
-
     for i in range(len(df)):
         cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
 
@@ -47,16 +44,15 @@ def pos_processar_pt_PB(df):
 
 
 def consolidar_pt_PB(data_extracao):
-
     # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
     dicionario_dados = {consolidacao.UG_DESCRICAO: 'Órgão',
                         consolidacao.CONTRATADO_CNPJ: 'CNPJ/CPF Favorecido',
                         consolidacao.CONTRATADO_DESCRICAO: 'Nome Favorecido',
                         consolidacao.DESPESA_DESCRICAO: 'Objetivo',
-                        consolidacao.VALOR_CONTRATO: 'Valor'}
+                        consolidacao.VALOR_CONTRATO: 'Valor', consolidacao.NUMERO_CONTRATO: 'Contrato'}
 
     # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-    colunas_adicionais = ['Contrato', 'Nº Licitação', 'Início', 'Final']
+    colunas_adicionais = ['Nº Licitação', 'Início', 'Final']
 
     # Lê o arquivo "xlsx" de contratos baixado como um objeto pandas DataFrame selecionando as linhas e colunas úteis
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'Paraiba',
@@ -91,7 +87,7 @@ def consolidar_pt_JoaoPessoa(data_extracao):
 
     # Lê o arquivo "xlsx" de contratos baixado como um objeto pandas DataFrame selecionando as linhas e colunas úteis
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'JoaoPessoa',
-                                'Dados_Portal_Transparencia_JoaoPessoa.xlsx'))
+                                          'Dados_Portal_Transparencia_JoaoPessoa.xlsx'))
 
     # Chama a função "consolidar_layout" definida em módulo importado
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,

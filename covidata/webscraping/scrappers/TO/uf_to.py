@@ -13,15 +13,6 @@ from covidata.persistencia.dao import persistir
 
 def pt_TO():
     linhas = []
-
-    colunas_total_por_processo = ['Órgão', 'Processo', 'Total do Processo/Contrato']
-    colunas_total_por_tipo_contratacao = ['Órgão', 'Tipo de Contratação', 'Total do Tipo de Contratação']
-    colunas_total_por_orgao = ['Órgão', 'Total do Órgão']
-
-    linhas_total_por_processo = []
-    linhas_total_por_tipo_contratacao = []
-    linhas_total_por_orgao = []
-
     page = requests.get(config.url_pt_TO)
     soup = BeautifulSoup(page.content, 'html.parser')
     linha_titulos = soup.find(id='tit_consulta_contrato_covid_2__SCCS__1')
@@ -40,18 +31,8 @@ def pt_TO():
             texto = sibling.get_text().strip()
             if texto.startswith('Órgão - '):
                 nome_orgao = texto[len('Órgão - '): len(texto)]
-            elif 'Total do Processo/Contrato' in texto:
-                valor = texto[texto.rfind('\n') + 1: len(texto)]
-                processo = linhas[-1][1]
-                linhas_total_por_processo.append([nome_orgao, processo, valor])
-            elif 'Total do Tipo de Contratação' in texto:
-                valor = texto[texto.rfind('\n') + 1: len(texto)]
-                tipo_contratacao = linhas[-1][2]
-                linhas_total_por_tipo_contratacao.append([nome_orgao, tipo_contratacao, valor])
-            elif 'Total do Órgão' in texto:
-                valor = texto[texto.rfind('\n') + 1: len(texto)]
-                linhas_total_por_orgao.append([nome_orgao, valor])
-            else:
+            elif (not ('Total do Processo/Contrato' in texto)) and (not ('Total do Tipo de Contratação' in texto)) and (
+                    not ('Total do Órgão' in texto)):
                 trs = sibling.find_all('tr')
                 for tr in trs:
                     tds = tr.find_all('td')
@@ -77,22 +58,8 @@ def pt_TO():
 
                         linhas.append(linha)
 
-    __persistir(colunas_total_por_orgao, colunas_total_por_processo, colunas_total_por_tipo_contratacao, linhas,
-                linhas_total_por_orgao, linhas_total_por_processo, linhas_total_por_tipo_contratacao, nomes_colunas)
-
-
-def __persistir(colunas_total_por_orgao, colunas_total_por_processo, colunas_total_por_tipo_contratacao, linhas,
-                linhas_total_por_orgao, linhas_total_por_processo, linhas_total_por_tipo_contratacao, nomes_colunas):
     df = pd.DataFrame(linhas, columns=nomes_colunas)
-    df_total_por_processo = pd.DataFrame(linhas_total_por_processo, columns=colunas_total_por_processo)
-    df_total_por_tipo_contratacao = pd.DataFrame(linhas_total_por_tipo_contratacao,
-                                                 columns=colunas_total_por_tipo_contratacao)
-    df_total_por_orgao = pd.DataFrame(linhas_total_por_orgao, columns=colunas_total_por_orgao)
-
     persistir(df, 'portal_transparencia', 'contratos', 'TO')
-    persistir(df_total_por_processo, 'portal_transparencia', 'contratos_totais_por_processo', 'TO')
-    persistir(df_total_por_tipo_contratacao, 'portal_transparencia', 'contratos_totais_por_tipo_contratacao', 'TO')
-    persistir(df_total_por_orgao, 'portal_transparencia', 'contratos_totais_por_orgao', 'TO')
 
 
 def main():
@@ -101,6 +68,3 @@ def main():
     start_time = time.time()
     pt_TO()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
-
-
-#main()

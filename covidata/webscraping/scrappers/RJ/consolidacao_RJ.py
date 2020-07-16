@@ -1,4 +1,5 @@
 import logging
+import os
 from os import path
 
 import numpy as np
@@ -108,17 +109,18 @@ def __consolidar_contratos_capital(data_extracao):
                         # TODO: Em todos os demais consolidadores, substituir o significado destas colunas de modalidade.
                         consolidacao.MOD_APLICACAO_COD: 'Modalidade de aplicação',
                         consolidacao.MOD_APLIC_DESCRICAO: 'Descrição da modalidade de aplicação',
-                        consolidacao.VALOR_CONTRATO: 'Valor atualizado do instrumento'
+                        consolidacao.VALOR_CONTRATO: 'Valor atualizado do instrumento',
+                        consolidacao.CATEGORIA_ECONOMICA_COD: 'Categoria Econômica',
+                        consolidacao.CATEGORIA_ECONOMICA_DESCRICAO: 'Descrição da categoria econômica'
                         }
     colunas_adicionais = ['Nr instrumento', 'Situação', 'Espécie', 'Processo instrutivo', 'Data início previsto',
                           'Data fim previsto', 'Fundamentação Legal', 'Valor inicial do instrumento',
                           'Valor do acréscimo ou redução', 'Valor atualizado do instrumento',
                           'Saldo a executar do instrumento', 'Data da assinatura', 'Data do encerramento',
                           'Órgão executor', 'Unidade orçamentária executora',
-                          'Descrição da unidade orçamentária executora', 'Categoria Econômica',
-                          'Descrição da categoria econômica', 'Modalidade de licitação', 'Natureza da despesa',
-                          'Descrição da natureza da despesa', 'Poder', 'Tipo Administração', 'Dir Ind',
-                          'Programa de trabalho']
+                          'Descrição da unidade orçamentária executora', 'Modalidade de licitação',
+                          'Natureza da despesa', 'Descrição da natureza da despesa', 'Poder', 'Tipo Administração',
+                          'Dir Ind', 'Programa de trabalho']
     planilha_original = path.join(config.diretorio_dados, 'RJ', 'portal_transparencia', 'Rio de Janeiro',
                                   'Open_Data_Contratos_Covid19_2020.xlsx')
     df_original = pd.read_excel(planilha_original)
@@ -146,7 +148,9 @@ def __consolidar_favorecidos_capital(data_extracao):
                         consolidacao.ELEMENTO_DESPESA_COD: 'Elemento de despesa',
                         consolidacao.ELEMENTO_DESPESA_DESCRICAO: 'Descrição do elemento de despesa',
                         consolidacao.MOD_APLICACAO_COD: 'Modalidade de aplicação',
-                        consolidacao.MOD_APLIC_DESCRICAO: 'Descrição da modalidade de aplicação'}
+                        consolidacao.MOD_APLIC_DESCRICAO: 'Descrição da modalidade de aplicação',
+                        consolidacao.CATEGORIA_ECONOMICA_COD: 'Categoria Econômica',
+                        consolidacao.CATEGORIA_ECONOMICA_DESCRICAO: 'Descrição da categoria econômica'}
     colunas_adicionais = ['Órgão do empenho', 'Descrição do órgão do empenho', 'Órgão programa de trabalho',
                           'Unidade programa de trabalho', 'Natureza da despesa', 'Descrição da natureza',
                           'Data da liquidação', 'Data do pagamento', 'Número da liquidação', 'Vl anul liq',
@@ -156,8 +160,7 @@ def __consolidar_favorecidos_capital(data_extracao):
                           'Vl cofins pis pasep csll', 'Vl tafi', 'Vl tafc', 'Vl trfc', 'Modalidade',
                           'Fundamentação Legal', 'Banco', 'Agencia banco', 'Conta banco', 'Órgão instrumento',
                           'Nr instrumento', 'Órgão executor', 'Unidade orçamentária executora',
-                          'Descrição da unidade orçamentária executora', 'Categoria Econômica',
-                          'Descrição da categoria econômica', 'Programa de trabalho',
+                          'Descrição da unidade orçamentária executora', 'Programa de trabalho',
                           'Descrição do programa de trabalho', 'Vl sem retencao', 'Número licitacao', 'Poder',
                           'Tipo Administração', 'Dir Ind']
     planilha_original = path.join(config.diretorio_dados, 'RJ', 'portal_transparencia', 'Rio de Janeiro',
@@ -169,6 +172,7 @@ def __consolidar_favorecidos_capital(data_extracao):
                            fonte_dados, 'RJ', codigo_municipio_ibge, data_extracao, pos_processar_favorecidos_capital)
     return df
 
+
 def __consolidar_compras_diretas(data_extracao):
     dicionario_dados = {consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.CONTRATANTE_DESCRICAO: 'Unidade',
                         consolidacao.UG_DESCRICAO: 'Unidade', consolidacao.CONTRATADO_DESCRICAO: 'Fornecedor',
@@ -177,7 +181,18 @@ def __consolidar_compras_diretas(data_extracao):
                         consolidacao.ITEM_EMPENHO_DESCRICAO: 'Item',
                         consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'Valor Unitário'}
     colunas_adicionais = ['Processo', 'Afastamento', 'Data Aprovação', 'Enquadramento Legal']
-    planilha_original = path.join(config.diretorio_dados, 'RJ', 'tce_rj_compras_diretas_2020-07-08 12h49m41s.xlsx')
+
+    # Renomeia o arquivo
+    diretorio = path.join(config.diretorio_dados, 'RJ')
+    arquivos = os.listdir(diretorio)
+
+    nome_arquivo = 'tce_rj_compras_diretas.xlsx'
+    for arquivo in arquivos:
+        if '.xlsx' in arquivo:
+            os.rename(path.join(diretorio, arquivo), path.join(diretorio, nome_arquivo))
+            break
+
+    planilha_original = path.join(config.diretorio_dados, 'RJ', nome_arquivo)
     df_original = pd.read_excel(planilha_original)
     fonte_dados = consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_RJ
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
@@ -190,10 +205,10 @@ def consolidar(data_extracao):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Rio de Janeiro')
 
-    #df = __consolidar_compras_diretas(data_extracao)
+    df = __consolidar_compras_diretas(data_extracao)
 
-    df = __consolidar_despesas_capital(data_extracao)
-    #df = df.append(df)
+    despesas_capital = __consolidar_despesas_capital(data_extracao)
+    df = df.append(despesas_capital)
 
     contratos_capital = __consolidar_contratos_capital(data_extracao)
     df = df.append(contratos_capital)
@@ -202,4 +217,3 @@ def consolidar(data_extracao):
     df = df.append(favorecidos_capital)
 
     salvar(df, 'RJ')
-

@@ -8,7 +8,7 @@ def main():
     data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
 
-    #tce_rj.main()
+    tce_rj.main()
     pt_rj_capital.main()
 
     logger.info('Consolidando as informações no layout padronizado...')

@@ -201,6 +201,15 @@ ITEM_EMPENHO_DESCRICAO = 'ITEM_EMPENHO_DESCRICAO'
 # Valor total do item de empenho.
 ITEM_EMPENHO_VALOR_TOTAL = 'ITEM_EMPENHO_VALOR_TOTAL'
 
+#################################
+## Colunas comumente encontradas
+#################################
+# Código da categoria econômica (ao que tudo indica, 3 para despesas correntes, 4 para despesas de capital)
+CATEGORIA_ECONOMICA_COD = 'CATEGORIA_ECONOMICA_COD'
+
+# Descrição da categoria econômica
+CATEGORIA_ECONOMICA_DESCRICAO = 'CATEGORIA_ECONOMICA_DESCRICAO'
+
 COLUNAS_DESPESAS = [FONTE_DADOS, DATA_EXTRACAO_DADOS, UF, ESFERA, COD_IBGE_MUNICIPIO, MUNICIPIO_DESCRICAO,
                     CONTRATANTE_CNPJ, CONTRATANTE_DESCRICAO, CONTRATADO_CNPJ, CONTRATADO_DESCRICAO, VALOR_CONTRATO,
                     DESPESA_DESCRICAO, TIPO_DOCUMENTO, DOCUMENTO_NUMERO, DOCUMENTO_DATA]

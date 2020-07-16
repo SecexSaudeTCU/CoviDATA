@@ -35,8 +35,9 @@ def __consolidar_despesas_capital(data_extracao):
                         consolidacao.CONTRATADO_DESCRICAO: 'Fornecedor',
                         consolidacao.ELEMENTO_DESPESA_DESCRICAO: 'Elemento Despesa',
                         consolidacao.VALOR_EMPENHADO: 'Total Empenhado',
-                        consolidacao.VALOR_LIQUIDADO: 'Total Liquidado', consolidacao.VALOR_PAGO: 'Total Pago'}
-    colunas_adicionais = ['Processo de Origem', 'Data', 'Categoria', 'Status']
+                        consolidacao.VALOR_LIQUIDADO: 'Total Liquidado', consolidacao.VALOR_PAGO: 'Total Pago',
+                        consolidacao.CATEGORIA_ECONOMICA_DESCRICAO: 'Categoria'}
+    colunas_adicionais = ['Processo de Origem', 'Data', 'Status']
     planilha_original = path.join(config.diretorio_dados, 'MS', 'portal_transparencia', 'Campo Grande',
                                   'Despesas – Transparência Covid19 – Prefeitura de Campo Grande.xlsx')
     df_original = pd.read_excel(planilha_original, header=1)

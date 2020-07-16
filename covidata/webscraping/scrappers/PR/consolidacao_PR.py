@@ -52,16 +52,17 @@ def __consolidar_aquisicoes_capital(data_extracao):
                         consolidacao.FONTE_RECURSOS_DESCRICAO: 'Fonte', consolidacao.MOD_APLIC_DESCRICAO: 'Modalidade',
                         consolidacao.ELEMENTO_DESPESA_DESCRICAO: 'Elemento',
                         consolidacao.CONTRATANTE_DESCRICAO: 'Órgão', consolidacao.UG_DESCRICAO: 'Órgão',
-                        consolidacao.VALOR_CONTRATO: 'Valor R$'}
-    colunas_adicionais = ['Categoria', 'Grupo']
+                        consolidacao.VALOR_CONTRATO: 'Valor R$', consolidacao.CATEGORIA_ECONOMICA_DESCRICAO: 'Categoria',
+                        consolidacao.GND_DESCRICAO: 'Grupo'}
     planilha_original = path.join(config.diretorio_dados, 'PR', 'portal_transparencia', 'Curitiba', 'aquisicoes.xlsx')
     df_original = pd.read_excel(planilha_original, header=7)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Curitiba_aquisicoes
     codigo_municipio_ibge = get_codigo_municipio_por_nome('Curitiba', 'PR')
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+    df = consolidar_layout([], df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                            fonte_dados, 'PR', codigo_municipio_ibge, data_extracao,
                            pos_processar_aquisicoes_capital)
     return df
+
 
 def __consolidar_licitacoes_capital(data_extracao):
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'ÓRGÃO', consolidacao.UG_DESCRICAO: 'ÓRGÃO',
@@ -94,9 +95,9 @@ def __consolidar_dados_abertos(data_extracao, url_fonte_dados):
                         consolidacao.ELEMENTO_DESPESA_COD: 'ELEMENTO',
                         consolidacao.SUB_ELEMENTO_DESPESA_COD: 'SUBELEMENTO', consolidacao.FONTE_RECURSOS_COD: 'FONTE',
                         consolidacao.VALOR_EMPENHADO: 'EMPENHADO', consolidacao.VALOR_LIQUIDADO: 'LIQUIDADO',
-                        consolidacao.VALOR_PAGO: 'PAGO'}
+                        consolidacao.VALOR_PAGO: 'PAGO', consolidacao.CATEGORIA_ECONOMICA_COD: 'CATEGORIA'}
     colunas_adicionais = ['CONTA CORRENTE', 'MÊS', 'PODER', 'UNIDADE CONTÁBIL', 'UNIDADE ORÇAMENTÁRIA', 'P_A_OE',
-                          'NATUREZA', 'NATUREZA2', 'CATEGORIA', 'ESPECIE', 'OBRA_META', 'HISTORICO', 'Modalidade2']
+                          'NATUREZA', 'NATUREZA2', 'ESPECIE', 'OBRA_META', 'HISTORICO', 'Modalidade2']
     planilha_original = path.join(config.diretorio_dados, 'PR', 'portal_transparencia', 'dados_abertos.xlsx')
     df_original = pd.read_excel(planilha_original)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + url_fonte_dados
@@ -121,4 +122,3 @@ def consolidar(data_extracao, url_fonte_aquisicoes, url_fonte_dados_abertos):
     aquisicoes = aquisicoes.append(licitacoes_capital)
 
     salvar(aquisicoes, 'PR')
-

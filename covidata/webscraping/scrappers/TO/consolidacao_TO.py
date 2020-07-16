@@ -1,11 +1,10 @@
-import datetime
 import logging
+from os import path
+
+import pandas as pd
 
 from covidata import config
 from covidata.persistencia import consolidacao
-from os import path
-import pandas as pd
-
 from covidata.persistencia.consolidacao import consolidar_layout, salvar
 
 
@@ -27,8 +26,10 @@ def __consolidar_contratos(data_extracao):
                         consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.ITEM_EMPENHO_UNIDADE_MEDIDA: 'Unidade',
                         consolidacao.ITEM_EMPENHO_QUANTIDADE: 'Qtde', consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'Valor',
                         consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'Total', consolidacao.TIPO_DOCUMENTO: 'Instrumento',
-                        consolidacao.DOCUMENTO_NUMERO: 'Número', consolidacao.DOCUMENTO_DATA: 'Data'}
-    colunas_adicionais = ['Processo', 'Modalidade', 'Prazo (dias)', 'Local de Entrega']
+                        consolidacao.DOCUMENTO_NUMERO: 'Número', consolidacao.DOCUMENTO_DATA: 'Data',
+                        consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local de Entrega',
+                        consolidacao.PRAZO_EM_DIAS: 'Prazo (dias)', consolidacao.NUMERO_PROCESSO: 'Processo'}
+    colunas_adicionais = ['Modalidade']
     planilha_original = path.join(config.diretorio_dados, 'TO', 'portal_transparencia', 'contratos.xls')
     df_original = pd.read_excel(planilha_original, header=4)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_TO
@@ -45,5 +46,4 @@ def consolidar(data_extracao):
 
     salvar(contratos, 'TO')
 
-
-#consolidar(datetime.datetime.now())
+# consolidar(datetime.datetime.now())

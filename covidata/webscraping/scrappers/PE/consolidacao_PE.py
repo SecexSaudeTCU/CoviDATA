@@ -39,9 +39,11 @@ def __consolidar_dispensas(data_extracao):
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Órgão', consolidacao.UG_DESCRICAO: 'Órgão',
                         consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.CONTRATADO_CNPJ: 'CNPJ',
                         consolidacao.CONTRATADO_DESCRICAO: 'Nome Fornecedor',
-                        consolidacao.VALOR_CONTRATO: 'Valor por Fornecedor\n(R$)'}
-    colunas_adicionais = ['Nº Dispensa', 'Anulação/ Revogação/ Retificação/\nSuspensão', 'Local de Execução',
-                          'Data Vigência', 'Data de Empenho/\nContrato', 'Data de Empenho\nContrato']
+                        consolidacao.VALOR_CONTRATO: 'Valor por Fornecedor\n(R$)',
+                        consolidacao.DATA_FIM_PREVISTO: 'Data Vigência',
+                        consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local de Execução'}
+    colunas_adicionais = ['Nº Dispensa', 'Anulação/ Revogação/ Retificação/\nSuspensão', 'Data de Empenho/\nContrato',
+                          'Data de Empenho\nContrato']
 
     planilhas = [y for x in os.walk(path.join(config.diretorio_dados, 'PE', 'portal_transparencia', 'Recife')) for y in
                  glob(os.path.join(x[0], '*.xlsx'))]

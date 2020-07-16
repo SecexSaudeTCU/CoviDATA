@@ -34,11 +34,12 @@ def __consolidar_dados_contratos_emergenciais(data_extracao):
                         consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'Valor Unitário',
                         consolidacao.ITEM_EMPENHO_QUANTIDADE: 'Quantidade',
                         consolidacao.ITEM_EMPENHO_UNIDADE_MEDIDA: 'Unidade',
-                        consolidacao.MOD_APLIC_DESCRICAO: 'Modalidade de Licitação'}
+                        consolidacao.MOD_APLIC_DESCRICAO: 'Modalidade de Licitação',
+                        consolidacao.DATA_ASSINATURA: 'Data de assinatura',
+                        consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local de Entrega / Execução'}
     colunas_adicionais = ['Número do Processo de Contratação / aquisição', 'Número / Ano do instrumento contratual',
-                          'Data de assinatura', 'Prazo de vigência', 'Local de Entrega / Execução',
-                          'Link do Processo de Contratação/Aquisição', 'Termo de Referência / Projeto Básico',
-                          'Íntegra do Instrumento Contratual']
+                          'Prazo de vigência', 'Link do Processo de Contratação/Aquisição',
+                          'Termo de Referência / Projeto Básico', 'Íntegra do Instrumento Contratual']
     planilha_original = path.join(config.diretorio_dados, 'ES', 'portal_transparencia',
                                   'dados-contratos-emergenciais-covid-19.csv')
     df_original = pd.read_csv(planilha_original, encoding="ISO-8859-1", sep=';')
@@ -71,4 +72,3 @@ def consolidar(data_extracao):
     dados_contratos_emergenciais = dados_contratos_emergenciais.append(licitacoes_capital)
 
     salvar(dados_contratos_emergenciais, 'ES')
-

@@ -12,8 +12,7 @@ from covidata.persistencia.consolidacao import consolidar_layout, salvar
 def pos_processar_contratacoes_capital(df):
     df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
     df[consolidacao.MUNICIPIO_DESCRICAO] = 'Belo Horizonte'
-    df = df.rename(columns={'DATA_INICIO_VIGENCIA': 'INÍCIO DA VIGÊNCIA', 'DATA_FIM_VIGENCIA': 'FIM DA VIGÊNCIA',
-                            'PROCESSO_COMPRA': 'NÚMERO DO PROCESSO DE COMPRA'})
+    df = df.rename(columns={'PROCESSO_COMPRA': 'NÚMERO DO PROCESSO DE COMPRA'})
     return df
 
 
@@ -25,10 +24,13 @@ def __consolidar_compras(data_extracao):
                         consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ do Contratado ',
                         consolidacao.CONTRATADO_DESCRICAO: 'Contratado ',
                         consolidacao.DESPESA_DESCRICAO: 'Objeto do Processo ',
-                        consolidacao.VALOR_CONTRATO: 'Valor Homologado '}
+                        consolidacao.VALOR_CONTRATO: 'Valor Homologado ',
+                        consolidacao.DATA_PUBLICACAO: 'Data da Publicação ',
+                        consolidacao.DATA_FIM_PREVISTO: 'Fim da Vigência ',
+                        consolidacao.INICIO_VIGENCIA: 'Início da Vigência ',
+                        consolidacao.NUMERO_CONTRATO: 'Número do Contrato '}
     colunas_adicionais = ['Número do Processo de Compra ', 'Data de Cadastramento do Processo ',
-                          'Situação do Processo ', 'Número do Contrato ', 'Data da Publicação ', 'Início da Vigência ',
-                          'Fim da Vigência ', 'Fim da Vigência Atualizada ', 'Valor de Referência ',
+                          'Situação do Processo ', 'Fim da Vigência Atualizada ', 'Valor de Referência ',
                           'Valor Homologado ']
     planilha_original = path.join(config.diretorio_dados, 'MG', 'portal_transparencia',
                                   '_Compras - Programa de enfrentamento COVID-19.csv')
@@ -47,9 +49,10 @@ def __consolidar_contratacoes_capital(data_extracao):
                         consolidacao.ITEM_EMPENHO_QUANTIDADE: 'QUANTIDADE',
                         consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'VALOR_UNITÁRIO',
                         consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'VALOR_TOTAL',
-                        consolidacao.MOD_APLIC_DESCRICAO: 'MODALIDADE'}
-    colunas_adicionais = ['DATA_CELEBRACAO', 'DATA_INICIO_VIGENCIA', 'DATA_FIM_VIGENCIA', 'PROCESSO_COMPRA',
-                          'LOCAL_EXECUCAO']
+                        consolidacao.MOD_APLIC_DESCRICAO: 'MODALIDADE',
+                        consolidacao.INICIO_VIGENCIA: 'DATA_INICIO_VIGENCIA',
+                        consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'LOCAL_EXECUCAO'}
+    colunas_adicionais = ['DATA_CELEBRACAO', 'DATA_FIM_VIGENCIA', 'PROCESSO_COMPRA']
     planilha_original = path.join(config.diretorio_dados, 'MG', 'portal_transparencia', 'Belo Horizonte',
                                   'contratacaocorona.xlsx')
     df_original = pd.read_excel(planilha_original)
@@ -69,4 +72,3 @@ def consolidar(data_extracao):
     compras = compras.append(contratacoes_capital)
 
     salvar(compras, 'MG')
-

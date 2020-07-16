@@ -52,12 +52,6 @@ def pos_processar_despesas_municipio(df):
     return df
 
 
-def pos_processar_contratos(df):
-    # Elimina as duas últimas linhas
-    df.drop(df.tail(2).index, inplace=True)
-    return df
-
-
 def pos_processar_contratos_municipios(df):
     # Elimina as três últimas linhas
     df.drop(df.tail(2).index, inplace=True)
@@ -95,7 +89,7 @@ def pos_processar_dispensas_municipios(df):
 def pos_processar_portal_transparencia_capital(df):
     # Elimina as sete últimas linhas
     df.drop(df.tail(7).index, inplace=True)
-    df = df.astype({consolidacao.ANO: np.uint16, 'NÚMERO DO CONTRATO': np.int64})
+    df = df.astype({consolidacao.ANO: np.uint16, consolidacao.NUMERO_CONTRATO: np.int64})
     df[consolidacao.MUNICIPIO_DESCRICAO] = 'RIO BRANCO'
     return df
 
@@ -144,20 +138,23 @@ def __consolidar_despesas_municipios(data_extracao):
 
 def __consolidar_contratos(data_extracao):
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Entidade', consolidacao.DESPESA_DESCRICAO: ' Objeto ',
-                        consolidacao.VALOR_CONTRATO: 'Valor R$', consolidacao.UG_DESCRICAO: 'Entidade'}
-    colunas_adicionais = ['Cód.\r\n  Dispensa', 'Nº Processo', 'Data Pedido', '\xa0Fundamento Legal\xa0']
+                        consolidacao.VALOR_CONTRATO: 'Valor R$', consolidacao.UG_DESCRICAO: 'Entidade',
+                        consolidacao.FUNDAMENTO_LEGAL: '\xa0Fundamento Legal\xa0'}
+    colunas_adicionais = ['Cód.\r\n  Dispensa', 'Nº Processo', 'Data Pedido']
 
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'contratos.xls'), header=4)
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
-                           consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_contratos, 'AC', '', data_extracao,
-                           pos_processar_contratos)
+                           consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_contratos, 'AC', '', data_extracao)
+    # Elimina as duas últimas linhas
+    df.drop(df.tail(2).index, inplace=True)
     return df
 
 
 def __consolidar_contratos_municipios(data_extracao):
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Entidade', consolidacao.DESPESA_DESCRICAO: ' Objeto ',
-                        consolidacao.VALOR_CONTRATO: 'Valor R$', consolidacao.UG_DESCRICAO: 'Entidade'}
-    colunas_adicionais = ['Cód.\r\n  Dispensa', 'Nº Processo', 'Data Pedido', '\xa0Fundamento Legal\xa0']
+                        consolidacao.VALOR_CONTRATO: 'Valor R$', consolidacao.UG_DESCRICAO: 'Entidade',
+                        consolidacao.FUNDAMENTO_LEGAL: '\xa0Fundamento Legal\xa0'}
+    colunas_adicionais = ['Cód.\r\n  Dispensa', 'Nº Processo', 'Data Pedido']
 
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'contratos_municipios.xls'), header=4)
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
@@ -194,11 +191,13 @@ def __consolidar_portal_transparencia_capital(data_extracao):
     dicionario_dados = {consolidacao.ANO: 'Exercício', consolidacao.CONTRATADO_DESCRICAO: 'Fornecedor',
                         consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.MOD_APLIC_DESCRICAO: 'Modalidade',
                         consolidacao.CONTRATANTE_DESCRICAO: 'Secretaria', consolidacao.VALOR_CONTRATO: 'Valor',
-                        consolidacao.UG_DESCRICAO: 'Secretaria'}
-    colunas_adicionais = ['Número do Contrato', 'Número do Processo', 'Data de Assinatura', 'Prazo de Vigência']
+                        consolidacao.UG_DESCRICAO: 'Secretaria', consolidacao.DATA_ASSINATURA: 'Data de Assinatura',
+                        consolidacao.NUMERO_CONTRATO: 'Número do Contrato',
+                        consolidacao.NUMERO_PROCESSO: 'Número do Processo',
+                        consolidacao.DATA_FIM_PREVISTO: 'Prazo de Vigência'}
     df_original = pd.read_excel(
         path.join(config.diretorio_dados, 'AC', 'portal_transparencia', 'Rio Branco', 'webexcel.xls'), header=11)
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+    df = consolidar_layout([], df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                            consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_RioBranco, 'AC',
                            get_codigo_municipio_por_nome('Rio Branco', 'AC'), data_extracao,
                            pos_processar_portal_transparencia_capital)

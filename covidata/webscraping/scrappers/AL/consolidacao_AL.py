@@ -35,34 +35,31 @@ def __consolidar_despesas(data_extracao):
                         consolidacao.ITEM_EMPENHO_UNIDADE_MEDIDA: 'UNIDADE MEDIDA',
                         consolidacao.UG_COD: 'UG', consolidacao.CONTRATADO_DESCRICAO: 'NOME CONTRATADO',
                         consolidacao.DOCUMENTO_NUMERO: 'NOTA EMPENHO', consolidacao.UG_DESCRICAO: 'ORGAO CONTRATANTE',
-                        consolidacao.VALOR_CONTRATO: 'VALOR TOTAL'}
-    colunas_adicionais = ['PRAZO CONTRATUAL', 'DATA CELEBRACAO', 'PROCESSO', 'CONTRATO', 'LOCAL ENTREGA']
+                        consolidacao.VALOR_CONTRATO: 'VALOR TOTAL', consolidacao.DATA_CELEBRACAO: 'DATA CELEBRACAO',
+                        consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'LOCAL ENTREGA',
+                        consolidacao.PRAZO_EM_DIAS: 'PRAZO CONTRATUAL', consolidacao.NUMERO_CONTRATO: 'CONTRATO',
+                        consolidacao.NUMERO_PROCESSO: 'PROCESSO'}
     df_original = pd.read_excel(
         path.join(config.diretorio_dados, 'AL', 'portal_transparencia', 'DESPESAS COM COVID-19.xls'), header=7)
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+    df = consolidar_layout([], df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_AL, 'AL', '',
                            data_extracao, pos_processar_despesas)
-    return df
-
-
-def pos_processar_compras_capital(df):
-    df = df.rename(columns={'NUM_PROCESSO': 'PROCESSO'})
-    df[consolidacao.MUNICIPIO_DESCRICAO] = 'Maceió'
     return df
 
 
 def __consolidar_compras_capital(data_extracao):
     dicionario_dados = {consolidacao.DESPESA_DESCRICAO: 'objeto', consolidacao.MOD_APLICACAO_COD: 'numero_modalidade',
                         consolidacao.ANO: 'ano_modalidade', consolidacao.MOD_APLIC_DESCRICAO: 'modalidade',
-                        consolidacao.CONTRATANTE_DESCRICAO: 'orgao_nome', consolidacao.UG_DESCRICAO: 'orgao_nome'}
-    colunas_adicionais = ['num_processo', 'data_abertura', 'hora_abertura', 'data_fechamento', 'hora_fechamento',
-                          'orgao_sigla', 'cota', 'status', 'responsavel']
+                        consolidacao.CONTRATANTE_DESCRICAO: 'orgao_nome', consolidacao.UG_DESCRICAO: 'orgao_nome',
+                        consolidacao.NUMERO_PROCESSO: 'num_processo'}
+    colunas_adicionais = ['data_abertura', 'hora_abertura', 'data_fechamento', 'hora_fechamento', 'orgao_sigla', 'cota',
+                          'status', 'responsavel']
     df_original = pd.read_excel(
         path.join(config.diretorio_dados, 'AL', 'portal_transparencia', 'Maceio', 'compras.xlsx'))
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Maceio
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
-                           fonte_dados, 'AL', get_codigo_municipio_por_nome('Maceió', 'AL'), data_extracao,
-                           pos_processar_compras_capital)
+                           fonte_dados, 'AL', get_codigo_municipio_por_nome('Maceió', 'AL'), data_extracao)
+    df[consolidacao.MUNICIPIO_DESCRICAO] = 'Maceió'
 
     # Salva arquivos adicionais (informações acessórias que podem ser relevantes)
     planilha_original = os.path.join(config.diretorio_dados, 'AL', 'portal_transparencia', 'Maceio', 'compras.xlsx')

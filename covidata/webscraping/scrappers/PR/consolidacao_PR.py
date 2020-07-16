@@ -34,9 +34,9 @@ def __consolidar_aquisicoes(data_extracao, url_fonte_dados):
                         consolidacao.DESPESA_DESCRICAO: 'OBJETO',
                         consolidacao.ITEM_EMPENHO_QUANTIDADE: 'QUANTIDADE POR UNIDADES / DIÁRIAS',
                         consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'VALOR    UNITÁRIO (R$)',
-                        consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'VALOR                          TOTAL (R$)'}
-    colunas_adicionais = ['DATA  PUBLICAÇÃO                       DIOE / FOLHA', 'PRAZO              CONTRATO (mês)',
-                          'NÚMERO DISPENSA', 'PROTOCOLO / PROCESSO']
+                        consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'VALOR                          TOTAL (R$)',
+                        consolidacao.DATA_PUBLICACAO: 'DATA  PUBLICAÇÃO                       DIOE / FOLHA'}
+    colunas_adicionais = ['PRAZO              CONTRATO (mês)', 'NÚMERO DISPENSA', 'PROTOCOLO / PROCESSO']
     planilha_original = path.join(config.diretorio_dados, 'PR', 'portal_transparencia',
                                   'aquisicoes_e_contratacoes_0.xls')
     df_original = pd.read_excel(planilha_original, header=6, sheet_name='UNIFICAÇÃO DOS 4 MESES')
@@ -52,7 +52,8 @@ def __consolidar_aquisicoes_capital(data_extracao):
                         consolidacao.FONTE_RECURSOS_DESCRICAO: 'Fonte', consolidacao.MOD_APLIC_DESCRICAO: 'Modalidade',
                         consolidacao.ELEMENTO_DESPESA_DESCRICAO: 'Elemento',
                         consolidacao.CONTRATANTE_DESCRICAO: 'Órgão', consolidacao.UG_DESCRICAO: 'Órgão',
-                        consolidacao.VALOR_CONTRATO: 'Valor R$', consolidacao.CATEGORIA_ECONOMICA_DESCRICAO: 'Categoria',
+                        consolidacao.VALOR_CONTRATO: 'Valor R$',
+                        consolidacao.CATEGORIA_ECONOMICA_DESCRICAO: 'Categoria',
                         consolidacao.GND_DESCRICAO: 'Grupo'}
     planilha_original = path.join(config.diretorio_dados, 'PR', 'portal_transparencia', 'Curitiba', 'aquisicoes.xlsx')
     df_original = pd.read_excel(planilha_original, header=7)
@@ -75,9 +76,11 @@ def __consolidar_licitacoes_capital(data_extracao):
                         consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'VALOR TOTAL/GLOBAL',
                         consolidacao.VALOR_EMPENHADO: 'EMPENHADO', consolidacao.DOCUMENTO_NUMERO: 'EMPENHO Nº ',
                         consolidacao.VALOR_LIQUIDADO: 'VALOR LIQUIDADO', consolidacao.VALOR_PAGO: 'VALOR PAGO',
-                        consolidacao.FONTE_RECURSOS_DESCRICAO: 'FONTE DE RECURSOS'}
-    colunas_adicionais = ['LOCAL DA EXECUÇÃO/ENTREGA', 'PUBLICAÇÃO NO DIÁRIO OFICIAL', 'PROTOCOLO', 'Nº CONTRATO',
-                          'VIGENCIA DO CONTRATO', 'VALOR CANCELADO', 'BOLETIM DE PAGAMENTO', 'A PAGAR']
+                        consolidacao.FONTE_RECURSOS_DESCRICAO: 'FONTE DE RECURSOS',
+                        consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'LOCAL DA EXECUÇÃO/ENTREGA',
+                        consolidacao.NUMERO_CONTRATO: 'Nº CONTRATO',
+                        consolidacao.DATA_PUBLICACAO: 'PUBLICAÇÃO NO DIÁRIO OFICIAL'}
+    colunas_adicionais = ['PROTOCOLO', 'VIGENCIA DO CONTRATO', 'VALOR CANCELADO', 'BOLETIM DE PAGAMENTO', 'A PAGAR']
     planilha_original = path.join(config.diretorio_dados, 'PR', 'portal_transparencia', 'Curitiba',
                                   'licitacoes_contratacoes.csv')
     df_original = pd.read_csv(planilha_original, sep=';', header=0, encoding='ISO-8859-1')
@@ -95,9 +98,10 @@ def __consolidar_dados_abertos(data_extracao, url_fonte_dados):
                         consolidacao.ELEMENTO_DESPESA_COD: 'ELEMENTO',
                         consolidacao.SUB_ELEMENTO_DESPESA_COD: 'SUBELEMENTO', consolidacao.FONTE_RECURSOS_COD: 'FONTE',
                         consolidacao.VALOR_EMPENHADO: 'EMPENHADO', consolidacao.VALOR_LIQUIDADO: 'LIQUIDADO',
-                        consolidacao.VALOR_PAGO: 'PAGO', consolidacao.CATEGORIA_ECONOMICA_COD: 'CATEGORIA'}
-    colunas_adicionais = ['CONTA CORRENTE', 'MÊS', 'PODER', 'UNIDADE CONTÁBIL', 'UNIDADE ORÇAMENTÁRIA', 'P_A_OE',
-                          'NATUREZA', 'NATUREZA2', 'ESPECIE', 'OBRA_META', 'HISTORICO', 'Modalidade2']
+                        consolidacao.VALOR_PAGO: 'PAGO', consolidacao.CATEGORIA_ECONOMICA_COD: 'CATEGORIA',
+                        consolidacao.CONTA_CORRENTE: 'CONTA CORRENTE', consolidacao.ESPECIE: 'ESPECIE'}
+    colunas_adicionais = ['MÊS', 'PODER', 'UNIDADE CONTÁBIL', 'UNIDADE ORÇAMENTÁRIA', 'P_A_OE', 'NATUREZA', 'NATUREZA2',
+                          'OBRA_META', 'HISTORICO', 'Modalidade2']
     planilha_original = path.join(config.diretorio_dados, 'PR', 'portal_transparencia', 'dados_abertos.xlsx')
     df_original = pd.read_excel(planilha_original)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + url_fonte_dados

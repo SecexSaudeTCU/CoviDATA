@@ -1,4 +1,3 @@
-import datetime
 import logging
 from os import path
 
@@ -12,7 +11,6 @@ from covidata.persistencia.consolidacao import salvar, consolidar_layout
 
 def pos_processar_despesas_capital(df):
     df[consolidacao.MUNICIPIO_DESCRICAO] = 'Fortaleza'
-    df = df.rename(columns={'N. PROCESSO DE AQUISICAO': 'NUMERO_PROCESSO', 'N. CONTRATO': 'NUMERO_CONTRATO'})
 
     df['temp'] = df[consolidacao.CONTRATANTE_DESCRICAO]
     df[consolidacao.CONTRATANTE_DESCRICAO] = df.apply(
@@ -52,9 +50,11 @@ def __consolidar_gastos(data_extracao):
                         consolidacao.CONTRATANTE_DESCRICAO: 'orgao', consolidacao.UG_DESCRICAO: 'orgao',
                         consolidacao.VALOR_EMPENHADO: 'valor_empenho', consolidacao.CONTRATADO_DESCRICAO: 'credor',
                         consolidacao.MOD_APLIC_DESCRICAO: 'modalidade_licitacao',
-                        consolidacao.ITEM_EMPENHO_DESCRICAO: 'item', consolidacao.VALOR_CONTRATO: 'valor_empenho'}
-    colunas_adicionais = ['numero_contrato', 'natureza', 'fund_legal', 'num_certidao', 'data_termino',
-                          'numero_processo', 'local', 'processo_licitacao', 'integra_contrato']
+                        consolidacao.ITEM_EMPENHO_DESCRICAO: 'item', consolidacao.VALOR_CONTRATO: 'valor_empenho',
+                        consolidacao.FUNDAMENTO_LEGAL: 'fund_legal', consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'local',
+                        consolidacao.NUMERO_CONTRATO: 'numero_contrato',
+                        consolidacao.NUMERO_PROCESSO: 'numero_processo'}
+    colunas_adicionais = ['natureza', 'num_certidao', 'data_termino', 'processo_licitacao', 'integra_contrato']
     planilha_original = path.join(config.diretorio_dados, 'CE', 'portal_transparencia',
                                   'gasto_covid_dados_abertos.xlsx')
     df_original = pd.read_excel(planilha_original)
@@ -70,9 +70,10 @@ def __consolidar_despesas_capital(data_extracao):
                         consolidacao.CONTRATANTE_DESCRICAO: 'UNIDADE ORCAMENTARIA',
                         consolidacao.UG_DESCRICAO: 'UNIDADE ORCAMENTARIA',
                         consolidacao.VALOR_EMPENHADO: 'VALOR EMPENHO', consolidacao.VALOR_CONTRATO: 'VALOR EMPENHO',
-                        consolidacao.CONTRATADO_DESCRICAO: 'CREDOR', consolidacao.CONTRATADO_CNPJ: 'CNPJ / CPF'}
-    colunas_adicionais = ['N. PROCESSO DE AQUISICAO', 'N. CONTRATO', 'TIPO DESPESA', 'SITUACAO EMPENHO',
-                          'VALOR ANULADO']
+                        consolidacao.CONTRATADO_DESCRICAO: 'CREDOR', consolidacao.CONTRATADO_CNPJ: 'CNPJ / CPF',
+                        consolidacao.NUMERO_CONTRATO: 'N. CONTRATO',
+                        consolidacao.NUMERO_PROCESSO: 'N. PROCESSO DE AQUISICAO'}
+    colunas_adicionais = ['TIPO DESPESA', 'SITUACAO EMPENHO', 'VALOR ANULADO']
     planilha_original = path.join(config.diretorio_dados, 'CE', 'portal_transparencia', 'Fortaleza', 'despesas.csv')
     df_original = pd.read_csv(planilha_original, sep=';')
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Fortaleza

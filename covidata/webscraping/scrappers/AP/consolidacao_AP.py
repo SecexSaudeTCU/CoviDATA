@@ -22,7 +22,7 @@ def pos_processar_contratacoes_capital(df):
 
     df['temp'] = df[consolidacao.CONTRATANTE_DESCRICAO]
     df[consolidacao.CONTRATANTE_DESCRICAO] = df.apply(lambda row: row['temp'][0:row['temp'].find('-')], axis=1)
-    df['LOCAL'] = df.apply(
+    df[consolidacao.LOCAL_EXECUCAO_OU_ENTREGA] = df.apply(
         lambda row: row['temp'][row['temp'].find('-') + len(' LOCAL DE EXECUÇÃO: '):len(row['temp'])], axis=1)
     df[consolidacao.UG_DESCRICAO] = df[consolidacao.CONTRATANTE_DESCRICAO]
     df = df.drop(['temp'], axis=1)
@@ -54,8 +54,10 @@ def consolidar_contratacoes(data_extracao):
                         consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'valor_total',
                         consolidacao.VALOR_CONTRATO: 'valor_total',
                         consolidacao.FONTE_RECURSOS_COD: 'fontes_de_recursos_fr_codigo',
-                        consolidacao.FONTE_RECURSOS_DESCRICAO: 'fontes_de_recursos_fr_desc'}
-    colunas_adicionais = ['id', 'processo', 'numero_siga', 'local', 'data_assinatura', 'duracao']
+                        consolidacao.FONTE_RECURSOS_DESCRICAO: 'fontes_de_recursos_fr_desc',
+                        consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'local',
+                        consolidacao.DATA_ASSINATURA: 'data_assinatura', consolidacao.NUMERO_PROCESSO: 'processo'}
+    colunas_adicionais = ['id', 'numero_siga', 'duracao']
     planilha_original = path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'contratacoes.xlsx')
     df_original = pd.read_excel(planilha_original)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_AP

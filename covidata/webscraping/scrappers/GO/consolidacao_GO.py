@@ -28,9 +28,11 @@ def __consolidar_aquisicoes(data_extracao):
                         consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'Valor Item',
                         consolidacao.VALOR_EMPENHADO: 'Empenhado', consolidacao.VALOR_LIQUIDADO: 'Liquidado',
                         consolidacao.VALOR_PAGO: 'Pago', consolidacao.CONTRATADO_DESCRICAO: 'Credor',
-                        consolidacao.CONTRATADO_CNPJ: 'CPF_CNPJ_COTACOES'}
-    colunas_adicionais = ['Fase da Licitação', 'TR', 'Mapa de Preços', 'Contrato', 'Local de Execução',
-                          'Data Solicitação', 'Natureza', 'Processo', 'Tempo de Contratação']
+                        consolidacao.CONTRATADO_CNPJ: 'CPF_CNPJ_COTACOES',
+                        consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local de Execução',
+                        consolidacao.NUMERO_PROCESSO: 'Processo'}
+    colunas_adicionais = ['Fase da Licitação', 'TR', 'Mapa de Preços', 'Contrato', 'Data Solicitação', 'Natureza',
+                          'Tempo de Contratação']
     planilha_original = path.join(config.diretorio_dados, 'GO', 'portal_transparencia', 'aquisicoes.csv')
     df_original = pd.read_csv(planilha_original)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_GO
@@ -46,4 +48,3 @@ def consolidar(data_extracao):
     aquisicoes = __consolidar_aquisicoes(data_extracao)
 
     salvar(aquisicoes, 'GO')
-

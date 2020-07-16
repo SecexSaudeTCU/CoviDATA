@@ -28,8 +28,11 @@ def pos_consolidar_contratos(df):
 def __consolidar_contratos(data_extracao):
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Entidade', consolidacao.UG_DESCRICAO: 'Entidade',
                         consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.VALOR_CONTRATO: 'Valor',
-                        consolidacao.CONTRATADO_CNPJ: 'CNPJ', consolidacao.CONTRATADO_DESCRICAO: 'Razão Social'}
-    colunas_adicionais = ['Link para o contrato', 'Contrato', 'Situação', 'Tipo de Contrato', 'Data de Vigência']
+                        consolidacao.CONTRATADO_CNPJ: 'CNPJ', consolidacao.CONTRATADO_DESCRICAO: 'Razão Social',
+                        consolidacao.DATA_VIGENCIA: 'Data de Vigência',
+                        consolidacao.LINK_CONTRATO: 'Link para o contrato', consolidacao.SITUACAO: 'Situação',
+                        consolidacao.NUMERO_CONTRATO: 'Contrato'}
+    colunas_adicionais = ['Tipo de Contrato']
     planilha_original = path.join(config.diretorio_dados, 'MT', 'portal_transparencia', 'Contratos.xls')
     df_original = pd.read_excel(planilha_original, header=4)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_MT
@@ -43,4 +46,3 @@ def consolidar(data_extracao):
     logger.info('Iniciando consolidação dados Mato Grosso')
     contratos = __consolidar_contratos(data_extracao)
     salvar(contratos, 'MT')
-

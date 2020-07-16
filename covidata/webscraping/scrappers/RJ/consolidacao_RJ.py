@@ -15,8 +15,8 @@ def pos_processar_despesas_capital(df):
     df[consolidacao.MUNICIPIO_DESCRICAO] = 'Rio de Janeiro'
 
     # Remove notação científica
-    df = df.astype({consolidacao.CONTRATADO_CNPJ: np.uint64, 'PROCESSO': np.int64})
-    df = df.astype({consolidacao.CONTRATADO_CNPJ: str, 'PROCESSO': str})
+    df = df.astype({consolidacao.CONTRATADO_CNPJ: np.uint64, consolidacao.NUMERO_PROCESSO: np.int64})
+    df = df.astype({consolidacao.CONTRATADO_CNPJ: str, consolidacao.NUMERO_PROCESSO: str})
 
     __processar_tipo_favorecido(df)
 
@@ -29,9 +29,9 @@ def pos_processar_contratos_capital(df):
 
     __processar_tipo_favorecido(df)
 
-    df = df.rename(columns={'PROCESSO INSTRUTIVO': 'PROCESSO', 'FUNDAMENTAÇÃO LEGAL': 'LEGISLACAO',
-                            'UNIDADE ORÇAMENTÁRIA EXECUTORA': 'UO',
-                            'DESCRIÇÃO DA UNIDADE ORÇAMENTÁRIA EXECUTORA': 'NOMEUO', 'ÓRGÃO EXECUTOR': 'ORGAO'})
+    df = df.rename(
+        columns={'UNIDADE ORÇAMENTÁRIA EXECUTORA': 'UO', 'DESCRIÇÃO DA UNIDADE ORÇAMENTÁRIA EXECUTORA': 'NOMEUO',
+                 'ÓRGÃO EXECUTOR': 'ORGAO'})
     return df
 
 
@@ -43,11 +43,9 @@ def pos_processar_favorecidos_capital(df):
     df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
 
     df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
-    df = df.rename(columns={'FUNDAMENTAÇÃO LEGAL': 'LEGISLACAO',
-                            'UNIDADE ORÇAMENTÁRIA EXECUTORA': 'UO',
+    df = df.rename(columns={'UNIDADE ORÇAMENTÁRIA EXECUTORA': 'UO',
                             'DESCRIÇÃO DA UNIDADE ORÇAMENTÁRIA EXECUTORA': 'NOMEUO', 'ÓRGÃO EXECUTOR': 'ORGAO',
                             'MODALIDADE': 'MODALIDADE DE LICITAÇÃO', 'AGENCIA BANCO': 'AGENCIA',
-                            'CONTA BANCO': 'CONTACORRENTE',
                             'DESCRIÇÃO DA NATUREZA': 'DESCRIÇÃO DA NATUREZA DA DESPESA'})
     return df
 
@@ -77,10 +75,11 @@ def __consolidar_despesas_capital(data_extracao):
                         consolidacao.ACAO_DESCRICAO: 'NomeAcao', consolidacao.VALOR_CONTRATO: 'Valor',
                         consolidacao.ANO: 'Exercicio', consolidacao.DOCUMENTO_NUMERO: 'EmpenhoExercicio',
                         consolidacao.DOCUMENTO_DATA: 'Data', consolidacao.TIPO_DOCUMENTO: 'TipoAto',
-                        consolidacao.DESPESA_DESCRICAO: 'ObjetoContrato'}
-    colunas_adicionais = ['Poder', 'UO', 'NomeUO', 'Orgao', 'Processo', 'Licitacao', 'Liquidacao', 'Pagamento', 'Banco',
-                          'NomeBanco', 'Agencia', 'ContaCorrente', 'NomeContaCorrente', 'ASPS', 'MDE',
-                          'ExercicioContrato', 'NumeroContrato', 'Historico', 'Legislacao']
+                        consolidacao.DESPESA_DESCRICAO: 'ObjetoContrato', consolidacao.CONTA_CORRENTE: 'ContaCorrente',
+                        consolidacao.FUNDAMENTO_LEGAL: 'Legislacao', consolidacao.NUMERO_CONTRATO: 'NumeroContrato',
+                        consolidacao.NUMERO_PROCESSO: 'processo'}
+    colunas_adicionais = ['Poder', 'UO', 'NomeUO', 'Orgao', 'Licitacao', 'Liquidacao', 'Pagamento', 'Banco',
+                          'NomeBanco', 'Agencia', 'NomeContaCorrente', 'ASPS', 'MDE', 'ExercicioContrato', 'Historico']
     planilha_original = path.join(config.diretorio_dados, 'RJ', 'portal_transparencia', 'Rio de Janeiro',
                                   '_arquivos_Open_Data_Desp_Ato_Covid19_2020.txt')
     df_original = pd.read_csv(planilha_original, sep=';', encoding='ISO-8859-1')
@@ -111,10 +110,12 @@ def __consolidar_contratos_capital(data_extracao):
                         consolidacao.MOD_APLIC_DESCRICAO: 'Descrição da modalidade de aplicação',
                         consolidacao.VALOR_CONTRATO: 'Valor atualizado do instrumento',
                         consolidacao.CATEGORIA_ECONOMICA_COD: 'Categoria Econômica',
-                        consolidacao.CATEGORIA_ECONOMICA_DESCRICAO: 'Descrição da categoria econômica'
+                        consolidacao.CATEGORIA_ECONOMICA_DESCRICAO: 'Descrição da categoria econômica',
+                        consolidacao.ESPECIE: 'Espécie', consolidacao.DATA_FIM_PREVISTO: 'Data fim previsto',
+                        consolidacao.FUNDAMENTO_LEGAL: 'Fundamentação Legal',
+                        consolidacao.NUMERO_PROCESSO: 'Processo instrutivo', consolidacao.SITUACAO: 'Situação'
                         }
-    colunas_adicionais = ['Nr instrumento', 'Situação', 'Espécie', 'Processo instrutivo', 'Data início previsto',
-                          'Data fim previsto', 'Fundamentação Legal', 'Valor inicial do instrumento',
+    colunas_adicionais = ['Nr instrumento', 'Data início previsto', 'Valor inicial do instrumento',
                           'Valor do acréscimo ou redução', 'Valor atualizado do instrumento',
                           'Saldo a executar do instrumento', 'Data da assinatura', 'Data do encerramento',
                           'Órgão executor', 'Unidade orçamentária executora',
@@ -150,19 +151,20 @@ def __consolidar_favorecidos_capital(data_extracao):
                         consolidacao.MOD_APLICACAO_COD: 'Modalidade de aplicação',
                         consolidacao.MOD_APLIC_DESCRICAO: 'Descrição da modalidade de aplicação',
                         consolidacao.CATEGORIA_ECONOMICA_COD: 'Categoria Econômica',
-                        consolidacao.CATEGORIA_ECONOMICA_DESCRICAO: 'Descrição da categoria econômica'}
+                        consolidacao.CATEGORIA_ECONOMICA_DESCRICAO: 'Descrição da categoria econômica',
+                        consolidacao.CONTA_CORRENTE: 'Conta banco',
+                        consolidacao.FUNDAMENTO_LEGAL: 'Fundamentação Legal'}
     colunas_adicionais = ['Órgão do empenho', 'Descrição do órgão do empenho', 'Órgão programa de trabalho',
                           'Unidade programa de trabalho', 'Natureza da despesa', 'Descrição da natureza',
                           'Data da liquidação', 'Data do pagamento', 'Número da liquidação', 'Vl anul liq',
                           'vl anul liq rp', 'Dt anul liq', 'Dt anul pag', 'Vl anul disp', 'Vl anul emp', 'Vl anul rp',
                           'Processo de liquidação', 'Processo do empenho', 'Vl Soma Retencao', 'Vl inss', 'Vl iss',
                           'Vl ir', 'Vl descontos', 'Vl multas', 'Vl csll', 'Vl cofins', 'Vl pis pasep',
-                          'Vl cofins pis pasep csll', 'Vl tafi', 'Vl tafc', 'Vl trfc', 'Modalidade',
-                          'Fundamentação Legal', 'Banco', 'Agencia banco', 'Conta banco', 'Órgão instrumento',
-                          'Nr instrumento', 'Órgão executor', 'Unidade orçamentária executora',
-                          'Descrição da unidade orçamentária executora', 'Programa de trabalho',
-                          'Descrição do programa de trabalho', 'Vl sem retencao', 'Número licitacao', 'Poder',
-                          'Tipo Administração', 'Dir Ind']
+                          'Vl cofins pis pasep csll', 'Vl tafi', 'Vl tafc', 'Vl trfc', 'Modalidade', 'Banco',
+                          'Agencia banco', 'Órgão instrumento', 'Nr instrumento', 'Órgão executor',
+                          'Unidade orçamentária executora', 'Descrição da unidade orçamentária executora',
+                          'Programa de trabalho', 'Descrição do programa de trabalho', 'Vl sem retencao',
+                          'Número licitacao', 'Poder', 'Tipo Administração', 'Dir Ind']
     planilha_original = path.join(config.diretorio_dados, 'RJ', 'portal_transparencia', 'Rio de Janeiro',
                                   'Open_Data_Favorecidos_Covid19_2020.xlsx')
     df_original = pd.read_excel(planilha_original)
@@ -179,8 +181,9 @@ def __consolidar_compras_diretas(data_extracao):
                         consolidacao.ITEM_EMPENHO_QUANTIDADE: 'Qtd', consolidacao.VALOR_CONTRATO: 'Valor Processo',
                         consolidacao.ITEM_EMPENHO_UNIDADE_MEDIDA: 'Unidade Medida',
                         consolidacao.ITEM_EMPENHO_DESCRICAO: 'Item',
-                        consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'Valor Unitário'}
-    colunas_adicionais = ['Processo', 'Afastamento', 'Data Aprovação', 'Enquadramento Legal']
+                        consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'Valor Unitário',
+                        consolidacao.FUNDAMENTO_LEGAL: 'Enquadramento Legal', consolidacao.NUMERO_PROCESSO: 'Processo'}
+    colunas_adicionais = ['Afastamento', 'Data Aprovação']
 
     # Renomeia o arquivo
     diretorio = path.join(config.diretorio_dados, 'RJ')
@@ -197,7 +200,6 @@ def __consolidar_compras_diretas(data_extracao):
     fonte_dados = consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_RJ
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            fonte_dados, 'RJ', '', data_extracao)
-    df = df.rename(columns={'ENQUADRAMENTO LEGAL': 'LEGISLACAO'})
     return df
 
 

@@ -46,9 +46,11 @@ def __consolidar_portal_transparencia_estadual(data_extracao):
                         consolidacao.ITEM_EMPENHO_QUANTIDADE: 'Qtde',
                         consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'Valor Global',
                         consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'Valor unitário',
-                        consolidacao.MOD_APLIC_DESCRICAO: 'Forma/Modalidade da contratação'}
-    colunas_adicionais = ['Data de celebração do contrato', 'Prazo Contratual', 'N˚ Processo', 'Contrato',
-                          'Local da execuçao', 'DOE N˚']
+                        consolidacao.MOD_APLIC_DESCRICAO: 'Forma/Modalidade da contratação',
+                        consolidacao.DATA_CELEBRACAO: 'Data de celebração do contrato',
+                        consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local da execuçao',
+                        consolidacao.NUMERO_PROCESSO: 'N˚ Processo'}
+    colunas_adicionais = ['Prazo Contratual', 'Contrato', 'DOE N˚']
     planilha_original = path.join(config.diretorio_dados, 'PA', 'portal_transparencia', 'covid.xlsx')
     df_original = pd.read_excel(planilha_original)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_PA
@@ -61,14 +63,13 @@ def __consolidar_portal_transparencia_capital(data_extracao):
     dicionario_dados = {consolidacao.DOCUMENTO_NUMERO: 'Empenho', consolidacao.UG_DESCRICAO: 'Unidade Gestora',
                         consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.FONTE_RECURSOS_DESCRICAO: 'Fonte',
                         consolidacao.CONTRATADO_DESCRICAO: 'Fornecedor', consolidacao.VALOR_CONTRATO: 'Valor',
-                        consolidacao.DOCUMENTO_DATA: 'Data'}
-    colunas_adicionais = ['Situacao']
+                        consolidacao.DOCUMENTO_DATA: 'Data', consolidacao.SITUACAO: 'Situacao'}
     planilha_original = path.join(config.diretorio_dados, 'PA', 'portal_transparencia', 'Belem',
                                   'Prefeitura Municipal de Belém - Transparência COVID-19 - Despesas.xlsx')
     df_original = pd.read_excel(planilha_original, header=1)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Belem
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
-                           fonte_dados, 'PA', get_codigo_municipio_por_nome('Belém', 'PA'), data_extracao,
+    df = consolidar_layout([], df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL, fonte_dados, 'PA',
+                           get_codigo_municipio_por_nome('Belém', 'PA'), data_extracao,
                            pos_processar_portal_transparencia_capital)
     return df
 

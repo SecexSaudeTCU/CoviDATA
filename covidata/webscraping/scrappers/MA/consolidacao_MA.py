@@ -35,7 +35,7 @@ def pos_processar_licitacoes(df):
 
 def pos_processar_portal_transparencia_capital(df):
     df[consolidacao.MUNICIPIO_DESCRICAO] = 'São Luís'
-    df = df.rename(columns={'Nº DO PROCESSO': 'Nº PROCESSO', 'DATA DE ASSINATURA': 'DATA ASSINATURA'})
+    df = df.rename(columns={'Nº DO PROCESSO': 'Nº PROCESSO'})
 
     for i in range(0, len(df)):
         cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
@@ -53,8 +53,9 @@ def __consolidar_licitacoes(data_extracao):
                         consolidacao.UG_DESCRICAO: 'UNIDADE', consolidacao.DESPESA_DESCRICAO: 'OBJETO',
                         consolidacao.VALOR_CONTRATO: 'VALOR',
                         consolidacao.FONTE_RECURSOS_DESCRICAO: 'ORIGEM DO RECURSO',
-                        consolidacao.CONTRATADO_DESCRICAO: 'CONTRATADO', consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ'}
-    colunas_adicionais = ['Nº PROCESSO', 'Nº CONTRATO', 'DATA ASSINATURA', 'VIGÊNCIA']
+                        consolidacao.CONTRATADO_DESCRICAO: 'CONTRATADO', consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ',
+                        consolidacao.DATA_ASSINATURA: 'DATA ASSINATURA', consolidacao.NUMERO_CONTRATO: 'Nº CONTRATO'}
+    colunas_adicionais = ['Nº PROCESSO', 'VIGÊNCIA']
     planilha_original = path.join(config.diretorio_dados, 'MA', 'tce', 'licitacoes.xls')
     df_original = pd.read_excel(planilha_original, header=1)
     fonte_dados = consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_MA
@@ -64,25 +65,25 @@ def __consolidar_licitacoes(data_extracao):
 
 
 def __consolidar_portal_transparencia_estado(data_extracao):
-    dicionario_dados = {consolidacao.CONTRATADO_DESCRICAO: 'Contratado'}
-    colunas_adicionais = ['Contrato', 'Fonte contratado estadual', 'Fonte contratado federal',
-                          'Fonte contratado doações', 'Fonte pago estadual', 'Fonte pago federal', 'Fonte pago doações']
+    dicionario_dados = {consolidacao.CONTRATADO_DESCRICAO: 'Contratado', consolidacao.NUMERO_CONTRATO: 'contrato'}
+    colunas_adicionais = ['Fonte contratado estadual', 'Fonte contratado federal', 'Fonte contratado doações',
+                          'Fonte pago estadual', 'Fonte pago federal', 'Fonte pago doações']
     planilha_original = path.join(config.diretorio_dados, 'MA', 'portal_transparencia',
                                   'Portal da Transparência do Governo do Estado do Maranhão.xlsx')
     df_original = pd.read_excel(planilha_original)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_MA
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            fonte_dados, 'MA', '', data_extracao)
-    df = df.rename(columns={'CONTRATO': 'Nº CONTRATO'})
     return df
 
 
 def __consolidar_portal_transparencia_capital(data_extracao):
     dicionario_dados = {consolidacao.VALOR_CONTRATO: 'Valor do Contrato (R$)',
                         consolidacao.DESPESA_DESCRICAO: 'Descrição', consolidacao.CONTRATADO_DESCRICAO: 'Empresa',
-                        consolidacao.CONTRATADO_CNPJ: 'CNPJ', consolidacao.CONTRATANTE_DESCRICAO: 'Unidade Contratante'}
-    colunas_adicionais = ['Link contrato', 'Nº do Processo', 'Nº Contrato', 'Destinação de Uso', 'Data de Assinatura',
-                          'Vigência']
+                        consolidacao.CONTRATADO_CNPJ: 'CNPJ', consolidacao.CONTRATANTE_DESCRICAO: 'Unidade Contratante',
+                        consolidacao.DATA_ASSINATURA: 'Data de Assinatura', consolidacao.LINK_CONTRATO: 'Link contrato',
+                        consolidacao.NUMERO_CONTRATO: 'Nº Contrato'}
+    colunas_adicionais = ['Nº do Processo', 'Destinação de Uso', 'Vigência']
     planilha_original = path.join(config.diretorio_dados, 'MA', 'portal_transparencia', 'São Luís', 'contratacoes.xls')
     df_original = pd.read_excel(planilha_original, header=4)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_SaoLuis
@@ -104,4 +105,3 @@ def consolidar(data_extracao):
     licitacoes = licitacoes.append(portal_transparencia_capital)
 
     salvar(licitacoes, 'MA')
-

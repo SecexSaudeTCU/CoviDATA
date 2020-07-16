@@ -22,7 +22,7 @@ from covidata.webscraping.scrappers.RR import uf_rr
 from covidata.webscraping.scrappers.RO import uf_ro
 from covidata.webscraping.scrappers.AC import uf_ac
 from covidata.webscraping.scrappers.ES import uf_es
-from covidata.webscraping.scrappers.SP import tcm_sp, pt_sp, pt_sp_capital
+from covidata.webscraping.scrappers.SP import uf_sp
 from covidata.webscraping.scrappers.AL import uf_al
 from covidata.webscraping.scrappers.TO import uf_to
 from covidata.webscraping.scrappers.BA import uf_ba
@@ -121,9 +121,7 @@ if __name__ == '__main__':
     uf_se.main()
 
     logger.info('# Recuperando dados de São Paulo...')
-    pt_sp.main()
-    pt_sp_capital.main()
-    tcm_sp.main()
+    uf_sp.main()
 
     logger.info('# Recuperando dados de Tocantins...')
     uf_to.main()

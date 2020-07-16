@@ -27,14 +27,13 @@ def pos_consolidar_contratos(df):
 
 def __consolidar_contratos(data_extracao):
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Entidade', consolidacao.UG_DESCRICAO: 'Entidade',
-                        consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.VALOR_CONTRATO: 'Valor',
-                        consolidacao.CONTRATADO_CNPJ: 'CNPJ', consolidacao.CONTRATADO_DESCRICAO: 'Razão Social',
-                        consolidacao.DATA_VIGENCIA: 'Data de Vigência',
-                        consolidacao.LINK_CONTRATO: 'Link para o contrato', consolidacao.SITUACAO: 'Situação',
+                        consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.VALOR_CONTRATO: 'Valor Global',
+                        consolidacao.CONTRATADO_CNPJ: 'CNPJ', consolidacao.CONTRATADO_DESCRICAO: 'Raz. Social',
+                        consolidacao.DATA_VIGENCIA: 'Data Vig.',consolidacao.SITUACAO: 'Situacao',
                         consolidacao.NUMERO_CONTRATO: 'Contrato'}
-    colunas_adicionais = ['Tipo de Contrato']
-    planilha_original = path.join(config.diretorio_dados, 'MT', 'portal_transparencia', 'Contratos.xls')
-    df_original = pd.read_excel(planilha_original, header=4)
+    colunas_adicionais = ['Tipo Contrato']
+    planilha_original = path.join(config.diretorio_dados, 'MT', 'portal_transparencia', 'transparencia_excel.xlsx')
+    df_original = pd.read_excel(planilha_original)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_MT
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            fonte_dados, 'MT', '', data_extracao, pos_consolidar_contratos)

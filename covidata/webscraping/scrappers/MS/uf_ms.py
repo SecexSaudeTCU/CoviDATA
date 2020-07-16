@@ -20,8 +20,8 @@ class PortalTransparencia_MS(SeleniumDownloader):
     def _executar(self):
         wait = WebDriverWait(self.driver, 30)
 
-        element = wait.until(EC.element_to_be_clickable((By.XPATH,
-                                                         '//*[@id="app"]/div[1]/div[1]/div/div[2]/form/div/div[2]/div/button[2]')))
+        element = wait.until(EC.element_to_be_clickable(
+            (By.XPATH, '/html/body/div[4]/div/div/div/div[1]/div/div[2]/form/div/div[2]/div/button[3]')))
         self.driver.execute_script("arguments[0].click();", element)
 
 
@@ -51,9 +51,6 @@ def main():
 
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-    logger.info('Portal de transparência estadual...')
-    start_time = time.time()
-
     # Renomeia o arquivo
     diretorio = path.join(config.diretorio_dados, 'MS', 'portal_transparencia')
     arquivo = os.listdir(diretorio)[0]
@@ -68,3 +65,4 @@ def main():
     start_time = time.time()
     consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+

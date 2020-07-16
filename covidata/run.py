@@ -46,6 +46,7 @@ if __name__ == '__main__':
 
     start_time = time.time()
 
+    """
     logger.info('# Recuperando dados do Acre...')
     uf_ac.main()
 
@@ -82,6 +83,7 @@ if __name__ == '__main__':
 
     logger.info('# Recuperando dados de Mato Grosso do Sul...')
     uf_ms.main()
+    """
 
     logger.info('# Recuperando dados de Minas Gerais...')
     uf_mg.main()

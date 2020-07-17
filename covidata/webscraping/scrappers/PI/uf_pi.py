@@ -10,6 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from covidata import config
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
+from covidata.webscraping.scrappers.PI.consolidacao_PI import consolidar
 
 
 
@@ -49,8 +50,14 @@ class TCE_Piaui(SeleniumDownloader):
 def main():
     data_extracao = datetime.now()
     logger = logging.getLogger('covidata')
+
     logger.info('Tribunal de Contas Estadual...')
     start_time = time.time()
     tce_piaui = TCE_Piaui()
     tce_piaui.download()
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+    logger.info('Consolidando as informações no layout padronizado...')
+    start_time = time.time()
+    consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))

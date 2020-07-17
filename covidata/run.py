@@ -79,8 +79,9 @@ if __name__ == '__main__':
     logger.info('# Recuperando dados do Maranhão...')
     uf_ma.main()
 
-    logger.info('# Recuperando dados de Mato Grosso...')
-    uf_mt.main()
+    #TODO: Indisponibilidade no download
+    #logger.info('# Recuperando dados de Mato Grosso...')
+    #uf_mt.main()
 
     logger.info('# Recuperando dados de Mato Grosso do Sul...')
     uf_ms.main()

@@ -1,3 +1,4 @@
+import datetime
 import logging
 from os import path
 
@@ -109,3 +110,5 @@ def consolidar(data_extracao):
     consolidacoes = consolidacoes.append(consolidacao_tcm, ignore_index=True, sort=False)
 
     salvar(consolidacoes, 'SP')
+
+#consolidar(datetime.datetime.now())

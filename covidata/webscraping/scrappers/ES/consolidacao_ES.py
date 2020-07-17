@@ -36,9 +36,10 @@ def __consolidar_dados_contratos_emergenciais(data_extracao):
                         consolidacao.ITEM_EMPENHO_UNIDADE_MEDIDA: 'Unidade',
                         consolidacao.MOD_APLIC_DESCRICAO: 'Modalidade de Licitação',
                         consolidacao.DATA_ASSINATURA: 'Data de assinatura',
-                        consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local de Entrega / Execução'}
-    colunas_adicionais = ['Número do Processo de Contratação / aquisição', 'Número / Ano do instrumento contratual',
-                          'Prazo de vigência', 'Link do Processo de Contratação/Aquisição',
+                        consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local de Entrega / Execução',
+                        consolidacao.NUMERO_CONTRATO: 'Número / Ano do instrumento contratual',
+                        consolidacao.NUMERO_PROCESSO: 'Número do Processo de Contratação / aquisição'}
+    colunas_adicionais = ['Prazo de vigência', 'Link do Processo de Contratação/Aquisição',
                           'Termo de Referência / Projeto Básico', 'Íntegra do Instrumento Contratual']
     planilha_original = path.join(config.diretorio_dados, 'ES', 'portal_transparencia',
                                   'dados-contratos-emergenciais-covid-19.csv')

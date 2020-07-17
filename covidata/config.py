@@ -62,7 +62,7 @@ url_pt_Rio_despesas_por_ato = 'http://riotransparente.rio.rj.gov.br/arquivos/Ope
 url_pt_Recife = 'http://transparencia.recife.pe.gov.br/codigos/web/estaticos/estaticos.php?nat=COV#filho'
 url_pt_Macapa = 'http://transparencia2.macapa.ap.gov.br/tipo_contrato/covid-19/'
 url_pt_BoaVista = 'https://transparencia.boavista.rr.gov.br/cpl/export/csv/covid-19'
-url_pt_PortoVelho = 'https://ecidadetransparencia.portovelho.ro.gov.br/despesas_covid'
+url_pt_PortoVelho = 'https://ecidadetransparencia.portovelho.ro.gov.br/despesas_covid#'
 url_pt_RioBranco = 'http://transparencia.riobranco.ac.gov.br/calamidade-publica/ver-abreviacao/covid-19/'
 url_pt_Vitoria = 'http://transparencia.vitoria.es.gov.br/Licitacao.Lista.RelatorioExcel.ashx?municipioID=1&numero=0&exercicio=2020&idsModalidade=0&idComissao=0&idEnquadramento=0&idsSituacao=0&idSecretaria=0&idResponsavel=0&idRequisitante=0&idsFornecedor=0&tipo=tlmDispensa&objeto=&emergencial=covid-19&pesquisa='
 url_pt_SaoPaulo = 'https://www.prefeitura.sp.gov.br/cidade/secretarias/controladoria_geral/transparencia_covid19/index.php?p=295874'

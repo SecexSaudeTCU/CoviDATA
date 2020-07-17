@@ -52,8 +52,9 @@ def __consolidar_dados_contratos_emergenciais(data_extracao):
 
 
 def __consolidar_licitacoes_capital(data_extracao):
-    dicionario_dados = {consolidacao.MOD_APLIC_DESCRICAO: 'Modalidade', consolidacao.DESPESA_DESCRICAO: 'Objeto'}
-    colunas_adicionais = ['Número/Ano', 'Processo/Ano', 'Data Ratificação', 'Enquadramento']
+    dicionario_dados = {consolidacao.MOD_APLIC_DESCRICAO: 'Modalidade', consolidacao.DESPESA_DESCRICAO: 'Objeto',
+                        consolidacao.NUMERO_PROCESSO: 'Processo/Ano'}
+    colunas_adicionais = ['Número/Ano', 'Data Ratificação', 'Enquadramento']
     planilha_original = path.join(config.diretorio_dados, 'ES', 'portal_transparencia', 'Vitoria',
                                   'TransparenciaWeb.Licitacoes.Lista.xlsx')
     df_original = pd.read_excel(planilha_original, header=3)

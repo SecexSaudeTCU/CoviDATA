@@ -42,7 +42,7 @@ url_pt_PB = 'http://transparencia.pb.gov.br/coronavirus/?rpt=contratoslst_covid'
 url_pt_DF = 'http://www.coronavirus.df.gov.br/index.php/contratacoes/'
 url_pt_RN = 'http://transparencia.rn.gov.br/covidcomprasservicos'
 
-# URLs de portais de transparência do governo estadual do Acre
+# URLs de portais de transparência dos Tribunais de Contas Estaduais
 url_tce_AC_contratos = 'http://www.tce.ac.gov.br/covid19/Contratos-Estado.html'
 url_tce_AC_despesas = 'http://www.tce.ac.gov.br/covid19/despesa_estado_html.html'
 url_tce_AC_contratos_municipios = 'http://www.tce.ac.gov.br/covid19/Contratos-Municipios.html'
@@ -50,6 +50,7 @@ url_tce_AC_despesas_municipios = 'http://www.tce.ac.gov.br/covid19/despesas_muni
 url_tce_MA = 'https://www6.tce.ma.gov.br/sacop/muralsite/muralcovid.zul'
 url_tce_RS = 'http://www1.tce.rs.gov.br/aplicprod/f?p=50500:16::XLS::::&cs=3Hn8jXEOKZFSR4U62TfOfBk7Yeas'
 url_tce_RJ = 'https://wabi-brazil-south-api.analysis.windows.net/public/reports/querydata?synchronous=true'
+url_tce_PI = 'https://sistemas.tce.pi.gov.br/contratosweb/mural/index.xhtml;jsessionid=vhqHjeHfUGPyYcGS3G1t1UBqjfWTovHnxUHealyQ.izar'
 
 # URLSs de portais de transparência de govenos municipais (capitais)
 url_pt_Manaus = 'https://covid19.manaus.am.gov.br/transparencia-covid-19/'

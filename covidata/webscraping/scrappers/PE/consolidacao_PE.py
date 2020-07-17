@@ -40,7 +40,7 @@ def __consolidar_dispensas(data_extracao):
                         consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.CONTRATADO_CNPJ: 'CNPJ',
                         consolidacao.CONTRATADO_DESCRICAO: 'Nome Fornecedor',
                         consolidacao.VALOR_CONTRATO: 'Valor por Fornecedor\n(R$)',
-                        consolidacao.DATA_FIM_PREVISTO: 'Data Vigência',
+                        consolidacao.DATA_FIM_VIGENCIA: 'Data Vigência',
                         consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local de Execução'}
     colunas_adicionais = ['Nº Dispensa', 'Anulação/ Revogação/ Retificação/\nSuspensão', 'Data de Empenho/\nContrato',
                           'Data de Empenho\nContrato']

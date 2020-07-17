@@ -111,13 +111,13 @@ def __consolidar_contratos_capital(data_extracao):
                         consolidacao.VALOR_CONTRATO: 'Valor atualizado do instrumento',
                         consolidacao.CATEGORIA_ECONOMICA_COD: 'Categoria Econômica',
                         consolidacao.CATEGORIA_ECONOMICA_DESCRICAO: 'Descrição da categoria econômica',
-                        consolidacao.ESPECIE: 'Espécie', consolidacao.DATA_FIM_PREVISTO: 'Data fim previsto',
+                        consolidacao.ESPECIE: 'Espécie', consolidacao.DATA_FIM_VIGENCIA: 'Data fim previsto',
                         consolidacao.FUNDAMENTO_LEGAL: 'Fundamentação Legal',
-                        consolidacao.NUMERO_PROCESSO: 'Processo instrutivo', consolidacao.SITUACAO: 'Situação'
+                        consolidacao.NUMERO_PROCESSO: 'Processo instrutivo', consolidacao.SITUACAO: 'Situação',
+                        consolidacao.DATA_INICIO_VIGENCIA: 'Data início previsto'
                         }
-    colunas_adicionais = ['Nr instrumento', 'Data início previsto', 'Valor inicial do instrumento',
-                          'Valor do acréscimo ou redução', 'Valor atualizado do instrumento',
-                          'Saldo a executar do instrumento', 'Data da assinatura', 'Data do encerramento',
+    colunas_adicionais = ['Nr instrumento', 'Valor inicial do instrumento', 'Valor do acréscimo ou redução',
+                          'Valor atualizado do instrumento', 'Saldo a executar do instrumento', 'Data da assinatura',
                           'Órgão executor', 'Unidade orçamentária executora',
                           'Descrição da unidade orçamentária executora', 'Modalidade de licitação',
                           'Natureza da despesa', 'Descrição da natureza da despesa', 'Poder', 'Tipo Administração',

@@ -26,8 +26,8 @@ def __consolidar_compras(data_extracao):
                         consolidacao.DESPESA_DESCRICAO: 'Objeto do Processo ',
                         consolidacao.VALOR_CONTRATO: 'Valor Homologado ',
                         consolidacao.DATA_PUBLICACAO: 'Data da Publicação ',
-                        consolidacao.DATA_FIM_PREVISTO: 'Fim da Vigência ',
-                        consolidacao.INICIO_VIGENCIA: 'Início da Vigência ',
+                        consolidacao.DATA_FIM_VIGENCIA: 'Fim da Vigência ',
+                        consolidacao.DATA_INICIO_VIGENCIA: 'Início da Vigência ',
                         consolidacao.NUMERO_CONTRATO: 'Número do Contrato '}
     colunas_adicionais = ['Número do Processo de Compra ', 'Data de Cadastramento do Processo ',
                           'Situação do Processo ', 'Fim da Vigência Atualizada ', 'Valor de Referência ',
@@ -50,9 +50,9 @@ def __consolidar_contratacoes_capital(data_extracao):
                         consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'VALOR_UNITÁRIO',
                         consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'VALOR_TOTAL',
                         consolidacao.MOD_APLIC_DESCRICAO: 'MODALIDADE',
-                        consolidacao.INICIO_VIGENCIA: 'DATA_INICIO_VIGENCIA',
+                        consolidacao.DATA_INICIO_VIGENCIA: 'DATA_INICIO_VIGENCIA',
                         consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'LOCAL_EXECUCAO',
-                        consolidacao.DATA_FIM_PREVISTO: 'DATA_FIM_VIGENCIA'}
+                        consolidacao.DATA_FIM_VIGENCIA: 'DATA_FIM_VIGENCIA'}
     colunas_adicionais = ['DATA_CELEBRACAO', 'PROCESSO_COMPRA']
     planilha_original = path.join(config.diretorio_dados, 'MG', 'portal_transparencia', 'Belo Horizonte',
                                   'contratacaocorona.xlsx')

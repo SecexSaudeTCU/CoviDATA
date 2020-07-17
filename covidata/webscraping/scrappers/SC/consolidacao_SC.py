@@ -1,7 +1,6 @@
 import logging
 from os import path
 
-import numpy as np
 import pandas as pd
 
 from covidata import config
@@ -81,7 +80,7 @@ def pos_processar_pts(df):
     return df
 
 
-def consolidar_pt_RS_contratos(data_extracao):
+def consolidar_pt_SC_contratos(data_extracao):
     # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
     dicionario_dados = {consolidacao.UG_COD: 'CDUNIDADEGESTORA',
                         consolidacao.UG_DESCRICAO: 'NMUGCONTRATANTE',
@@ -92,12 +91,13 @@ def consolidar_pt_RS_contratos(data_extracao):
                         consolidacao.FONTE_RECURSOS_COD: 'CDFONTERECURSO',
                         consolidacao.FONTE_RECURSOS_DESCRICAO: 'NMFONTERECURSO',
                         consolidacao.ORGAO_COD: 'CDORGAO',
-                        consolidacao.CONTRATANTE_DESCRICAO: 'NMORGAO', consolidacao.DATA_ASSINATURA: 'Data Assinatura'}
+                        consolidacao.CONTRATANTE_DESCRICAO: 'NMORGAO', consolidacao.DATA_ASSINATURA: 'Data Assinatura',
+                        consolidacao.DATA_FIM_VIGENCIA: 'Data Fim Vigência',
+                        consolidacao.DATA_INICIO_VIGENCIA: 'Data Início Vigência'}
 
     # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
     colunas_adicionais = ['Número Contrato', 'Código Gestão', 'Nome Gestão Contratante',
-                          'Modalidade Licitação', 'Número Processo',
-                          'Data Início Vigência', 'Data Fim Vigência', 'Prazo Contratual',
+                          'Modalidade Licitação', 'Número Processo', 'Prazo Contratual',
                           'Local Execução', 'Código Item', 'Descrição Item', 'Marca Item',
                           'Descrição Detalhada Item', 'Quantidade Item', 'PU Item',
                           'Preço Item', 'Unidade Item', 'Número Serviço/Material',
@@ -183,7 +183,7 @@ def consolidar(data_extracao):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Santa Catarina')
 
-    consolidacoes = consolidar_pt_RS_contratos(data_extracao)
+    consolidacoes = consolidar_pt_SC_contratos(data_extracao)
     consolidacao_pt_RS_despesas = consolidar_pt_RS_despesas(data_extracao)
     consolidacao_pt_Florianopolis = consolidar_pt_Florianopolis(data_extracao)
 

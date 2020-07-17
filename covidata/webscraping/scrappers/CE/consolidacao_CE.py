@@ -53,8 +53,8 @@ def __consolidar_gastos(data_extracao):
                         consolidacao.ITEM_EMPENHO_DESCRICAO: 'item', consolidacao.VALOR_CONTRATO: 'valor_empenho',
                         consolidacao.FUNDAMENTO_LEGAL: 'fund_legal', consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'local',
                         consolidacao.NUMERO_CONTRATO: 'numero_contrato',
-                        consolidacao.NUMERO_PROCESSO: 'numero_processo'}
-    colunas_adicionais = ['natureza', 'num_certidao', 'data_termino', 'processo_licitacao', 'integra_contrato']
+                        consolidacao.NUMERO_PROCESSO: 'numero_processo', consolidacao.DATA_FIM_VIGENCIA: 'data_termino'}
+    colunas_adicionais = ['natureza', 'num_certidao', 'processo_licitacao', 'integra_contrato']
     planilha_original = path.join(config.diretorio_dados, 'CE', 'portal_transparencia',
                                   'gasto_covid_dados_abertos.xlsx')
     df_original = pd.read_excel(planilha_original)

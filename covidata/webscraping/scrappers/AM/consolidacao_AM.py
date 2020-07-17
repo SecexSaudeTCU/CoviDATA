@@ -25,9 +25,9 @@ def consolidar_contratos(data_extracao):
     dicionario_dados = {consolidacao.UG_DESCRICAO: 'UG', consolidacao.CONTRATADO_CNPJ: 'CNPJ/CPFfornecedor',
                         consolidacao.CONTRATADO_DESCRICAO: 'Nomefornecedor', consolidacao.DESPESA_DESCRICAO: 'Objeto',
                         consolidacao.CONTRATANTE_DESCRICAO: 'UG', consolidacao.DATA_ASSINATURA: 'Dataassinatura',
-                        consolidacao.INICIO_VIGENCIA: 'Início',
+                        consolidacao.DATA_INICIO_VIGENCIA: 'Início',
                         consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local deexecução',
-                        consolidacao.DATA_FIM_PREVISTO: 'Término'}
+                        consolidacao.DATA_FIM_VIGENCIA: 'Término'}
     colunas_adicionais = ['Termo', 'Motivação/Justificativa', 'Processo e-Compras', 'Valor mensal', 'Valor atual']
     df_original = pd.read_excel(
         path.join(config.diretorio_dados, 'AM', 'portal_transparencia',

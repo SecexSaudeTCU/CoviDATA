@@ -10,9 +10,7 @@ from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout, salvar
 
 
-
 def pre_processar_pt_RR(df):
-
     # Lê o segundo elemento do objeto list que se constitui em um objeto pandas DataFrame
     df = df[1]
 
@@ -35,7 +33,6 @@ def pre_processar_pt_RR(df):
 
 
 def pos_processar_pt_RR(df):
-
     for i in range(len(df)):
         cpf_cnpj = df.loc[str(i), consolidacao.CONTRATADO_CNPJ]
 
@@ -48,7 +45,6 @@ def pos_processar_pt_RR(df):
 
 
 def pos_processar_pt_BoaVista(df):
-
     for i in range(len(df)):
         cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
 
@@ -61,7 +57,6 @@ def pos_processar_pt_BoaVista(df):
 
 
 def consolidar_pt_RR(data_extracao):
-
     # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
     dicionario_dados = {consolidacao.DESPESA_DESCRICAO: 'Histórico do Pedido de Empenho',
                         consolidacao.CONTRATADO_CNPJ: 'CNPJ/CPF',
@@ -69,15 +64,16 @@ def consolidar_pt_RR(data_extracao):
                         consolidacao.VALOR_CONTRATO: 'Valor Contratual',
                         consolidacao.VALOR_EMPENHADO: 'Empenhado',
                         consolidacao.VALOR_LIQUIDADO: 'Liquidado',
-                        consolidacao.VALOR_PAGO: 'Pago'}
+                        consolidacao.VALOR_PAGO: 'Pago', consolidacao.DATA_INICIO_VIGENCIA: 'Data Início',
+                        consolidacao.DATA_FIM_VIGENCIA: 'Data Término'}
 
     # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-    colunas_adicionais = ['Processo', 'Situação do Processo', 'Contrato', 'Tipo Contrato',
-                          'Data Início', 'Data Término', 'Situação Contratual', 'Aditivos']
+    colunas_adicionais = ['Processo', 'Situação do Processo', 'Contrato', 'Tipo Contrato', 'Situação Contratual',
+                          'Aditivos']
 
     # Lê o arquivo "xls" de contratos baixado como um objeto list utilizando a função "read_html" da biblioteca pandas
     df_original = pd.read_html(path.join(config.diretorio_dados, 'RR', 'portal_transparencia',
-                               'Roraima', 'Dados_Portal_Transparencia_Roraima.xls'),
+                                         'Roraima', 'Dados_Portal_Transparencia_Roraima.xls'),
                                decimal=',')
 
     # Chama a função "pre_processar_pt_RR" definida neste módulo
@@ -96,17 +92,16 @@ def consolidar_pt_BoaVista(data_extracao):
     dicionario_dados = {consolidacao.DESPESA_DESCRICAO: 'Objeto Licitação',
                         consolidacao.CONTRATADO_CNPJ: 'CNPJ',
                         consolidacao.CONTRATADO_DESCRICAO: 'Contratado',
-                        consolidacao.VALOR_CONTRATO: 'Valor Contrato'}
+                        consolidacao.VALOR_CONTRATO: 'Valor Contrato', consolidacao.DATA_CELEBRACAO: 'Data Contrato'}
 
     # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
     colunas_adicionais = ['Número Licitação', 'Situação Licitação', 'Modalidade Licitacao',
                           'Data Abertura', 'Data Publicação', 'Descrição Produto',
-                          'Quantidade Produto', 'PU Produto', 'Data Contrato',
-                          'Prazo Execução']
+                          'Quantidade Produto', 'PU Produto', 'Prazo Execução']
 
     # Lê o arquivo "xlsx" de despesas baixado como um objeto pandas DataFrame
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'RR', 'portal_transparencia',
-                                'BoaVista', 'Dados_Portal_Transparencia_BoaVista.xlsx'))
+                                          'BoaVista', 'Dados_Portal_Transparencia_BoaVista.xlsx'))
 
     # Chama a função "consolidar_layout" definida em módulo importado
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,

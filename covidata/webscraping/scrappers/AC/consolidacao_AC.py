@@ -194,7 +194,7 @@ def __consolidar_portal_transparencia_capital(data_extracao):
                         consolidacao.UG_DESCRICAO: 'Secretaria', consolidacao.DATA_ASSINATURA: 'Data de Assinatura',
                         consolidacao.NUMERO_CONTRATO: 'Número do Contrato',
                         consolidacao.NUMERO_PROCESSO: 'Número do Processo',
-                        consolidacao.DATA_FIM_PREVISTO: 'Prazo de Vigência'}
+                        consolidacao.DATA_FIM_VIGENCIA: 'Prazo de Vigência'}
     df_original = pd.read_excel(
         path.join(config.diretorio_dados, 'AC', 'portal_transparencia', 'Rio Branco', 'webexcel.xls'), header=11)
     df = consolidar_layout([], df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,

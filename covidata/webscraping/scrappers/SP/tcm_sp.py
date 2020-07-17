@@ -12,7 +12,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from covidata import config
 from covidata.persistencia.dao import persistir
-
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 def main():
     logger = logging.getLogger('covidata')
@@ -37,7 +39,7 @@ def main():
     driver.quit()
 
     df = pd.DataFrame(lista_linhas, columns=colunas)
-    #persistir(df, 'tcm', 'licitacoes', 'SP')
+    # persistir(df, 'tcm', 'licitacoes', 'SP')
     persistir(df, 'tcm', 'licitacoes', 'SP')
 
     logger.info("--- %s segundos ---" % (time.time() - start_time))
@@ -47,8 +49,13 @@ def __processar_pagina(driver, i, lista_linhas):
     logger = logging.getLogger("covidata")
     logger.info(f'Processando página {i}...')
 
-    link = driver.find_element_by_link_text(str(i))
-    link.click()
+    #link = driver.find_element_by_link_text(str(i))
+    #link.click()
+
+    wait = WebDriverWait(driver, 30)
+    link = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, str(i))))
+    driver.execute_script("arguments[0].click();", link)
+
     # Aguarda o completo carregamento da tela
     time.sleep(20)
 
@@ -56,7 +63,8 @@ def __processar_pagina(driver, i, lista_linhas):
         soup = BeautifulSoup(driver.page_source, 'lxml')
     except UnexpectedAlertPresentException:
         # Tenta novamente
-        link.click()
+        #link.click()
+        driver.execute_script("arguments[0].click();", link)
 
         # Aguarda o completo carregamento da tela
         time.sleep(20)
@@ -92,6 +100,7 @@ def __get_paginacao(soup):
     numero_paginas = int(x[0][1])
     return numero_paginas, pagina_atual
 
+
 def __extrair_tabela(soup):
     tabela = soup.find(id='gridLicitacao_DXMainTable')
     linhas = tabela.find_all('tr', recursive=False)
@@ -118,7 +127,8 @@ def __extrair_tabela(soup):
 
 def configurar_browser():
     chromeOptions = webdriver.ChromeOptions()
-    chromeOptions.add_argument('--headless')
+    # chromeOptions.add_argument('--headless')
     locale.setlocale(locale.LC_ALL, "pt_BR.UTF-8")
     driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
     return driver
+

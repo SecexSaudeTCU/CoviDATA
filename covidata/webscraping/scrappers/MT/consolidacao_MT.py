@@ -29,7 +29,7 @@ def __consolidar_contratos(data_extracao):
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Entidade', consolidacao.UG_DESCRICAO: 'Entidade',
                         consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.VALOR_CONTRATO: 'Valor Global',
                         consolidacao.CONTRATADO_CNPJ: 'CNPJ', consolidacao.CONTRATADO_DESCRICAO: 'Raz. Social',
-                        consolidacao.DATA_VIGENCIA: 'Data Vig.',consolidacao.SITUACAO: 'Situacao',
+                        consolidacao.INICIO_VIGENCIA: 'Data Vig.',consolidacao.SITUACAO: 'Situacao',
                         consolidacao.NUMERO_CONTRATO: 'Contrato'}
     colunas_adicionais = ['Tipo Contrato']
     planilha_original = path.join(config.diretorio_dados, 'MT', 'portal_transparencia', 'transparencia_excel.xlsx')

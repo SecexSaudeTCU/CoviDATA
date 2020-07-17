@@ -1,14 +1,21 @@
 import logging
 from os import path
 
-import numpy as np
 import pandas as pd
 
 from covidata import config
 from covidata.municipios.ibge import get_codigo_municipio_por_nome
 from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout, salvar
+import logging
+from os import path
 
+import pandas as pd
+
+from covidata import config
+from covidata.municipios.ibge import get_codigo_municipio_por_nome
+from covidata.persistencia import consolidacao
+from covidata.persistencia.consolidacao import consolidar_layout, salvar
 
 
 def pre_processar_tcm(df):
@@ -86,7 +93,7 @@ def consolidar_tcm(data_extracao):
 
     # Chama a função "consolidar_layout" definida em módulo importado
     df = consolidar_layout(colunas_adicionais, df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
-                           consolidacao.TIPO_FONTE_TCdoM + ' - ' + config.url_pt_SaoPaulo, 'SP',
+                           consolidacao.TIPO_FONTE_TCM + ' - ' + config.url_tcm_SP, 'SP',
                            get_codigo_municipio_por_nome('São Paulo', 'SP'), data_extracao)
 
     return df

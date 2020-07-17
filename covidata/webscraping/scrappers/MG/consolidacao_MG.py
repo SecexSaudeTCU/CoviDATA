@@ -51,8 +51,9 @@ def __consolidar_contratacoes_capital(data_extracao):
                         consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'VALOR_TOTAL',
                         consolidacao.MOD_APLIC_DESCRICAO: 'MODALIDADE',
                         consolidacao.INICIO_VIGENCIA: 'DATA_INICIO_VIGENCIA',
-                        consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'LOCAL_EXECUCAO'}
-    colunas_adicionais = ['DATA_CELEBRACAO', 'DATA_FIM_VIGENCIA', 'PROCESSO_COMPRA']
+                        consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'LOCAL_EXECUCAO',
+                        consolidacao.DATA_FIM_PREVISTO: 'DATA_FIM_VIGENCIA'}
+    colunas_adicionais = ['DATA_CELEBRACAO', 'PROCESSO_COMPRA']
     planilha_original = path.join(config.diretorio_dados, 'MG', 'portal_transparencia', 'Belo Horizonte',
                                   'contratacaocorona.xlsx')
     df_original = pd.read_excel(planilha_original)

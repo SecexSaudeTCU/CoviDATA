@@ -9,6 +9,7 @@ from bs4 import Tag
 
 from covidata import config
 from covidata.persistencia.dao import persistir
+from covidata.webscraping.scrappers.TO.consolidacao_TO import consolidar
 
 
 def pt_TO():
@@ -63,8 +64,14 @@ def pt_TO():
 
 
 def main():
+    data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
     pt_TO()
+    logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+    logger.info('Consolidando as informações no layout padronizado...')
+    start_time = time.time()
+    consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))

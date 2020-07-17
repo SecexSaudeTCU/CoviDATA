@@ -242,10 +242,6 @@ PRAZO_EM_DIAS = 'PRAZO_EM_DIAS'
 
 SITUACAO = 'SITUACAO'
 
-COLUNAS_DESPESAS = [FONTE_DADOS, DATA_EXTRACAO_DADOS, UF, ESFERA, COD_IBGE_MUNICIPIO, MUNICIPIO_DESCRICAO,
-                    CONTRATANTE_CNPJ, CONTRATANTE_DESCRICAO, CONTRATADO_CNPJ, CONTRATADO_DESCRICAO, VALOR_CONTRATO,
-                    DESPESA_DESCRICAO, TIPO_DOCUMENTO, DOCUMENTO_NUMERO, DOCUMENTO_DATA]
-
 
 def consolidar_layout(colunas_adicionais, df_original, dicionario_dados, esfera, fonte_dados, uf, codigo_municipio_ibge,
                       data_extracao, funcao_posprocessamento=None):
@@ -276,7 +272,7 @@ def consolidar_layout(colunas_adicionais, df_original, dicionario_dados, esfera,
 
 def __converter_dataframes(df_original, dicionario_dados, colunas_adicionais, uf, codigo_municipio_ibge, fonte_dados,
                            esfera, data_extracao):
-    df = pd.DataFrame(columns=COLUNAS_DESPESAS)
+    df = pd.DataFrame()
 
     for coluna_padronizada, coluna_correspondente in dicionario_dados.items():
         # df[coluna_padronizada] = df_original.get(coluna_correspondente, '')

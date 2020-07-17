@@ -272,7 +272,7 @@ def consolidar_layout(colunas_adicionais, df_original, dicionario_dados, esfera,
 
 def __converter_dataframes(df_original, dicionario_dados, colunas_adicionais, uf, codigo_municipio_ibge, fonte_dados,
                            esfera, data_extracao):
-    df = pd.DataFrame()
+    df = pd.DataFrame(columns=[FONTE_DADOS, DATA_EXTRACAO_DADOS, ESFERA, UF, COD_IBGE_MUNICIPIO, MUNICIPIO_DESCRICAO])
 
     for coluna_padronizada, coluna_correspondente in dicionario_dados.items():
         # df[coluna_padronizada] = df_original.get(coluna_correspondente, '')

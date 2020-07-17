@@ -33,8 +33,8 @@ def pos_processar_licitacoes(df):
         vigencia = df.loc[i, 'VIGÊNCIA']
         data_inicio = vigencia[0:vigencia.find(' à ')]
         data_fim = vigencia[vigencia.find(' à ') + 3:len(vigencia)]
-        df[consolidacao.DATA_INICIO_VIGENCIA] = data_inicio
-        df[consolidacao.DATA_FIM_VIGENCIA] = data_fim
+        df.loc[i, consolidacao.DATA_INICIO_VIGENCIA] = data_inicio
+        df.loc[i, consolidacao.DATA_FIM_VIGENCIA] = data_fim
 
     df = df.drop(['VIGÊNCIA'], axis=1)
     return df

@@ -1,3 +1,4 @@
+import datetime
 import logging
 from os import path
 
@@ -44,8 +45,8 @@ def pos_processar_contratacoes_capital(df):
         prazo_contratual = df.loc[i, 'PRAZO CONTRATUAL']
         data_inicio = prazo_contratual[0:prazo_contratual.find(' a ')]
         data_fim = prazo_contratual[prazo_contratual.find(' a ') + 3:len(prazo_contratual)]
-        df[consolidacao.DATA_INICIO_VIGENCIA] = data_inicio
-        df[consolidacao.DATA_FIM_VIGENCIA] = data_fim
+        df.loc[i, consolidacao.DATA_INICIO_VIGENCIA] = data_inicio
+        df.loc[i, consolidacao.DATA_FIM_VIGENCIA] = data_fim
 
     df = df.drop(['PRAZO CONTRATUAL'], axis=1)
 

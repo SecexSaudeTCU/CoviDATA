@@ -73,7 +73,6 @@ def __definir_municipios(df, prefixo='PREFEITURA MUNICIPAL DE\r\n '):
 def pos_processar_dispensas(df):
     # Elimina a última linha, que só contém um totalizador
     df = df.drop(df.index[-1])
-    df = df.rename(columns={'NÚMERO\r\n  PROCESSO': 'Nº PROCESSO'})
     df[consolidacao.MOD_APLIC_DESCRICAO] = 'Dispensa de Licitação'
     return df
 
@@ -139,8 +138,9 @@ def __consolidar_despesas_municipios(data_extracao):
 def __consolidar_contratos(data_extracao):
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Entidade', consolidacao.DESPESA_DESCRICAO: ' Objeto ',
                         consolidacao.VALOR_CONTRATO: 'Valor R$', consolidacao.UG_DESCRICAO: 'Entidade',
-                        consolidacao.FUNDAMENTO_LEGAL: '\xa0Fundamento Legal\xa0'}
-    colunas_adicionais = ['Cód.\r\n  Dispensa', 'Nº Processo', 'Data Pedido']
+                        consolidacao.FUNDAMENTO_LEGAL: '\xa0Fundamento Legal\xa0',
+                        consolidacao.NUMERO_PROCESSO: 'Nº Processo'}
+    colunas_adicionais = ['Cód.\r\n  Dispensa', 'Data Pedido']
 
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'contratos.xls'), header=4)
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
@@ -153,8 +153,9 @@ def __consolidar_contratos(data_extracao):
 def __consolidar_contratos_municipios(data_extracao):
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Entidade', consolidacao.DESPESA_DESCRICAO: ' Objeto ',
                         consolidacao.VALOR_CONTRATO: 'Valor R$', consolidacao.UG_DESCRICAO: 'Entidade',
-                        consolidacao.FUNDAMENTO_LEGAL: '\xa0Fundamento Legal\xa0'}
-    colunas_adicionais = ['Cód.\r\n  Dispensa', 'Nº Processo', 'Data Pedido']
+                        consolidacao.FUNDAMENTO_LEGAL: '\xa0Fundamento Legal\xa0',
+                        consolidacao.NUMERO_PROCESSO: 'Nº Processo'}
+    colunas_adicionais = ['Cód.\r\n  Dispensa', 'Data Pedido']
 
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'contratos_municipios.xls'), header=4)
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,

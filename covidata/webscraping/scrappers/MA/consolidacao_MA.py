@@ -30,6 +30,13 @@ def pos_processar_licitacoes(df):
         elif len(cpf_cnpj) > 11:
             df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
 
+        vigencia = df['VIGÊNCIA']
+        data_inicio = vigencia[0:vigencia.find(' à ')]
+        data_fim = vigencia[vigencia.find(' à ') + 3:len(vigencia)]
+        df[consolidacao.DATA_INICIO_VIGENCIA] = data_inicio
+        df[consolidacao.DATA_FIM_VIGENCIA] = data_fim
+
+    df = df.drop(['VIGÊNCIA'], axis=1)
     return df
 
 
@@ -54,8 +61,9 @@ def __consolidar_licitacoes(data_extracao):
                         consolidacao.VALOR_CONTRATO: 'VALOR',
                         consolidacao.FONTE_RECURSOS_DESCRICAO: 'ORIGEM DO RECURSO',
                         consolidacao.CONTRATADO_DESCRICAO: 'CONTRATADO', consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ',
-                        consolidacao.DATA_ASSINATURA: 'DATA ASSINATURA', consolidacao.NUMERO_CONTRATO: 'Nº CONTRATO'}
-    colunas_adicionais = ['Nº PROCESSO', 'VIGÊNCIA']
+                        consolidacao.DATA_ASSINATURA: 'DATA ASSINATURA', consolidacao.NUMERO_CONTRATO: 'Nº CONTRATO',
+                        consolidacao.NUMERO_PROCESSO:'Nº PROCESSO'}
+    colunas_adicionais = ['VIGÊNCIA']
     planilha_original = path.join(config.diretorio_dados, 'MA', 'tce', 'licitacoes.xls')
     df_original = pd.read_excel(planilha_original, header=1)
     fonte_dados = consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_MA

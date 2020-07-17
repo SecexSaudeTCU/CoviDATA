@@ -47,6 +47,8 @@ def pos_processar_contratacoes_capital(df):
         df[consolidacao.DATA_INICIO_VIGENCIA] = data_inicio
         df[consolidacao.DATA_FIM_VIGENCIA] = data_fim
 
+    df = df.drop(['PRAZO CONTRATUAL'], axis=1)
+
     return df
 
 

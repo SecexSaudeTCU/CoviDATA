@@ -167,8 +167,9 @@ def __consolidar_contratos_municipios(data_extracao):
 def __consolidar_dispensas(data_extracao):
     dicionario_dados = {consolidacao.DESPESA_DESCRICAO: '\nObjeto\n', consolidacao.VALOR_CONTRATO: '\nValor\r\n  R$\n',
                         consolidacao.CONTRATANTE_DESCRICAO: '\nEnte\n', consolidacao.UG_DESCRICAO: '\nEnte\n',
-                        consolidacao.CONTRATADO_DESCRICAO: '\nFornecedor\n'}
-    colunas_adicionais = ['\nData da Alimentação\n', '\nNúmero\r\n  Processo\n']
+                        consolidacao.CONTRATADO_DESCRICAO: '\nFornecedor\n',
+                        consolidacao.NUMERO_PROCESSO: '\nNúmero\r\n  Processo\n'}
+    colunas_adicionais = ['\nData da Alimentação\n']
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'dispensas.xls'), header=4)
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_despesas, 'AC', '', data_extracao,
@@ -179,8 +180,9 @@ def __consolidar_dispensas(data_extracao):
 def __consolidar_dispensas_municipios(data_extracao):
     dicionario_dados = {consolidacao.DESPESA_DESCRICAO: '\nObjeto\n', consolidacao.VALOR_CONTRATO: '\nValor\r\n  R$\n',
                         consolidacao.CONTRATANTE_DESCRICAO: '\nEnte\n', consolidacao.UG_DESCRICAO: '\nEnte\n',
-                        consolidacao.CONTRATADO_DESCRICAO: '\nFornecedor\n'}
-    colunas_adicionais = ['\nData\r\n  da Alimentação\n', '\nNúmero\r\n  Processo\n']
+                        consolidacao.CONTRATADO_DESCRICAO: '\nFornecedor\n',
+                        consolidacao.NUMERO_PROCESSO: '\nNúmero\r\n  Processo\n'}
+    colunas_adicionais = ['\nData\r\n  da Alimentação\n']
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'dispensas_municipios.xls'), header=4)
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                            consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_despesas_municipios, 'AC', '',

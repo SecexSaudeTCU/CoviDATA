@@ -30,7 +30,7 @@ def pos_processar_licitacoes(df):
         elif len(cpf_cnpj) > 11:
             df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
 
-        vigencia = df['VIGÊNCIA']
+        vigencia = df.loc[i, 'VIGÊNCIA']
         data_inicio = vigencia[0:vigencia.find(' à ')]
         data_fim = vigencia[vigencia.find(' à ') + 3:len(vigencia)]
         df[consolidacao.DATA_INICIO_VIGENCIA] = data_inicio

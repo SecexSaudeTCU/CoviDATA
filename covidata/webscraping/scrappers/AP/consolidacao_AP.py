@@ -41,7 +41,7 @@ def pos_processar_contratacoes_capital(df):
         elif len(cpf_cnpj) > 14:
             df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
 
-        prazo_contratual = df['PRAZO CONTRATUAL']
+        prazo_contratual = df.loc[i, 'PRAZO CONTRATUAL']
         data_inicio = prazo_contratual[0:prazo_contratual.find(' a ')]
         data_fim = prazo_contratual[prazo_contratual.find(' a ') + 3:len(prazo_contratual)]
         df[consolidacao.DATA_INICIO_VIGENCIA] = data_inicio

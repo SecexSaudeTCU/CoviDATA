@@ -15,7 +15,7 @@ class PortalTransparencia_PortoVelho(SeleniumDownloader):
 
     # Sobrescreve o construtor da class "SeleniumDownloader"
     def __init__(self):
-        super().__init__(path.join(str(config.diretorio_dados)[:-18], 'dados', 'RO', 'portal_transparencia', 'PortoVelho'),
+        super().__init__(path.join(config.diretorio_dados, 'RO', 'portal_transparencia', 'PortoVelho'),
                          config.url_pt_PortoVelho)
 
     # Implementa localmente o método interno e vazio da class "SeleniumDownloader"
@@ -35,9 +35,11 @@ class PortalTransparencia_PortoVelho(SeleniumDownloader):
 def main():
     data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
+
+    # TODO? Ou "config.url_pt_RO" apenas está fora do ar temporariamente?
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
-    pt = FileDownloader(path.join(str(config.diretorio_dados)[:-18], 'dados', 'RO', 'portal_transparencia'), config.url_pt_RO,
+    pt = FileDownloader(path.join(config.diretorio_dados, 'RO', 'portal_transparencia'), config.url_pt_RO,
                         'Despesas.CSV')
     pt.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
@@ -48,7 +50,7 @@ def main():
     pt_PortoVelho.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-    # logger.info('Consolidando as informações no layout padronizado...')
-    # start_time = time.time()
-    # consolidar(data_extracao)
-    # logger.info("--- %s segundos ---" % (time.time() - start_time))
+    logger.info('Consolidando as informações no layout padronizado...')
+    start_time = time.time()
+    consolidar(data_extracao)
+    logger.info("--- %s segundos ---" % (time.time() - start_time))

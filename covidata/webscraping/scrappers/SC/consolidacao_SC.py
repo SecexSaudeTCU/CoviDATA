@@ -12,16 +12,9 @@ from covidata.persistencia.consolidacao import consolidar_layout, salvar
 def pre_processar_pt_SC_contratos(df):
     # Renomeia as colunas especificadas
     df.rename(index=str,
-              columns={'NUCONTRATO': 'Número Contrato',
-                       'CDGESTAO': 'Código Gestão',
+              columns={'CDGESTAO': 'Código Gestão',
                        'NMGESTAOCONTRATANTE': 'Nome Gestão Contratante',
                        'NMMODALIDADE': 'Modalidade Licitação',
-                       'NUPROCESSO': 'Número Processo',
-                       'DTASSINATURA': 'Data Assinatura',
-                       'DTINIVIGENCIA': 'Data Início Vigência',
-                       'DTFIMVIGENCIAATUAL': 'Data Fim Vigência',
-                       'NUPRAZO': 'Prazo Contratual',
-                       'NMLOCALEXECUCAO': 'Local Execução',
                        'CDITEMAPRESENTACAO': 'Código Item',
                        'DEITEM': 'Descrição Item',
                        'NMMARCA': 'Marca Item',
@@ -82,30 +75,34 @@ def pos_processar_pts(df):
 
 def consolidar_pt_SC_contratos(data_extracao):
     # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
-    dicionario_dados = {consolidacao.UG_COD: 'CDUNIDADEGESTORA',
+    dicionario_dados = {consolidacao.NUMERO_CONTRATO: 'NUCONTRATO',
+                        consolidacao.UG_COD: 'CDUNIDADEGESTORA',
                         consolidacao.UG_DESCRICAO: 'NMUGCONTRATANTE',
                         consolidacao.CONTRATADO_CNPJ: 'NUIDENTIFICACAOCONTRATADO',
                         consolidacao.CONTRATADO_DESCRICAO: 'NMCONTRATADO',
                         consolidacao.DESPESA_DESCRICAO: 'DEOBJETOCONTRATO',
+                        consolidacao.NUMERO_PROCESSO: 'NUPROCESSO',
                         consolidacao.VALOR_CONTRATO: 'VLTOTALATUAL',
+                        consolidacao.DATA_ASSINATURA: 'DTASSINATURA',
+                        consolidacao.DATA_INICIO_VIGENCIA: 'DTINIVIGENCIA',
+                        consolidacao.DATA_FIM_VIGENCIA: 'DTFIMVIGENCIAATUAL',
+                        consolidacao.PRAZO_EM_DIAS: 'NUPRAZO',
+                        consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'NMLOCALEXECUCAO',
                         consolidacao.FONTE_RECURSOS_COD: 'CDFONTERECURSO',
                         consolidacao.FONTE_RECURSOS_DESCRICAO: 'NMFONTERECURSO',
                         consolidacao.ORGAO_COD: 'CDORGAO',
-                        consolidacao.CONTRATANTE_DESCRICAO: 'NMORGAO', consolidacao.DATA_ASSINATURA: 'Data Assinatura',
-                        consolidacao.DATA_FIM_VIGENCIA: 'Data Fim Vigência',
-                        consolidacao.DATA_INICIO_VIGENCIA: 'Data Início Vigência'}
+                        consolidacao.CONTRATANTE_DESCRICAO: 'NMORGAO'}
 
     # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-    colunas_adicionais = ['Número Contrato', 'Código Gestão', 'Nome Gestão Contratante',
-                          'Modalidade Licitação', 'Número Processo', 'Prazo Contratual',
-                          'Local Execução', 'Código Item', 'Descrição Item', 'Marca Item',
+    colunas_adicionais = ['Código Gestão', 'Nome Gestão Contratante', 'Modalidade Licitação',
+                          'Código Item', 'Descrição Item', 'Marca Item',
                           'Descrição Detalhada Item', 'Quantidade Item', 'PU Item',
                           'Preço Item', 'Unidade Item', 'Número Serviço/Material',
                           'Descrição Subitem', 'PU Subitem', 'Quantidade Subitem',
                           'Preço Subitem', 'Unidade Subitem', 'Sigla Órgão']
 
     # Lê o arquivo "xlsx" de contratos baixado como um objeto pandas DataFrame
-    df_original = pd.read_excel(path.join(config.diretorio_dados, 'SC', 'portal_transparencia',
+    df_original = pd.read_excel(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SC', 'portal_transparencia',
                                           'contrato_item.xlsx'))
 
     # Chama a função "pre_processar_pt_SC_contratos" definida neste módulo
@@ -119,7 +116,7 @@ def consolidar_pt_SC_contratos(data_extracao):
     return df
 
 
-def consolidar_pt_RS_despesas(data_extracao):
+def consolidar_pt_SC_despesas(data_extracao):
     # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
     dicionario_dados = {consolidacao.ORGAO_COD: 'codigoexibicao',
                         consolidacao.CONTRATANTE_DESCRICAO: 'descricao',
@@ -131,7 +128,7 @@ def consolidar_pt_RS_despesas(data_extracao):
     colunas_adicionais = ['Valor Dotação Inicial', 'Valor Dotação Atualizada']
 
     # Lê o arquivo "csv" de despesas baixado como um objeto pandas DataFrame
-    df_original = pd.read_csv(path.join(config.diretorio_dados, 'SC', 'portal_transparencia',
+    df_original = pd.read_csv(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SC', 'portal_transparencia',
                                         'analisedespesa.csv'),
                               sep=';',
                               encoding='iso-8859-1')
@@ -159,11 +156,11 @@ def consolidar_pt_Florianopolis(data_extracao):
 
     # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
     colunas_adicionais = ['Número Dispensa', 'Local Entrega', 'Unidade Objeto',
-                          'Quantidade Objeto',
-                          'Número Processo', 'Número Contrato', 'Modalidade Licitação']
+                          'Quantidade Objeto', 'Número Processo', 'Número Contrato',
+                          'Modalidade Licitação']
 
     # Lê o arquivo "csv" de despesas baixado como um objeto pandas DataFrame
-    df_original = pd.read_csv(path.join(config.diretorio_dados, 'SC', 'portal_transparencia',
+    df_original = pd.read_csv(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SC', 'portal_transparencia',
                                         'Florianopolis', 'aquisicoes.csv'),
                               sep=';',
                               encoding='iso-8859-1')
@@ -184,10 +181,10 @@ def consolidar(data_extracao):
     logger.info('Iniciando consolidação dados Santa Catarina')
 
     consolidacoes = consolidar_pt_SC_contratos(data_extracao)
-    consolidacao_pt_RS_despesas = consolidar_pt_RS_despesas(data_extracao)
+    consolidacao_pt_SC_despesas = consolidar_pt_SC_despesas(data_extracao)
     consolidacao_pt_Florianopolis = consolidar_pt_Florianopolis(data_extracao)
 
-    consolidacoes = consolidacoes.append(consolidacao_pt_RS_despesas, ignore_index=True, sort=False)
+    consolidacoes = consolidacoes.append(consolidacao_pt_SC_despesas, ignore_index=True, sort=False)
     consolidacoes = consolidacoes.append(consolidacao_pt_Florianopolis, ignore_index=True, sort=False)
 
     salvar(consolidacoes, 'SC')

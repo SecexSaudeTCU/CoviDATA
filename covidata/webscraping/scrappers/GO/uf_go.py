@@ -32,13 +32,6 @@ class PT_Despesas_Goiania(SeleniumDownloader):
         select = Select(self.driver.find_element_by_xpath('//*[@id="WebPatterns_wt2_block_wtMainContent_DespesasWebBlocks_wt3_block_wtselExportar"]'))
         select.select_by_visible_text('JSON')
 
-        # import json
-        #
-        # f = open('C:/Users/ericc/Documents/covidata2/dados/GO/portal_transparencia/Goiania/' + 'Despesas_20200701_20200731.json')
-        # data = json.load(f)
-        # with open('C:/Users/ericc/Documents/covidata2/dados/GO/portal_transparencia/Goiania/' + 'data.json', 'w', encoding='utf-8') as fh:
-        #     json.dump(data, fh, ensure_ascii=False, indent=4)
-
 
 def main():
     data_extracao = datetime.datetime.now()
@@ -57,7 +50,7 @@ def main():
     pt_despesas_Goiania.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-    # logger.info('Consolidando as informações no layout padronizado...')
-    # start_time = time.time()
-    # consolidar(data_extracao)
-    # logger.info("--- %s segundos ---" % (time.time() - start_time))
+    logger.info('Consolidando as informações no layout padronizado...')
+    start_time = time.time()
+    consolidar(data_extracao)
+    logger.info("--- %s segundos ---" % (time.time() - start_time))

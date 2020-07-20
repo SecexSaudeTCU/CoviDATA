@@ -89,8 +89,9 @@ def consolidar_contratacoes_capital(data_extracao):
                         consolidacao.CONTRATANTE_DESCRICAO: 'Órgão Contratante / Local de execução',
                         consolidacao.UG_DESCRICAO: 'Órgão Contratante / Local de execução',
                         consolidacao.VALOR_CONTRATO: 'Valor contratado', consolidacao.VALOR_PAGO: 'Valor pago',
-                        consolidacao.MOD_APLIC_DESCRICAO: 'Forma / modalidade'}
-    colunas_adicionais = ['Nº e Íntegra do Processo / COntrato', 'Data de Celebração / Publicação', 'Prazo Contratual']
+                        consolidacao.MOD_APLIC_DESCRICAO: 'Forma / modalidade',
+                        consolidacao.DATA_CELEBRACAO: 'Data de Celebração / Publicação'}
+    colunas_adicionais = ['Nº e Íntegra do Processo / COntrato', 'Prazo Contratual']
     planilha_original = path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'Macapa', 'transparencia.xlsx')
     df_original = pd.read_excel(planilha_original, header=1)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Macapa

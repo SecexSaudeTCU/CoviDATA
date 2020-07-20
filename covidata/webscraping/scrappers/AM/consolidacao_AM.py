@@ -50,9 +50,8 @@ def consolidar_materiais_capital(data_extracao):
                         consolidacao.DOCUMENTO_NUMERO: 'NOTA DE EMPENHO',
                         consolidacao.DATA_CELEBRACAO: 'DATA DA CELEBRAÇÃO DO CONTRATO',
                         consolidacao.PRAZO_EM_DIAS: 'PRAZO DE ENTREGA (EM DIAS)',
-                        consolidacao.NUMERO_PROCESSO: 'PROCESSO'}
-    colunas_adicionais = ['DESTINO', 'ID', 'PUBLICIDADE', 'EDITAL DE LICITAÇÃO', 'CONTRATO',
-                          'MODALIDADE DA NOTA DE EMPENHO']
+                        consolidacao.NUMERO_PROCESSO: 'PROCESSO', consolidacao.NUMERO_CONTRATO: 'CONTRATO'}
+    colunas_adicionais = ['DESTINO', 'ID', 'PUBLICIDADE', 'EDITAL DE LICITAÇÃO', 'MODALIDADE DA NOTA DE EMPENHO']
     df_original = pd.read_csv(
         path.join(config.diretorio_dados, 'AM', 'portal_transparencia', 'Manaus',
                   'PÚBLICA-CONTROLE-PROCESSOS-COMBATE-COVID-19-MATERIAIS-2.csv'))

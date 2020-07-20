@@ -44,32 +44,42 @@ def __consolidar_dispensas(data_extracao):
                         consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local de Execução'}
     colunas_adicionais = ['Nº Dispensa', 'Anulação/ Revogação/ Retificação/\nSuspensão', 'Data de Empenho/\nContrato',
                           'Data de Empenho\nContrato']
+    df_final = pd.DataFrame()
 
+    # Processando arquivos Excel
     planilhas = [y for x in os.walk(path.join(config.diretorio_dados, 'PE', 'portal_transparencia', 'Recife')) for y in
                  glob(os.path.join(x[0], '*.xlsx'))]
-    df_final = pd.DataFrame()
 
     for planilha_original in planilhas:
         df_original = pd.read_excel(planilha_original)
+        df = __processar_df_original(colunas_adicionais, data_extracao, df_original, dicionario_dados)
+        df_final = df_final.append(df)
 
-        # Procura pelo cabeçalho:
-        mask = np.column_stack([df_original[col].str.contains(colunas_adicionais[0], na=False) for col in df_original])
-        df_original.columns = df_original[mask].values.tolist()[0]
+    # Processando arquivos ODS
+    planilhas = [y for x in os.walk(path.join(config.diretorio_dados, 'PE', 'portal_transparencia', 'Recife')) for y in
+                 glob(os.path.join(x[0], '*.ods'))]
 
-        # Remove as linhas anteriores ao cabeçalho
-        while (df_original.iloc[0, 0] != df_original.columns[0]):
-            df_original = df_original.drop(df_original.index[0])
-
-        df_original = df_original.drop(df_original.index[0])
-
-        fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Recife
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
-                               fonte_dados, 'PE', get_codigo_municipio_por_nome('Recife', 'PE'), data_extracao,
-                               pos_processar_consolidar_dispensas)
-
+    for planilha_original in planilhas:
+        df_original = pd.read_excel(planilha_original, engine='odf')
+        df = __processar_df_original(colunas_adicionais, data_extracao, df_original, dicionario_dados)
         df_final = df_final.append(df)
 
     return df_final
+
+
+def __processar_df_original(colunas_adicionais, data_extracao, df_original, dicionario_dados):
+    # Procura pelo cabeçalho:
+    mask = np.column_stack([df_original[col].str.contains(colunas_adicionais[0], na=False) for col in df_original])
+    df_original.columns = df_original[mask].values.tolist()[0]
+    # Remove as linhas anteriores ao cabeçalho
+    while (df_original.iloc[0, 0] != df_original.columns[0]):
+        df_original = df_original.drop(df_original.index[0])
+    df_original = df_original.drop(df_original.index[0])
+    fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Recife
+    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+                           fonte_dados, 'PE', get_codigo_municipio_por_nome('Recife', 'PE'), data_extracao,
+                           pos_processar_consolidar_dispensas)
+    return df
 
 
 def consolidar(data_extracao):

@@ -105,13 +105,12 @@ def consolidar(data_extracao):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Maranhão')
     #TODO: Planilha corrupta
-    #licitacoes = __consolidar_licitacoes(data_extracao)
+    licitacoes = __consolidar_licitacoes(data_extracao)
 
-    df = __consolidar_portal_transparencia_estado(data_extracao)
-    #licitacoes = licitacoes.append(portal_transparencia_estado)
+    portal_transparencia_estado = __consolidar_portal_transparencia_estado(data_extracao)
+    licitacoes = licitacoes.append(portal_transparencia_estado)
 
     portal_transparencia_capital = __consolidar_portal_transparencia_capital(data_extracao)
-    df = df.append(portal_transparencia_capital)
+    licitacoes = licitacoes.append(portal_transparencia_capital)
 
-    salvar(df, 'MA')
-
+    salvar(licitacoes, 'MA')

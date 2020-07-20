@@ -77,6 +77,7 @@ url_pt_CampoGrande = 'https://transparenciacovid.campogrande.ms.gov.br/despesas/
 url_pt_Aracaju = 'https://transparencia.aracaju.se.gov.br/prefeitura/covid19/covid19-despesas/'
 url_pt_JoaoPessoa = 'https://transparencia.joaopessoa.pb.gov.br/#/despesas/despesas-detalhamento?ano=2020&covid=true'
 url_pt_Natal = 'https://www.natal.rn.gov.br/transparencia/#/despesas/despesas-covid-credor'
+url_pt_Goiania_despesas = 'https://www.goiania.go.gov.br/sing_transparencia/coronavirus-despesas/?filtro_simplificado=categoria'
 
 # URLs dos portais de transparência dos Tribunais de Contas Municipais
 url_tcm_PA_1 = 'http://nie-tcmpa.droppages.com/files/Argus%20TCMPA%20-%20Fornecedores%20por%20Valor%20Homologado.xlsx'

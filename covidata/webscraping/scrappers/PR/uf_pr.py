@@ -73,7 +73,6 @@ def main():
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     #TODO: Site fora do ar
-    """
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
 
@@ -84,7 +83,6 @@ def main():
                                  'aquisicoes.xlsx')
 
     logger.info("--- %s segundos ---" % (time.time() - start_time))
-    """
 
     logger.info('Consolidando as informações no layout padronizado...')
     start_time = time.time()

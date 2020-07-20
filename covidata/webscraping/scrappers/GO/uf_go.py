@@ -13,14 +13,12 @@ from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.scrappers.GO.consolidacao_GO import consolidar
 
 
-
 class PT_Despesas_Goiania(SeleniumDownloader):
     def __init__(self):
         super().__init__(path.join(config.diretorio_dados, 'GO', 'portal_transparencia', 'Goiania'),
                          config.url_pt_Goiania_despesas)
 
     def _executar(self):
-
         # Cria um objeto da class "WebDriverWait"
         wait = WebDriverWait(self.driver, 45)
 
@@ -29,7 +27,8 @@ class PT_Despesas_Goiania(SeleniumDownloader):
         self.driver.switch_to.frame(iframe)
 
         # Seleciona o menu dropdown "Exportar" e seta a opção "JSON"
-        select = Select(self.driver.find_element_by_xpath('//*[@id="WebPatterns_wt2_block_wtMainContent_DespesasWebBlocks_wt3_block_wtselExportar"]'))
+        select = Select(self.driver.find_element_by_xpath(
+            '//*[@id="WebPatterns_wt2_block_wtMainContent_DespesasWebBlocks_wt3_block_wtselExportar"]'))
         select.select_by_visible_text('JSON')
 
 
@@ -44,11 +43,16 @@ def main():
     pt_GO.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
+    # TODO: Instável -> erro Unable to locate element:
+    # {"method":"xpath","selector":"//*[@id="WebPatterns_wt2_block_wtMainContent_DespesasWebBlocks_wt3_block_wtselExportar"]"}
+    # (Session info: headless chrome=83.0.4103.116)
+    """
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_despesas_Goiania = PT_Despesas_Goiania()
     pt_despesas_Goiania.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+    """
 
     logger.info('Consolidando as informações no layout padronizado...')
     start_time = time.time()

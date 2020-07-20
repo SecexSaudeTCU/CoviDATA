@@ -139,9 +139,10 @@ def consolidar(data_extracao):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Goiás')
 
-    consolidacoes = __consolidar_aquisicoes(data_extracao)
-    consolidacoes_pt_despesas_Goiania = __consolidar_pt_despesas_Goiania(data_extracao)
+    df = __consolidar_aquisicoes(data_extracao)
+    #TODO: Instabilidade no acesso ao PT Goiânia
+    #consolidacoes_pt_despesas_Goiania = __consolidar_pt_despesas_Goiania(data_extracao)
 
-    consolidacoes = consolidacoes.append(consolidacoes_pt_despesas_Goiania, ignore_index=True, sort=False)
+    #df = df.append(consolidacoes_pt_despesas_Goiania, ignore_index=True, sort=False)
 
-    salvar(consolidacoes, 'GO')
+    salvar(df, 'GO')

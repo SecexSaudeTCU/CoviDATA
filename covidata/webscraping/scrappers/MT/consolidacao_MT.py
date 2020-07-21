@@ -1,3 +1,4 @@
+import datetime
 import logging
 from os import path
 
@@ -34,8 +35,12 @@ def pre_processar_pt_MT(df):
 
 
 def pos_consolidar_pt_MT(df):
-    df = df.astype({consolidacao.CONTRATADO_CNPJ: np.uint64})
-    df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
+    try:
+        df = df.astype({consolidacao.CONTRATADO_CNPJ: np.uint64})
+        df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
+    except ValueError:
+        #Há linhas com dados inválidos para CNPJ (ex.: data)
+        df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
 
     for i in range(0, len(df)):
         tamanho = len(df.loc[i, consolidacao.CONTRATADO_CNPJ])

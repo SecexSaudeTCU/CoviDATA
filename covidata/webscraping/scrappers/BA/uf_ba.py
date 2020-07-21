@@ -1,7 +1,7 @@
 from os import path
 import logging
 import time
-import datetime
+from datetime import datetime
 import requests
 
 from bs4 import BeautifulSoup
@@ -11,11 +11,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-
 from covidata import config
 from covidata.persistencia.dao import persistir
-from covidata.webscraping.scrappers.BA.consolidacao_BA import consolidar
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
+from covidata.webscraping.scrappers.BA.consolidacao_BA import consolidar
 
 
 
@@ -69,7 +68,7 @@ class TCE_BA(SeleniumDownloader):
 
 
 def main():
-    data_extracao = datetime.datetime.now()
+    data_extracao = datetime.now()
     logger = logging.getLogger('covidata')
 
     logger.info('Portal de transparência estadual...')

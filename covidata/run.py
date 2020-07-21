@@ -47,7 +47,6 @@ if __name__ == '__main__':
     logger.addHandler(logging.StreamHandler())
 
     start_time = time.time()
-
     logger.info('# Recuperando dados do Acre...')
     uf_ac.main()
 

@@ -6,6 +6,11 @@ import pandas as pd
 
 from covidata import config
 
+# Coluna que indica se o CNPJ foi inferido a posteriori, por meio de consulta à base da Receita Federal (SIM), ou se já
+# estava presente nos dados (NÃO).  Alternativamente, pode assumir o valor VER ABA CNPJs caso tenha sido encontrado mais
+# de um CNPJ associado à razão social ou nome fantasia da empresa.
+CNPJ_INFERIDO = 'CNPJ_INFERIDO'
+
 ANO_PADRAO = 2020
 
 """

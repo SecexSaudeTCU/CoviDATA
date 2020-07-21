@@ -54,7 +54,7 @@ def consolidar_materiais_capital(data_extracao):
     colunas_adicionais = ['DESTINO', 'ID', 'PUBLICIDADE', 'EDITAL DE LICITAÇÃO', 'MODALIDADE DA NOTA DE EMPENHO']
     df_original = pd.read_csv(
         path.join(config.diretorio_dados, 'AM', 'portal_transparencia', 'Manaus',
-                  'PÚBLICA-CONTROLE-PROCESSOS-COMBATE-COVID-19-MATERIAIS-2.csv'))
+                  'PÚBLICA-CONTROLE-PROCESSOS-COMBATE-COVID-19-MATERIAIS.csv'))
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                            consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Manaus, 'AM',
                            get_codigo_municipio_por_nome('Manaus', 'AM'), data_extracao,

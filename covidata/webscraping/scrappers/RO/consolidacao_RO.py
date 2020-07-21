@@ -47,7 +47,7 @@ def consolidar_pt_RO(data_extracao):
                         consolidacao.VALOR_PAGO: 'ValorPaga', consolidacao.ORGAO_COD: 'CodOrgao'}
     colunas_adicionais = ['CodProjeto', 'EVENTO', 'N_PROCESSO_NE', 'CodEspecificacaoDespesa', 'NomSigla', 'NumEmpenho',
                           'DOCUMENT_NE', 'VLR_EMPENHO', 'valorDespesa', 'Status']
-    planilha_original = path.join(str(config.diretorio_dados)[:-18], 'dados', 'RO', 'portal_transparencia', 'Despesas.CSV')
+    planilha_original = path.join(config.diretorio_dados, 'RO', 'portal_transparencia', 'Despesas.CSV')
     df_original = pd.read_csv(planilha_original, sep=';', header=0, encoding='utf_16_le')
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_RO
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,

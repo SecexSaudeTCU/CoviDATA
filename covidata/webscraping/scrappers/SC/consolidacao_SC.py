@@ -102,7 +102,7 @@ def consolidar_pt_SC_contratos(data_extracao):
                           'Preço Subitem', 'Unidade Subitem', 'Sigla Órgão']
 
     # Lê o arquivo "xlsx" de contratos baixado como um objeto pandas DataFrame
-    df_original = pd.read_excel(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SC', 'portal_transparencia',
+    df_original = pd.read_excel(path.join(config.diretorio_dados, 'SC', 'portal_transparencia',
                                           'contrato_item.xlsx'))
 
     # Chama a função "pre_processar_pt_SC_contratos" definida neste módulo
@@ -128,7 +128,7 @@ def consolidar_pt_SC_despesas(data_extracao):
     colunas_adicionais = ['Valor Dotação Inicial', 'Valor Dotação Atualizada']
 
     # Lê o arquivo "csv" de despesas baixado como um objeto pandas DataFrame
-    df_original = pd.read_csv(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SC', 'portal_transparencia',
+    df_original = pd.read_csv(path.join(config.diretorio_dados, 'SC', 'portal_transparencia',
                                         'analisedespesa.csv'),
                               sep=';',
                               encoding='iso-8859-1')
@@ -160,7 +160,7 @@ def consolidar_pt_Florianopolis(data_extracao):
                           'Modalidade Licitação']
 
     # Lê o arquivo "csv" de despesas baixado como um objeto pandas DataFrame
-    df_original = pd.read_csv(path.join(str(config.diretorio_dados)[:-18], 'dados', 'SC', 'portal_transparencia',
+    df_original = pd.read_csv(path.join(config.diretorio_dados, 'SC', 'portal_transparencia',
                                         'Florianopolis', 'aquisicoes.csv'),
                               sep=';',
                               encoding='iso-8859-1')

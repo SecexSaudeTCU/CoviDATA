@@ -54,6 +54,7 @@ def pre_processar_pt_despesas_Goiania(json):
 
 def pos_processar_aquisicoes(df):
     df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
+    df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
 
     for i in range(0, len(df)):
         df.loc[i, consolidacao.CONTRATADO_CNPJ] = df.loc[i, consolidacao.CONTRATADO_CNPJ].replace(',001', '')
@@ -146,3 +147,5 @@ def consolidar(data_extracao):
     #df = df.append(consolidacoes_pt_despesas_Goiania, ignore_index=True, sort=False)
 
     salvar(df, 'GO')
+
+#consolidar(datetime.now())

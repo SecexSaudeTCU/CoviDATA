@@ -52,7 +52,8 @@ url_tce_MA = 'https://www6.tce.ma.gov.br/sacop/muralsite/muralcovid.zul'
 url_tce_RS = 'http://www1.tce.rs.gov.br/aplicprod/f?p=50500:16::XLS::::&cs=3Hn8jXEOKZFSR4U62TfOfBk7Yeas'
 url_tce_RJ = 'https://wabi-brazil-south-api.analysis.windows.net/public/reports/querydata?synchronous=true'
 url_tce_PI = 'https://sistemas.tce.pi.gov.br/contratosweb/mural/index.xhtml;jsessionid=vhqHjeHfUGPyYcGS3G1t1UBqjfWTovHnxUHealyQ.izar'
-url_tce_BA = 'https://tcebiprdl.tce.ba.gov.br/mirante/bi?pathRef=.public_folders/Público/COVID19/MiranteRelDadosAbertosPainelPublicoCovid19Nacional'
+url_tce_MT = 'https://covid.tce.mt.gov.br/extensions/covid/painel-licitacao.html'
+url_tce_BA = 'https://www.tce.ba.gov.br/covid-19'
 
 # URLSs de portais de transparência de govenos municipais (capitais)
 url_pt_Manaus = 'https://covid19.manaus.am.gov.br/transparencia-covid-19/'

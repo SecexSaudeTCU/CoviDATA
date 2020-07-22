@@ -17,7 +17,7 @@ def pre_processar_tce(df):
     df.reset_index(drop=True, inplace=True)
 
     # Junta as colunas "Órgão comprador" e "Text" em uma única
-    df['Órgão'] = df['Órgão comprador'] + ' - ' + df['Text']
+    df['Órgão'] = df[['Órgão comprador', 'Text']].apply(lambda x: ' - '.join(str(x)), axis=1)
 
     # Eliminhas as colunas especificadas
     df.drop(['UF', 'Órgão comprador', 'Text'], axis=1, inplace=True)
@@ -95,8 +95,8 @@ def consolidar(data_extracao):
     logger.info('Iniciando consolidação dados Bahia')
 
     consolidacoes = consolidar_contratos(data_extracao)
-    #consolidacao_tce_BA = consolidar_tce(data_extracao)
+    consolidacao_tce_BA = consolidar_tce(data_extracao)
 
-    #consolidacoes = consolidacoes.append(consolidacao_tce_BA, ignore_index=True, sort=False)
+    consolidacoes = consolidacoes.append(consolidacao_tce_BA, ignore_index=True, sort=False)
 
     salvar(consolidacoes, 'BA')

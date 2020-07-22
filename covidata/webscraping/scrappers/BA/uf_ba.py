@@ -7,10 +7,6 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
-
 from covidata import config
 from covidata.persistencia.dao import persistir
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
@@ -55,16 +51,14 @@ class TCE_BA(SeleniumDownloader):
 
     def _executar(self):
 
-        # Cria um objeto da class "WebDriverWait"
-        wait = WebDriverWait(self.driver, 10)
+        # On hold por 5 segundos
+        time.sleep(5)
 
-        # Não perfeitamente explicável por que o código funciona com essas linhas
-        try:
-            element = wait.until(EC.visibility_of_element_located((By.XPATH,
-                '//*[@id="conteudo"]/div/div/div/article/div/div[3]/ul[1]/li[7]/a')))
-            self.driver.execute_script("arguments[0].click();", element)
-        except:
-            pass
+        # Seleciona o link referido pelo nome "Pressione..."
+        self.driver.find_element_by_link_text('Pressione aqui para baixar os dados do painel em formato de planilha eletrônica').click()
+
+        # On hold por 5 segundos
+        time.sleep(5)
 
 
 def main():

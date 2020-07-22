@@ -44,7 +44,8 @@ def __processar_uf(df):
     dao_rfb = DAO_RFB()
 
     for i in range(0, len(df)):
-        if df.loc[i, consolidacao.FAVORECIDO_TIPO] != consolidacao.TIPO_FAVORECIDO_CPF:
+        if consolidacao.CONTRATADO_DESCRICAO in df.columns and df.loc[
+            i, consolidacao.FAVORECIDO_TIPO] != consolidacao.TIPO_FAVORECIDO_CPF:
             if consolidacao.CONTRATADO_CNPJ in df.columns:
                 cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
 

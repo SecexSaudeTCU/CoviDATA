@@ -2,18 +2,17 @@ import os
 from os import path
 import logging
 import time
-import datetime
-import requests
+from datetime import datetime
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait, Select
-from bs4 import BeautifulSoup
+from selenium.webdriver.support.ui import WebDriverWait
 
 from covidata import config
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
 from covidata.webscraping.downloader import download
 from covidata.webscraping.scrappers.MT.consolidacao_MT import consolidar
+
 
 
 class PortalTransparencia_MT(SeleniumDownloader):
@@ -30,19 +29,20 @@ class PortalTransparencia_MT(SeleniumDownloader):
         self.driver.switch_to.frame(iframe)
 
         # Seleciona o botão "Versão Completa"
-        self.driver.find_element_by_xpath('/html/body/div/a').click()
-
-        # On hold por 5 segundos
-        time.sleep(5)
+        element = wait.until(EC.visibility_of_element_located((By.XPATH, '/html/body/div/a')))
+        self.driver.execute_script("arguments[0].click();", element)
 
         # Seleciona o menu dropdown "DOWNLOAD DOS DADOS"
-        self.driver.find_element_by_xpath('/html/body/div/div[5]/button').click()
+        element = wait.until(EC.visibility_of_element_located((By.XPATH, '/html/body/div/div[5]/button')))
+        self.driver.execute_script("arguments[0].click();", element)
 
         # Seleciona a opção "Excel"
-        self.driver.find_element_by_xpath('/html/body/div/div[5]/ul/li[2]/a').click()
+        element = wait.until(EC.visibility_of_element_located((By.XPATH, '/html/body/div/div[5]/ul/li[2]/a')))
+        self.driver.execute_script("arguments[0].click();", element)
+
 
 def main():
-    data_extracao = datetime.datetime.now()
+    data_extracao = datetime.now()
     logger = logging.getLogger('covidata')
 
     logger.info('Portal de transparência estadual...')

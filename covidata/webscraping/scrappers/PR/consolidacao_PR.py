@@ -12,18 +12,33 @@ from covidata.persistencia.consolidacao import consolidar_layout, salvar
 def pos_processar_dados_abertos(df):
     df[consolidacao.ANO] += 2000
     df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
+
+    # Como no caso de PR, em nenhum momento a informação de CNPJ é fornecida, sinalizar tipo para PJ para que, na
+    # consolidação geral seja executada a busca por CNPJs.
+    df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
+
     return df
 
 
 def pos_processar_aquisicoes_capital(df):
     df[consolidacao.MUNICIPIO_DESCRICAO] = 'Curitiba'
     df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
+
+    # Como no caso de PR, em nenhum momento a informação de CNPJ é fornecida, sinalizar tipo para PJ para que, na
+    # consolidação geral seja executada a busca por CNPJs.
+    df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
+
     return df
 
 
 def pos_processar_licitacoes_capital(df):
     df = pos_processar_aquisicoes_capital(df)
     df[consolidacao.TIPO_DOCUMENTO] = consolidacao.TIPO_FAVORECIDO_CNPJ
+
+    # Como no caso de PR, em nenhum momento a informação de CNPJ é fornecida, sinalizar tipo para PJ para que, na
+    # consolidação geral seja executada a busca por CNPJs.
+    df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
+
     return df
 
 
@@ -43,6 +58,10 @@ def __consolidar_aquisicoes(data_extracao, url_fonte_dados):
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + url_fonte_dados
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            fonte_dados, 'PR', '', data_extracao)
+
+    # Como no caso de PR, em nenhum momento a informação de CNPJ é fornecida, sinalizar tipo para PJ para que, na
+    # consolidação geral seja executada a busca por CNPJs.
+    df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
     return df
 
 

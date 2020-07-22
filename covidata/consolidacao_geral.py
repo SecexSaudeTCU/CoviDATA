@@ -45,29 +45,35 @@ def __processar_uf(df):
 
     for i in range(0, len(df)):
         if df.loc[i, consolidacao.FAVORECIDO_TIPO] != consolidacao.TIPO_FAVORECIDO_CPF:
-            cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
+            if consolidacao.CONTRATADO_CNPJ in df.columns:
+                cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
 
-            if ((type(cnpj) is str) and cnpj.strip() == '') or pd.isna(cnpj) or pd.isnull(cnpj):
-                descricao_contratado = df.loc[i, consolidacao.CONTRATADO_DESCRICAO]
-
-                if not pd.isna(descricao_contratado) and not pd.isnull(descricao_contratado):
-                    descricao_contratado = __processar_descricao_contratado(descricao_contratado)
-
-                    if descricao_contratado != '':
-                        cnpjs = dao_rfb.buscar_cnpj_por_razao_social_ou_nome_fantasia(descricao_contratado)
-
-                        if len(cnpjs) == 1:
-                            df.loc[i, consolidacao.CONTRATADO_CNPJ] = cnpjs[0]
-                            df.loc[i, consolidacao.CNPJ_INFERIDO] = 'SIM'
-                        elif len(cnpjs) > 1:
-                            map_nome_cnpjs[df.loc[i, consolidacao.CONTRATADO_DESCRICAO]] = cnpjs
-                            df.loc[i, consolidacao.CNPJ_INFERIDO] = 'VER ABA CNPJs'
+                if ((type(cnpj) is str) and cnpj.strip() == '') or pd.isna(cnpj) or pd.isnull(cnpj):
+                    __inferir_cnpj(dao_rfb, df, i, map_nome_cnpjs)
+                else:
+                    df.loc[i, consolidacao.CNPJ_INFERIDO] = 'NÃO'
             else:
-                df.loc[i, consolidacao.CNPJ_INFERIDO] = 'NÃO'
+                __inferir_cnpj(dao_rfb, df, i, map_nome_cnpjs)
 
     dao_rfb.encerrar_conexao()
 
     return df, map_nome_cnpjs
+
+
+def __inferir_cnpj(dao_rfb, df, i, map_nome_cnpjs):
+    descricao_contratado = df.loc[i, consolidacao.CONTRATADO_DESCRICAO]
+    if not pd.isna(descricao_contratado) and not pd.isnull(descricao_contratado):
+        descricao_contratado = __processar_descricao_contratado(descricao_contratado)
+
+        if descricao_contratado != '':
+            cnpjs = dao_rfb.buscar_cnpj_por_razao_social_ou_nome_fantasia(descricao_contratado)
+
+            if len(cnpjs) == 1:
+                df.loc[i, consolidacao.CONTRATADO_CNPJ] = cnpjs[0]
+                df.loc[i, consolidacao.CNPJ_INFERIDO] = 'SIM'
+            elif len(cnpjs) > 1:
+                map_nome_cnpjs[df.loc[i, consolidacao.CONTRATADO_DESCRICAO]] = cnpjs
+                df.loc[i, consolidacao.CNPJ_INFERIDO] = 'VER ABA CNPJs'
 
 
 def __processar_descricao_contratado(descricao):

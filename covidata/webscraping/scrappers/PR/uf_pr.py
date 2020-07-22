@@ -59,9 +59,6 @@ def portal_transparencia_Curitiba():
     pt_aquisicoes.download()
 
 
-
-
-
 def main():
     data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
@@ -72,15 +69,14 @@ def main():
 
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-    #TODO: Site fora do ar
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
 
     portal_transparencia_Curitiba()
 
     exportar_arquivo_para_xlsx(path.join(config.diretorio_dados, 'PR', 'portal_transparencia', 'Curitiba'),
-                                 'Aquisições_para_enfrentamento_da_pandemia_do_COVID-19_-_Transparência_Curitiba.xls',
-                                 'aquisicoes.xlsx')
+                               'Aquisições_para_enfrentamento_da_pandemia_do_COVID-19_-_Transparência_Curitiba.xls',
+                               'aquisicoes.xlsx')
 
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
@@ -88,3 +84,5 @@ def main():
     start_time = time.time()
     consolidar(data_extracao, url_aquisicoes, url_dados_abertos)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+#main()

@@ -14,5 +14,10 @@ class DAO_RFB:
         cnpjs = [elemento[0] for elemento in lista]
         return cnpjs
 
+    def buscar_todos(self):
+        c = self.conn.cursor()
+        cursor = c.execute("SELECT * FROM empresas")
+        return cursor
+
     def encerrar_conexao(self):
         self.conn.close()

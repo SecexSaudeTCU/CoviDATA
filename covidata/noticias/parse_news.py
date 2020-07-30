@@ -4,6 +4,8 @@ Work in progress...
 TODO:
 
 """
+import os
+
 import pandas as pd
 import time
 from newspaper import Article
@@ -33,7 +35,7 @@ def get_text(url, max_retries=5, sleep=5):
 if __name__ == '__main__':
 
     #
-    df = pd.read_excel('covidata/noticias/noticias_n_202.xlsx')
+    df = pd.read_excel('C:\\Users\\Monique\\Documents\\CoviDATA\\covidata\\noticias\\noticias_n_203.xlsx')
 
 
     textos = []
@@ -47,8 +49,6 @@ if __name__ == '__main__':
     df['texto'] = textos
     df.to_excel('com_textos.xlsx')
 
-
-    """
     nlp = pt_core_news_sm.load()
     doc = nlp(texto)
     from spacy import displacy
@@ -56,4 +56,3 @@ if __name__ == '__main__':
 
     for ent in doc.ents:
         print(ent.label_, ent)
-    """

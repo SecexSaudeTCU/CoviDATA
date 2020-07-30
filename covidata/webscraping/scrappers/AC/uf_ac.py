@@ -73,13 +73,18 @@ def main():
     pt_AC.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
+    #TODO: Erro intermitente
+    """
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_RioBranco = PortalTransparencia_RioBranco(config.url_pt_RioBranco)
     pt_RioBranco.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+    """
 
     logger.info('Consolidando as informações no layout padronizado...')
     start_time = time.time()
     consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+#main()

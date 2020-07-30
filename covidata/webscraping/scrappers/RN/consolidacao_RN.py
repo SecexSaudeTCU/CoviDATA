@@ -97,9 +97,11 @@ def consolidar(data_extracao):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Rio Grande do Norte')
 
-    consolidacoes = consolidar_pt_RN(data_extracao)
+    #TODO: Arquivos PDF e não CSV
+    #consolidacoes = consolidar_pt_RN(data_extracao)
     consolidacao_pt_Natal = consolidar_pt_Natal(data_extracao)
 
-    consolidacoes = consolidacoes.append(consolidacao_pt_Natal, ignore_index=True, sort=False)
+    #consolidacoes = consolidacoes.append(consolidacao_pt_Natal, ignore_index=True, sort=False)
 
-    salvar(consolidacoes, 'RN')
+    #salvar(consolidacoes, 'RN')
+    salvar(consolidacao_pt_Natal, 'RN')

@@ -1,3 +1,4 @@
+import datetime
 import logging
 from os import path
 
@@ -57,3 +58,6 @@ def consolidar(data_extracao):
     compras_emergenciais = compras_emergenciais.append(despesas_capital)
 
     salvar(compras_emergenciais, 'MS')
+    #salvar(despesas_capital, 'MS')
+
+consolidar(datetime.datetime.now())

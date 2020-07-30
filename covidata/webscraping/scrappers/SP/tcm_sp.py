@@ -7,7 +7,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.common.exceptions import UnexpectedAlertPresentException
+from selenium.common.exceptions import UnexpectedAlertPresentException, NoAlertPresentException
 from webdriver_manager.chrome import ChromeDriverManager
 
 from covidata import config
@@ -15,6 +15,7 @@ from covidata.persistencia.dao import persistir
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+
 
 def main():
     logger = logging.getLogger('covidata')
@@ -39,7 +40,6 @@ def main():
     driver.quit()
 
     df = pd.DataFrame(lista_linhas, columns=colunas)
-    # persistir(df, 'tcm', 'licitacoes', 'SP')
     persistir(df, 'tcm', 'licitacoes', 'SP')
 
     logger.info("--- %s segundos ---" % (time.time() - start_time))
@@ -48,9 +48,6 @@ def main():
 def __processar_pagina(driver, i, lista_linhas):
     logger = logging.getLogger("covidata")
     logger.info(f'Processando página {i}...')
-
-    #link = driver.find_element_by_link_text(str(i))
-    #link.click()
 
     wait = WebDriverWait(driver, 30)
     link = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, str(i))))
@@ -63,7 +60,7 @@ def __processar_pagina(driver, i, lista_linhas):
         soup = BeautifulSoup(driver.page_source, 'lxml')
     except UnexpectedAlertPresentException:
         # Tenta novamente
-        #link.click()
+        link = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, str(i))))
         driver.execute_script("arguments[0].click();", link)
 
         # Aguarda o completo carregamento da tela
@@ -73,6 +70,21 @@ def __processar_pagina(driver, i, lista_linhas):
     _, linhas = __extrair_tabela(soup)
     linhas = __checar_linhas_repetidas(driver, linhas, link, lista_linhas)
     return linhas
+
+
+def alert_accept(driver):
+    try:
+        alert = driver.switch_to_alert()
+        print("Aler text:" + alert.text)
+        alert.accept()
+        print("Alert detected, accept it")
+        return True
+    except UnexpectedAlertPresentException:
+        print("Hum..., continue?")
+        return False
+    except NoAlertPresentException:
+        print("No alert here")
+        return False
 
 
 def __checar_linhas_repetidas(driver, linhas, link, lista_linhas):
@@ -132,3 +144,5 @@ def configurar_browser():
     driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
     return driver
 
+
+#main()

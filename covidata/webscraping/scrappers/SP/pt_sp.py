@@ -1,4 +1,5 @@
 import logging
+import os
 import time
 from os import path
 
@@ -32,4 +33,13 @@ def main():
     start_time = time.time()
     pt_SP = PortalTransparencia_SP(config.url_pt_SP)
     pt_SP.download()
+
+    diretorio = path.join(config.diretorio_dados, 'SP', 'portal_transparencia')
+    arquivo = os.listdir(diretorio)[0]
+
+    if '.csv.crdownload' in arquivo:
+        os.rename(path.join(diretorio, arquivo), path.join(diretorio, 'COVID.csv'))
+
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+#main()

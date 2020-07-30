@@ -12,7 +12,6 @@ from covidata.persistencia.consolidacao import consolidar_layout, salvar
 
 
 def pos_processar_contratacoes(df):
-    df = df.astype({consolidacao.CONTRATADO_CNPJ: np.uint64})
     df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
     df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
     return df
@@ -66,16 +65,12 @@ def consolidar_contratacoes(data_extracao):
                         consolidacao.FONTE_RECURSOS_DESCRICAO: 'fontes_de_recursos_fr_desc',
                         consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'local',
                         consolidacao.DATA_ASSINATURA: 'data_assinatura', consolidacao.NUMERO_PROCESSO: 'processo'}
-    colunas_adicionais = ['id', 'numero_siga', 'duracao']
+    colunas_adicionais = ['id', 'numero_siga', 'duracao', 'anexo_id']
     planilha_original = path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'contratacoes.xlsx')
     df_original = pd.read_excel(planilha_original)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_AP
     df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            fonte_dados, 'AP', '', data_extracao, pos_processar_contratacoes)
-
-    anexos = pd.read_excel(planilha_original, sheet_name='anexos')
-    anexos[consolidacao.FONTE_DADOS] = fonte_dados
-    salvar(anexos, 'AP', '_anexos')
 
     return df
 
@@ -86,11 +81,12 @@ def consolidar_contratacoes_capital(data_extracao):
                         consolidacao.ITEM_EMPENHO_QUANTIDADE: 'Quantidade',
                         consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'Valor Unitário',
                         consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'Valor Total',
-                        consolidacao.CONTRATANTE_DESCRICAO: 'Órgão Contratante / Local de execução',
-                        consolidacao.UG_DESCRICAO: 'Órgão Contratante / Local de execução',
+                        consolidacao.CONTRATANTE_DESCRICAO: 'Órgão Contratante',
+                        consolidacao.UG_DESCRICAO: 'Órgão Contratante',
                         consolidacao.VALOR_CONTRATO: 'Valor contratado', consolidacao.VALOR_PAGO: 'Valor pago',
                         consolidacao.MOD_APLIC_DESCRICAO: 'Forma / modalidade',
-                        consolidacao.DATA_CELEBRACAO: 'Data de Celebração / Publicação'}
+                        consolidacao.DATA_CELEBRACAO: 'Data de Celebração / Publicação',
+                        consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local de execução'}
     colunas_adicionais = ['Nº e Íntegra do Processo / COntrato', 'Prazo Contratual']
     planilha_original = path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'Macapa', 'transparencia.xlsx')
     df_original = pd.read_excel(planilha_original, header=1)
@@ -110,3 +106,6 @@ def consolidar(data_extracao):
     contratacoes = contratacoes.append(contratacoes_capital)
 
     salvar(contratacoes, 'AP')
+
+
+#consolidar(datetime.datetime.now())

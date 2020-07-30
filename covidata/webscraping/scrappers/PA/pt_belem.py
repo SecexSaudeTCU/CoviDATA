@@ -36,3 +36,5 @@ def main():
     pt_Belem = PortalTransparencia_Belem(config.url_pt_Belem)
     pt_Belem.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+#main()

@@ -20,8 +20,9 @@ class PortalTransparencia_MS(SeleniumDownloader):
     def _executar(self):
         wait = WebDriverWait(self.driver, 30)
 
+        #/html/body/div[4]/div/div/div[1]/div[1]/div/div[2]/form/div/div[2]/div/button[3]
         element = wait.until(EC.element_to_be_clickable(
-            (By.XPATH, '/html/body/div[4]/div/div/div/div[1]/div/div[2]/form/div/div[2]/div/button[3]')))
+            (By.XPATH, '/html/body/div[4]/div/div/div[1]/div[1]/div/div[2]/form/div/div[2]/div/button[3]')))
         self.driver.execute_script("arguments[0].click();", element)
 
 
@@ -43,6 +44,8 @@ class PortalTransparencia_CampoGrande(SeleniumDownloader):
 def main():
     data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
+
+    #TODO: Instável
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
 
@@ -56,6 +59,7 @@ def main():
     arquivo = os.listdir(diretorio)[0]
     os.rename(path.join(diretorio, arquivo), path.join(diretorio, 'ComprasEmergenciaisMS_COVID19.csv'))
 
+    start_time = time.time()
     pt_CampoGrande = PortalTransparencia_CampoGrande()
     pt_CampoGrande.download()
 
@@ -66,3 +70,4 @@ def main():
     consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
+#main()

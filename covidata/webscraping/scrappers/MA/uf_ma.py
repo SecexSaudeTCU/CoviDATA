@@ -51,12 +51,12 @@ def pt_sao_luis():
     linhas = tbody.find_all('tr')
     titulos = tabela.find_all('th')
     colunas = ['Link contrato']
-    colunas += [titulo.find_all('strong')[0].get_text() for titulo in titulos]
+    colunas += [titulo.get_text() for titulo in titulos]
     lista_linhas = []
 
     for linha in linhas:
         data = linha.find_all("td")
-        nova_linha = [data[1].next_element.attrs['href']]
+        nova_linha = [data[1].next_element.find_all('a')[0].attrs['href']]
         nova_linha += [data[i].get_text() for i in range(len(data))]
         lista_linhas.append(nova_linha)
 
@@ -94,4 +94,4 @@ def main():
     consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-
+#main()

@@ -58,7 +58,8 @@ def main():
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     #Processamento relativo à capital
-    pt_belem.main()
+    #TODO: Fora do ar/disponibilidade instável
+    #pt_belem.main()
 
     logger.info('Consolidando as informações no layout padronizado...')
     start_time = time.time()

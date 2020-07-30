@@ -40,7 +40,6 @@ from covidata.webscraping.scrappers.RN import uf_rn
 from covidata.webscraping.scrappers.MA import uf_ma
 from covidata.webscraping.scrappers.PI import uf_pi
 
-
 if __name__ == '__main__':
     logger = logging.getLogger('covidata')
     logger.setLevel(logging.INFO)

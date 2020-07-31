@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 from os import path
 
@@ -95,9 +96,10 @@ def consolidar(data_extracao):
     logger.info('Iniciando consolidação dados Bahia')
 
     consolidacoes = consolidar_contratos(data_extracao)
-    #TODO: Não está encontrando o arquivo
-    #consolidacao_tce_BA = consolidar_tce(data_extracao)
+    consolidacao_tce_BA = consolidar_tce(data_extracao)
 
-    #consolidacoes = consolidacoes.append(consolidacao_tce_BA, ignore_index=True, sort=False)
+    consolidacoes = consolidacoes.append(consolidacao_tce_BA, ignore_index=True, sort=False)
 
     salvar(consolidacoes, 'BA')
+
+#consolidar(datetime.now())

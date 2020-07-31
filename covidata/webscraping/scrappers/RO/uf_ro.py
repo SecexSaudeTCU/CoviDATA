@@ -36,7 +36,6 @@ def main():
     data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
 
-    # TODO? Ou "config.url_pt_RO" apenas está fora do ar temporariamente?
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
     pt = FileDownloader(path.join(config.diretorio_dados, 'RO', 'portal_transparencia'), config.url_pt_RO,

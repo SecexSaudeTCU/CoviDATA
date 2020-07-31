@@ -408,14 +408,12 @@ def main():
     data_extracao = datetime.now()
     logger = logging.getLogger('covidata')
 
-    #TODO Instável devido ao Selenium
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
     pt_SE = PortalTransparencia_SE()
     pt_SE.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-    #TODO: Só funciona standalone (fora de run.py)
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_Aracaju = PortalTransparencia_Aracaju()

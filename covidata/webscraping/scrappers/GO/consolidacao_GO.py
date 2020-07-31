@@ -141,10 +141,9 @@ def consolidar(data_extracao):
     logger.info('Iniciando consolidação dados Goiás')
 
     df = __consolidar_aquisicoes(data_extracao)
-    #TODO: Instabilidade no acesso ao PT Goiânia
-    #consolidacoes_pt_despesas_Goiania = __consolidar_pt_despesas_Goiania(data_extracao)
+    consolidacoes_pt_despesas_Goiania = __consolidar_pt_despesas_Goiania(data_extracao)
 
-    #df = df.append(consolidacoes_pt_despesas_Goiania, ignore_index=True, sort=False)
+    df = df.append(consolidacoes_pt_despesas_Goiania, ignore_index=True, sort=False)
 
     salvar(df, 'GO')
 

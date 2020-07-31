@@ -104,7 +104,6 @@ def __consolidar_portal_transparencia_capital(data_extracao):
 def consolidar(data_extracao):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Maranhão')
-    #TODO: Planilha corrupta
     licitacoes = __consolidar_licitacoes(data_extracao)
 
     portal_transparencia_estado = __consolidar_portal_transparencia_estado(data_extracao)

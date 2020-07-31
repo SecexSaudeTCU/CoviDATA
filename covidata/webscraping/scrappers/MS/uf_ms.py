@@ -45,7 +45,6 @@ def main():
     data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
 
-    #TODO: Instável
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
 

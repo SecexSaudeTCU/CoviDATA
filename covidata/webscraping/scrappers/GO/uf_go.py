@@ -43,18 +43,15 @@ def main():
     pt_GO.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-    # TODO: Instável -> erro Unable to locate element:
-    # {"method":"xpath","selector":"//*[@id="WebPatterns_wt2_block_wtMainContent_DespesasWebBlocks_wt3_block_wtselExportar"]"}
-    # (Session info: headless chrome=83.0.4103.116)
-    """
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_despesas_Goiania = PT_Despesas_Goiania()
     pt_despesas_Goiania.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
-    """
 
     logger.info('Consolidando as informações no layout padronizado...')
     start_time = time.time()
     consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+#main()

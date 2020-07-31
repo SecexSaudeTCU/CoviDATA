@@ -94,8 +94,8 @@ def consolidar(data_extracao):
     logger.info('Iniciando consolidação dados Pará')
 
     portal_transparencia_estadual = __consolidar_portal_transparencia_estadual(data_extracao)
-    #portal_transparencia_capital = __consolidar_portal_transparencia_capital(data_extracao)
-    #portal_transparencia_estadual = portal_transparencia_estadual.append(portal_transparencia_capital)
+    portal_transparencia_capital = __consolidar_portal_transparencia_capital(data_extracao)
+    portal_transparencia_estadual = portal_transparencia_estadual.append(portal_transparencia_capital)
 
     salvar(portal_transparencia_estadual, 'PA')
 

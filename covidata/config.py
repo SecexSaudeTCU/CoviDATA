@@ -9,6 +9,7 @@ diretorio_raiz = pathlib.Path(__file__).parent.parent
 diretorio_dados = diretorio_raiz.joinpath('dados')
 
 diretorio_base_cnpjs = diretorio_dados.joinpath('CNPJ-sqlite', 'CNPJ_full.db')
+diretorio_noticias = diretorio_dados.joinpath('noticias')
 
 # Arquivo que contém a data/hora em que a extração foi iniciada.
 arquivo_data_extracao = diretorio_dados.joinpath('data.txt')

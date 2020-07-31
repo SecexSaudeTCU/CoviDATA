@@ -60,4 +60,4 @@ def consolidar(data_extracao):
     salvar(compras_emergenciais, 'MS')
     #salvar(despesas_capital, 'MS')
 
-consolidar(datetime.datetime.now())
+#consolidar(datetime.datetime.now())

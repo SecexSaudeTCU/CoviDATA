@@ -10,8 +10,6 @@ import time
 import pandas as pd
 from newspaper import Article
 
-from covidata.noticias.entidades import extrair_entidades
-
 
 def get_text(url, max_retries=5, sleep=5):
     """

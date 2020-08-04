@@ -2,7 +2,17 @@ import logging
 import time
 
 from covidata.noticias.gnews import executar_busca
-from covidata.noticias.parse_news import recuperar_textos, extrair_entidades
+
+from covidata.noticias.parse_news import recuperar_textos
+
+
+def get_NER():
+    # from covidata.noticias.ner.spacy.spacy_ner import SpacyNER
+    # return SpacyNER(df)
+
+    from covidata.noticias.ner.bert.neuralmind_bert import BaseBERT_NER
+    return BaseBERT_NER()
+
 
 if __name__ == '__main__':
     logger = logging.getLogger('covidata')
@@ -17,6 +27,7 @@ if __name__ == '__main__':
 
     start_time = time.time()
     logger.info('Extraindo entidades relevantes das notícias...')
-    diretorio_saida = extrair_entidades(df)
+    ner = get_NER()
+    diretorio_saida = ner.extrair_entidades(df)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
     logger.info('Processamento concluído.  Resultado salvo em: ' + diretorio_saida)

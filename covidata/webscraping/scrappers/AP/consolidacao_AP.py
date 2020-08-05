@@ -100,12 +100,14 @@ def consolidar_contratacoes_capital(data_extracao):
 def consolidar(data_extracao):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Amapá')
-    contratacoes = consolidar_contratacoes(data_extracao)
+
+    #contratacoes = consolidar_contratacoes(data_extracao)
 
     contratacoes_capital = consolidar_contratacoes_capital(data_extracao)
-    contratacoes = contratacoes.append(contratacoes_capital)
+    #contratacoes = contratacoes.append(contratacoes_capital)
 
-    salvar(contratacoes, 'AP')
+    #salvar(contratacoes, 'AP')
+    salvar(contratacoes_capital)
 
 
 #consolidar(datetime.datetime.now())

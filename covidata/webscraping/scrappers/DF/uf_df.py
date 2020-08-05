@@ -31,7 +31,7 @@ class PortalTransparencia_DF(SeleniumDownloader):
 
         # Lê o arquivo "csv" de nome "PLANILHA-COVID" de contratos baixado como um objeto pandas DataFrame
         df_contratos = pd.read_csv(path.join(config.diretorio_dados, 'DF', 'portal_transparencia',
-                                   'DistritoFederal', 'PLANILHA-COVID.csv'),
+                                   'DistritoFederal', 'PLANILHA-COVID1.csv'),
                                    sep=';')
 
         # Cria arquivo "xlsx" e aloca file handler de escrita para a variável "writer"
@@ -42,7 +42,7 @@ class PortalTransparencia_DF(SeleniumDownloader):
 
         # Deleta o arquivo "csv" de nome "PLANILHA-COVID"
         os.unlink(path.join(config.diretorio_dados, 'DF', 'portal_transparencia', 'DistritoFederal',
-                  'PLANILHA-COVID.csv'))
+                  'PLANILHA-COVID1.csv'))
 
 
 def main():

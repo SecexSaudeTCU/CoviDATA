@@ -14,7 +14,6 @@ from covidata import config
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
 from covidata.webscraping.scrappers.SE.consolidacao_SE import consolidar
 
-
 dict_meses = {0: 'Janeiro',
               1: 'Fevereiro',
               2: 'Março',
@@ -58,7 +57,6 @@ class PortalTransparencia_SE(SeleniumDownloader):
 
     # Implementa localmente o método interno e vazio da class "SeleniumDownloader"
     def _executar(self):
-
         # Inicializa objeto pandas DataFrame dos empenhos
         df_empenho = pd.DataFrame(columns=['Unidade', 'Nº do empenho', 'Programa', 'Elemento',
                                            'Razão Social Favorecido', 'CNPJ Favorecido', 'Mês',
@@ -76,7 +74,6 @@ class PortalTransparencia_SE(SeleniumDownloader):
 
         # Itera sobre os meses do ano 2020 ("0 = Janeiro",..., "X = Mês atual")
         for month in np.arange(0, int(datetime.today().strftime('%m'))):
-
             # Seleciona o mês "month"
             self.driver.find_element_by_id("frmPrincipal:mes").click()
             self.driver.find_element_by_xpath(f'//*[@id="frmPrincipal:mes_{month}"]').click()
@@ -87,7 +84,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             # Seleciona a aba "Empenhos"
             self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas"]/ul/li[1]/a').click()
             # Seleciona o link do arquivo "csv" respectivo
-            #self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt234"]/span[2]').click()
+            # self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt234"]/span[2]').click()
             self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt232"]/span[2]').click()
 
             # On hold por 3 segundos
@@ -95,7 +92,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
 
             # Lê o arquivo "csv" de empenhos baixado para o mês "month"
             df_empenho_mes = pd.read_csv(path.join(config.diretorio_dados, 'SE',
-                                         'portal_transparencia', 'Sergipe', 'Elemento_de_Despesa.csv'))
+                                                   'portal_transparencia', 'Sergipe', 'Elemento_de_Despesa.csv'))
 
             # Acrescenta a coluna "Razão Social Favorecido" ao objeto pandas DataFrame "df_empenho_mes"
             df_empenho_mes['Razão Social Favorecido'] = df_empenho_mes['Nome do Favorecido']
@@ -116,7 +113,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             # Seleciona a aba "Liquidações"
             self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas"]/ul/li[2]/a').click()
             # Seleciona o link do arquivo "csv" respectivo
-            #self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt257"]/span[2]').click()
+            # self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt257"]/span[2]').click()
             self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt260"]/span[2]').click()
 
             # On hold por 3 segundos
@@ -124,12 +121,13 @@ class PortalTransparencia_SE(SeleniumDownloader):
 
             # Lê o arquivo "csv" de liquidações baixado para o mês "month"
             df_liquidacao_mes = pd.read_csv(path.join(config.diretorio_dados, 'SE',
-                                            'portal_transparencia', 'Sergipe', 'Elemento_de_Despesa.csv'))
+                                                      'portal_transparencia', 'Sergipe', 'Elemento_de_Despesa.csv'))
 
             # Acrescenta a coluna "Razão Social Favorecido" ao objeto pandas DataFrame "df_liquidacao_mes"
             df_liquidacao_mes['Razão Social Favorecido'] = df_liquidacao_mes['Nome do Favorecido']
             # Acrescenta a coluna "CNPJ Favorecido" ao objeto pandas DataFrame "df_liquidacao_mes"
-            df_liquidacao_mes['CNPJ Favorecido'] = df_liquidacao_mes['Código do Favorecido'].apply(lambda x: x.split('-')[0])
+            df_liquidacao_mes['CNPJ Favorecido'] = df_liquidacao_mes['Código do Favorecido'].apply(
+                lambda x: str(x).split('-')[0])
             # Acrescenta a coluna "Mês" ao objeto pandas DataFrame "df_liquidacao_mes"
             df_liquidacao_mes['Mês'] = dict_meses[month]
 
@@ -144,7 +142,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             # Seleciona a aba "Pagamentos"
             self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas"]/ul/li[3]/a').click()
             # Seleciona o link do arquivo "csv" respectivo
-            #self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt276"]/span[2]').click()
+            # self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt276"]/span[2]').click()
             self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt281"]/span[2]').click()
 
             # On hold por 3 segundos
@@ -152,12 +150,13 @@ class PortalTransparencia_SE(SeleniumDownloader):
 
             # Lê o arquivo "csv" de pagamentos baixado para o mês "month"
             df_pagamento_mes = pd.read_csv(path.join(config.diretorio_dados, 'SE',
-                                           'portal_transparencia', 'Sergipe', 'Elemento_de_Despesa.csv'))
+                                                     'portal_transparencia', 'Sergipe', 'Elemento_de_Despesa.csv'))
 
             # Acrescenta a coluna "Razão Social Favorecido" ao objeto pandas DataFrame "df_pagamento_mes"
             df_pagamento_mes['Razão Social Favorecido'] = df_pagamento_mes['Nome do Favorecido']
             # Acrescenta a coluna "CNPJ Favorecido" ao objeto pandas DataFrame "df_pagamento_mes"
-            df_pagamento_mes['CNPJ Favorecido'] = df_pagamento_mes['Código do Favorecido'].apply(lambda x: x.split('-')[0])
+            df_pagamento_mes['CNPJ Favorecido'] = df_pagamento_mes['Código do Favorecido'].apply(
+                lambda x: x.split('-')[0])
             # Acrescenta a coluna "Mês" ao objeto pandas DataFrame "df_pagamento_mes"
             df_pagamento_mes['Mês'] = dict_meses[month]
 
@@ -170,7 +169,8 @@ class PortalTransparencia_SE(SeleniumDownloader):
 
             # Cria arquivo "xlsx" e aloca file handler de escrita para a variável "writer"
             with pd.ExcelWriter(path.join(config.diretorio_dados, 'SE',
-                                'portal_transparencia', 'Sergipe', 'Dados_Portal_Transparencia_Sergipe.xlsx')) as writer:
+                                          'portal_transparencia', 'Sergipe',
+                                          'Dados_Portal_Transparencia_Sergipe.xlsx')) as writer:
                 # Salva os dados de empenhos contidos em "df_empenho" na planilha "Empenhos"
                 df_empenho.to_excel(writer, sheet_name='Empenhos', index=False)
                 # Salva os dados de liquidações contidos em "df_liquidacao" na planilha "Liquidações"
@@ -180,7 +180,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
 
         # Deleta o arquivo remanescente "csv" de nome "Elemento_de_Despesa"
         os.unlink(path.join(config.diretorio_dados, 'SE',
-                  'portal_transparencia', 'Sergipe', 'Elemento_de_Despesa.csv'))
+                            'portal_transparencia', 'Sergipe', 'Elemento_de_Despesa.csv'))
 
 
 # Define a classe referida como herdeira da class "SeleniumDownloader"
@@ -194,7 +194,6 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
 
     # Implementa localmente o método interno e vazio da class "SeleniumDownloader"
     def _executar(self):
-
         # Cria um objeto da class "WebDriverWait"
         wait = WebDriverWait(self.driver, 45)
 
@@ -210,11 +209,12 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         # Seleciona o campo "Data Início" e seta a data de início de busca
         self.driver.find_element_by_id('txtDtInicioEmpenhos').send_keys('01/03/2020')
         # Seleciona o campo "Data Fim" e seta a data de fim de busca como a do dia anterior
-        self.driver.find_element_by_id('txtDtFimEmpenhos').send_keys((datetime.today() - timedelta(days=1)).strftime('%d/%m/%Y'))
+        self.driver.find_element_by_id('txtDtFimEmpenhos').send_keys(
+            (datetime.today() - timedelta(days=1)).strftime('%d/%m/%Y'))
 
         # Seleciona o botão "Pesquisar"
         element = wait.until(EC.visibility_of_element_located((By.XPATH,
-                             '//*[@id="btnFiltrarEmpenhos"]')))
+                                                               '//*[@id="btnFiltrarEmpenhos"]')))
         self.driver.execute_script("arguments[0].click();", element)
 
         # On hold por 3 segundos
@@ -222,9 +222,8 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
 
         # Seleciona o botão "XLSX" salvando o arquivo "xlsx" contendo os dados de empenho
         element = wait.until(EC.visibility_of_element_located((By.XPATH,
-                             '//*[@id="dataTables-Empenhos_wrapper"]/div[1]/a[1]/span/img')))
+                                                               '//*[@id="dataTables-Empenhos_wrapper"]/div[1]/a[1]/span/img')))
         self.driver.execute_script("arguments[0].click();", element)
-
 
         self.driver.switch_to.default_content()
 
@@ -233,7 +232,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
 
         # Lê o arquivo "xlsx" de empenhos baixado como um objeto pandas DataFrame selecionando as colunas úteis
         df_empenho = pd.read_excel(path.join(config.diretorio_dados, 'SE', 'portal_transparencia',
-                                   'Aracaju', 'Município Online.xlsx'), usecols=list(range(1, 9)) + [11, 12])
+                                             'Aracaju', 'Município Online.xlsx'), usecols=list(range(1, 9)) + [11, 12])
 
         # Substitui o código de órgãos pelo nome
         df_empenho['Órgão'].replace(dict_orgaos_aracaju, inplace=True)
@@ -272,20 +271,20 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         # Seleciona o campo "Data Início" e seta a data de início de busca
         self.driver.find_element_by_id('txtDtInicioLiquidacoes').send_keys('01/03/2020')
         # Seleciona o campo "Data Fim" e seta a data de fim de busca
-        self.driver.find_element_by_id('txtDtFimLiquidacoes').send_keys((datetime.today() - timedelta(days=1)).strftime('%d/%m/%Y'))
+        self.driver.find_element_by_id('txtDtFimLiquidacoes').send_keys(
+            (datetime.today() - timedelta(days=1)).strftime('%d/%m/%Y'))
 
         # Seleciona o botão "Pesquisar"
         element = wait.until(EC.visibility_of_element_located((By.XPATH,
-                             '//*[@id="btnFiltrarLiquidacoes"]')))
+                                                               '//*[@id="btnFiltrarLiquidacoes"]')))
         self.driver.execute_script("arguments[0].click();", element)
 
         # On hold por 3 segundos
         time.sleep(3)
 
-
         # Seleciona o botão "XLSX" salvando o arquivo "xlsx" contendo os dados de liquidação
         element = wait.until(EC.visibility_of_element_located((By.XPATH,
-                             '//*[@id="dataTables-Liquidacoes_wrapper"]/div[1]/a[1]/span/img')))
+                                                               '//*[@id="dataTables-Liquidacoes_wrapper"]/div[1]/a[1]/span/img')))
         self.driver.execute_script("arguments[0].click();", element)
 
         self.driver.switch_to.default_content()
@@ -295,7 +294,8 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
 
         # Lê o arquivo "xlsx" de liquidações baixado como um objeto pandas DataFrame selecionando as colunas úteis
         df_liquidacao = pd.read_excel(path.join(config.diretorio_dados, 'SE', 'portal_transparencia',
-                                      'Aracaju', 'Município Online.xlsx'), usecols=list(range(1, 11)) + [13, 14])
+                                                'Aracaju', 'Município Online.xlsx'),
+                                      usecols=list(range(1, 11)) + [13, 14])
 
         # Substitui o código de órgãos pelo nome
         df_liquidacao['Órgão'].replace(dict_orgaos_aracaju, inplace=True)
@@ -349,11 +349,12 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         # Seleciona o campo "Data Início" e seta a data de início de busca
         self.driver.find_element_by_id('txtDtInicioPagamentos').send_keys('01/03/2020')
         # Seleciona o campo "Data Fim" e seta a data de fim de busca
-        self.driver.find_element_by_id('txtDtFimPagamentos').send_keys((datetime.today() - timedelta(days=1)).strftime('%d/%m/%Y'))
+        self.driver.find_element_by_id('txtDtFimPagamentos').send_keys(
+            (datetime.today() - timedelta(days=1)).strftime('%d/%m/%Y'))
 
         # Seleciona o botão "Pesquisar"
         element = wait.until(EC.visibility_of_element_located((By.XPATH,
-                             '//*[@id="btnFiltrarPagamentos"]')))
+                                                               '//*[@id="btnFiltrarPagamentos"]')))
         self.driver.execute_script("arguments[0].click();", element)
 
         # On hold por 3 segundos
@@ -361,7 +362,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
 
         # Seleciona o botão "XLSX" salvando o arquivo "xlsx" contendo os dados de liquidação
         element = wait.until(EC.visibility_of_element_located((By.XPATH,
-                             '//*[@id="dataTables-Pagamentos_wrapper"]/div[1]/a[1]/span/img')))
+                                                               '//*[@id="dataTables-Pagamentos_wrapper"]/div[1]/a[1]/span/img')))
         self.driver.execute_script("arguments[0].click();", element)
 
         self.driver.switch_to.default_content()
@@ -371,7 +372,8 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
 
         # Lê o arquivo "xlsx" de liquidações baixado como um objeto pandas DataFrame selecionando as colunas úteis
         df_pagamento = pd.read_excel(path.join(config.diretorio_dados, 'SE', 'portal_transparencia',
-                                     'Aracaju', 'Município Online.xlsx'), usecols=list(range(1, 10)) + [11, 12])
+                                               'Aracaju', 'Município Online.xlsx'),
+                                     usecols=list(range(1, 10)) + [11, 12])
 
         # Substitui o código de órgãos pelo nome
         df_pagamento['Órgão'].replace(dict_orgaos_aracaju, inplace=True)
@@ -392,7 +394,7 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
 
         # Cria arquivo "xlsx" e aloca file handler de escrita para a variável "writer"
         with pd.ExcelWriter(path.join(config.diretorio_dados, 'SE', 'portal_transparencia',
-                            'Aracaju', 'Dados_Portal_Transparencia_Aracaju.xlsx')) as writer:
+                                      'Aracaju', 'Dados_Portal_Transparencia_Aracaju.xlsx')) as writer:
             # Salva os dados de empenhos contidos em "df_empenho" na planilha "Empenhos"
             df_empenho.to_excel(writer, sheet_name='Empenhos', index=False)
             # Salva os dados de liquidações contidos em "df_liquidacao" na planilha "Liquidações"
@@ -424,5 +426,6 @@ def main():
     start_time = time.time()
     consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+
 
 #main()

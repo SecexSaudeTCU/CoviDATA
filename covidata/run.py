@@ -94,8 +94,9 @@ if __name__ == '__main__':
     logger.info('# Recuperando dados de Piauí...')
     uf_pi.main()
 
-    logger.info('# Recuperando dados do Paraná...')
-    uf_pr.main()
+    #TODO Só funciona separadamente
+    #logger.info('# Recuperando dados do Paraná...')
+    #uf_pr.main()
 
     logger.info('# Recuperando dados de Pernambuco...')
     pt_pe_capital.main()

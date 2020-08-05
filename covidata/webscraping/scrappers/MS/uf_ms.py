@@ -45,9 +45,10 @@ def main():
     data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
 
+    #TODO: Fonte com disponibilidade instável
+    """"
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
-
     pt_MS = PortalTransparencia_MS()
     pt_MS.download()
 
@@ -57,6 +58,7 @@ def main():
     diretorio = path.join(config.diretorio_dados, 'MS', 'portal_transparencia')
     arquivo = os.listdir(diretorio)[0]
     os.rename(path.join(diretorio, arquivo), path.join(diretorio, 'ComprasEmergenciaisMS_COVID19.csv'))
+    """
 
     start_time = time.time()
     pt_CampoGrande = PortalTransparencia_CampoGrande()

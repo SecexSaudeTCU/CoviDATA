@@ -15,84 +15,22 @@ class BaseBERT_NER(NER):
 
     def _extrair_entidades_de_texto(self, texto):
         resultado = self.nlp(texto)
+        return self._to_spacy_Doc(resultado, texto)
 
-        resultado_pos_processado = self.__pos_processar_resultados(resultado)
-
-        return self._to_spacy_Doc(resultado_pos_processado, texto)
-
-    def __pos_processar_resultados(self, resultado):
-        # Unifica os tokens "quebrados" em tokens únicos, definindo a classificação de acordo com a classificação do
-        # subtoken com score mais alto
-        resultado_pos_processado = []
-        melhor_score = 0
-        melhor_classificacao = None
-        sublista = None
+    #TODO: Remover este acoplamento em relação ao Spacy/Displacy e retornar o resultado na forma de planilha, por exemplo.
+    def _to_spacy_Doc(self, resultado, texto):
+        vocab_tokens = self.nlp.tokenizer.get_vocab().keys()
+        words = self.nlp.tokenizer.tokenize(texto)
+        doc = Doc(Vocab(strings=vocab_tokens), words=words)
+        entidades = []
 
         for item in resultado:
             word = item['word']
+            if word != '[CLS]':
+                span = Span(doc, label=(self.map_labels[item['entity']]), start=item['index'] - 1, end=item['index'])
+                entidades.append(span)
 
-            if '#' not in word:
-                # Adiciona os subtokens anteriormente encontrados que até agora não tinham sido adicionados, formando uma
-                # nova palavra contígua.
-                if sublista:
-                    self.__adicionar_ultimas_palavras(melhor_classificacao, melhor_score, resultado_pos_processado,
-                                                      sublista)
-                    sublista = None
-
-                item['index'] = len(resultado_pos_processado) + 1
-                resultado_pos_processado.append(item)
-            else:
-                # Remove o último elemento da lista pós-processada
-                if not sublista:
-                    inicio = resultado_pos_processado.pop()
-                    sublista = [inicio['word']]
-                    melhor_score = inicio['score']
-                    melhor_classificacao = inicio['entity']
-
-                if item['score'] > melhor_score:
-                    melhor_score = item['score']
-                    melhor_classificacao = item['entity']
-
-                sublista.append(word.replace('##', ''))
-        # Adiciona os subtokens anteriormente encontrados que até agora não tinham sido adicionados, formando uma
-        # nova palavra contígua.
-        if sublista:
-            self.__adicionar_ultimas_palavras(melhor_classificacao, melhor_score, resultado_pos_processado,
-                                              sublista)
-        return resultado_pos_processado
-
-    def __adicionar_ultimas_palavras(self, melhor_classificacao, melhor_score, resultado_pos_processado, sublista):
-        palavra = ''.join(sublista)
-        novo_item = {'word': palavra, 'score': melhor_score, 'entity': melhor_classificacao,
-                     'index': len(resultado_pos_processado) + 1}
-        resultado_pos_processado.append(novo_item)
-
-    def _to_spacy_Doc(self, resultado_pos_processado, texto):
-        vocab_tokens = self.nlp.tokenizer.get_vocab().keys()
-        tokens = []
-        words = self.nlp.tokenizer.tokenize(texto)
-        for word in words:
-            if '#' not in word:
-                tokens.append(word)
-            else:
-                tokens.append(tokens.pop() + word.replace('#', ''))
-        doc = Doc(Vocab(strings=vocab_tokens), words=tokens)
-        entidades = []
-        offset = 0
-        for item in resultado_pos_processado:
-            word = item['word']
-
-            if word in tokens:
-                try:
-                    start = tokens.index(word, offset)
-                    span = Span(doc, label=(self.map_labels[item['entity']]), start=start, end=start + 1)
-                    entidades.append(span)
-                    offset = start
-                except ValueError:
-                    print(
-                        'Erro na identificação de posição no texto.  Termo "' + word + '" não encontrado na lista de tokens.')
-
-        doc.ents = tuple(entidades)
+        doc.ents = tuple(set(entidades))
 
         return doc
 

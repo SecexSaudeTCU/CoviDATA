@@ -52,6 +52,9 @@ class NER(ABC):
             soup.body.insert(0, BeautifulSoup(cabecalho))
             html = str(soup)
 
+            #Retira marcadores de tokenização especial (ex.: BERT), para exibição.
+            html = html.replace('##','')
+
             with open(os.path.join(diretorio_saida, f"./{numero}.html"), 'w+', encoding="utf-8") as fp:
                 fp.write(html)
                 fp.close()

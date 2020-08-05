@@ -1,3 +1,5 @@
+import datetime
+
 import logging
 import os
 from glob import glob
@@ -56,6 +58,8 @@ def __consolidar_dispensas(data_extracao):
         df_final = df_final.append(df)
 
     # Processando arquivos ODS
+    #TODO: Parou de funcionar
+    """
     planilhas = [y for x in os.walk(path.join(config.diretorio_dados, 'PE', 'portal_transparencia', 'Recife')) for y in
                  glob(os.path.join(x[0], '*.ods'))]
 
@@ -63,7 +67,7 @@ def __consolidar_dispensas(data_extracao):
         df_original = pd.read_excel(planilha_original, engine='odf')
         df = __processar_df_original(colunas_adicionais, data_extracao, df_original, dicionario_dados)
         df_final = df_final.append(df)
-
+    """
     return df_final
 
 
@@ -87,3 +91,5 @@ def consolidar(data_extracao):
     logger.info('Iniciando consolidação dados Pernambuco')
     dispensas = __consolidar_dispensas(data_extracao)
     salvar(dispensas, 'PE')
+
+#consolidar(datetime.datetime.now())

@@ -1,3 +1,5 @@
+import locale
+
 import os
 from abc import ABC, abstractmethod
 from os import path
@@ -56,6 +58,7 @@ class SeleniumDownloader(ABC):
         chromeOptions.add_argument(browser_option)
         #chromeOptions.add_argument('--start-maximized')
 
+        locale.setlocale(locale.LC_ALL, "pt_br")
         driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
 
         driver.command_executor._commands["send_command"] = ("POST", '/session/$sessionId/chromium/send_command')

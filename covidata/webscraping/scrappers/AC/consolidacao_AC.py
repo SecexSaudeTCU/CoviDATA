@@ -294,8 +294,10 @@ def consolidar(data_extracao):
     despesas = despesas.append(dispensas_municipios, ignore_index=True, sort=False)
 
     #TODO: Site indisponível
-    #pt_estadual = __consolidar_portal_transparencia_estadual(data_extracao)
-    #despesas = despesas.append(pt_estadual, ignore_index=True, sort=False)
+    """
+    pt_estadual = __consolidar_portal_transparencia_estadual(data_extracao)
+    despesas = despesas.append(pt_estadual, ignore_index=True, sort=False)
+    """
 
     pt_capital = __consolidar_portal_transparencia_capital(data_extracao)
     despesas = despesas.append(pt_capital, ignore_index=True, sort=False)

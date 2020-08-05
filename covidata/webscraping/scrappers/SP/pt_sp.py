@@ -30,7 +30,6 @@ class PortalTransparencia_SP(SeleniumDownloader):
 def main():
     logger = logging.getLogger('covidata')
     # TODO: Indisponivel
-    """
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
     pt_SP = PortalTransparencia_SP(config.url_pt_SP)
@@ -43,6 +42,5 @@ def main():
         os.rename(path.join(diretorio, arquivo), path.join(diretorio, 'COVID.csv'))
 
     logger.info("--- %s segundos ---" % (time.time() - start_time))
-    """
 
 #main()

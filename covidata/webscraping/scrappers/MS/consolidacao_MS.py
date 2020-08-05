@@ -53,12 +53,11 @@ def consolidar(data_extracao):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Mato Grosso do Sul')
 
-    #TODO: Instável
-    #compras_emergenciais = __consolidar_compras_emergenciais(data_extracao)
+    compras_emergenciais = __consolidar_compras_emergenciais(data_extracao)
     despesas_capital = __consolidar_despesas_capital(data_extracao)
-    #compras_emergenciais = compras_emergenciais.append(despesas_capital)
+    compras_emergenciais = compras_emergenciais.append(despesas_capital)
 
-    #salvar(compras_emergenciais, 'MS')
-    salvar(despesas_capital, 'MS')
+    salvar(compras_emergenciais, 'MS')
+    #salvar(despesas_capital, 'MS')
 
 #consolidar(datetime.datetime.now())

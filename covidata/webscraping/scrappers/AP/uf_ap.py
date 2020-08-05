@@ -34,17 +34,12 @@ def main():
     data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
 
-    #TODO: Fora do ar
-    """
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
     pt_AP = PortalTransparencia_AP()
     pt_AP.parse()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
-    """
 
-    #TODO Instável
-    """
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
     pt_Macapa = PortalTransparencia_Macapa()
@@ -61,6 +56,5 @@ def main():
     start_time = time.time()
     consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
-    """
 
 #main()

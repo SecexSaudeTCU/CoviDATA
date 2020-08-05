@@ -139,15 +139,13 @@ def consolidar(data_extracao):
     logger.info('Iniciando consolidação dados Sâo Paulo')
 
     #TODO: Indisponível/instável
-    """
-    consolidacoes = consolidar_PT(data_extracao)
-    """
+    #consolidacoes = consolidar_PT(data_extracao)
 
     consolidacoes_capital = consolidar_pt_SP_capital(data_extracao)
     #consolidacoes = consolidacoes.append(consolidacoes_capital)
 
-    # consolidacao_tcm = consolidar_tcm(data_extracao)
-    # consolidacoes = consolidacoes.append(consolidacao_tcm, ignore_index=True, sort=False)
+    #consolidacao_tcm = consolidar_tcm(data_extracao)
+    #consolidacoes = consolidacoes_capital.append(consolidacao_tcm, ignore_index=True, sort=False)
 
     #salvar(consolidacoes, 'SP')
     salvar(consolidacoes_capital, 'SP')

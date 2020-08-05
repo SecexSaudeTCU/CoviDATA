@@ -8,7 +8,8 @@ def main():
     data_extracao = datetime.now()
     logger = logging.getLogger('covidata')
 
-    pt_sp.main()
+    #TODO Saiu do ar
+    #pt_sp.main()
     pt_sp_capital.main()
 
     #TODO: Desabilitado devido a instabiliades do Selenium
@@ -19,4 +20,4 @@ def main():
     consolidacao_SP.consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-#main()
+main()

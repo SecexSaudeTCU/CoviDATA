@@ -10,7 +10,7 @@ def get_NER():
     # from covidata.noticias.ner.spacy.spacy_ner import SpacyNER
     # return SpacyNER(df)
 
-    from covidata.noticias.ner.bert.neuralmind_bert import BaseBERT_NER
+    from covidata.noticias.ner.bert.bert_ner import BaseBERT_NER
     return BaseBERT_NER()
 
 

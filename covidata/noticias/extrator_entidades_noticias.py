@@ -1,17 +1,18 @@
+import os
+
 import logging
 import time
-
+import pandas as pd
 from covidata.noticias.gnews import executar_busca
 
 from covidata.noticias.parse_news import recuperar_textos
 
 
-def get_NER():
+def get_NERs():
     from covidata.noticias.ner.spacy.spacy_ner import SpacyNER
-    return SpacyNER()
-
-    #from covidata.noticias.ner.bert.bert_ner import BaseBERT_NER
-    #return BaseBERT_NER()
+    from covidata.noticias.ner.bert.bert_ner import BaseBERT_NER, Neuralmind_PT_BaseBERT_NER, \
+        Neuralmind_PT_LargeBERT_NER
+    return [SpacyNER(), BaseBERT_NER(), Neuralmind_PT_BaseBERT_NER(), Neuralmind_PT_LargeBERT_NER()]
 
 
 if __name__ == '__main__':
@@ -27,7 +28,17 @@ if __name__ == '__main__':
 
     start_time = time.time()
     logger.info('Extraindo entidades relevantes das notícias...')
-    ner = get_NER()
-    diretorio_saida = ner.extrair_entidades(df)
-    logger.info("--- %s segundos ---" % (time.time() - start_time))
-    logger.info('Processamento concluído.  Resultado salvo em: ' + diretorio_saida)
+    ners = get_NERs()
+
+    writer = pd.ExcelWriter(os.path.join('ner.xlsx'), engine='xlsxwriter')
+
+    for ner in ners:
+        algoritmo = ner.__class__.__name__
+        logger.info('Aplicando implementação ' + algoritmo)
+        start_time = time.time()
+        df_resultado = ner.extrair_entidades(df)
+        logger.info("--- %s segundos ---" % (time.time() - start_time))
+        df_resultado.to_excel(writer, sheet_name=algoritmo)
+
+    writer.save()
+    logger.info('Processamento concluído.')

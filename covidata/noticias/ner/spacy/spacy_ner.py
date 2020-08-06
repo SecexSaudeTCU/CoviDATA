@@ -14,12 +14,15 @@ class SpacyNER(NER):
         # Doc.set_extension("entidades_relacionadas", default=[])
         self.map_labels = {'MISC': 'MISCELÂNEA', 'LOC': 'LOCAL', 'ORG': 'ORGANIZAÇÃO', 'PER': 'PESSOA'}
 
+    def _get_map_labels(self):
+        return self.map_labels
+
     def _extrair_entidades_de_texto(self, texto):
         retorno = []
         if type(texto) != float:
             doc = self.nlp(texto)
             for ent in doc.ents:
-                retorno.append((ent.string, self.map_labels[ent.label_]))
+                retorno.append((ent.string, self._get_map_labels()[ent.label_]))
 
         return retorno
 

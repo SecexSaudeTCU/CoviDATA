@@ -4,13 +4,16 @@ import pandas as pd
 class NER(ABC):
 
     @abstractmethod
-    def extrair_entidades(self, df):
+    def _get_map_labels(self):
         pass
 
     def extrair_entidades(self, df):
         resultado_analise = dict()
         for i in range(0, len(df)):
-            texto = df.loc[i, 'texto']
+            try:
+                texto = df.loc[i, 'texto']
+            except:
+                print('aqui')
             titulo = df.loc[i, 'title']
             midia = df.loc[i, 'media']
 
@@ -25,7 +28,6 @@ class NER(ABC):
         df = pd.concat(
             {k: pd.DataFrame(v, columns=['ENTIDADE', 'CLASSIFICAÇÃO']) for k, v in
              resultado_analise.items()})
-        df.to_excel('entidades_' + self.__class__.__name__ + '.xlsx')
         return df
 
     @abstractmethod

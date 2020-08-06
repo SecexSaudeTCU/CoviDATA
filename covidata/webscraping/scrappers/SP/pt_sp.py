@@ -29,7 +29,6 @@ class PortalTransparencia_SP(SeleniumDownloader):
 
 def main():
     logger = logging.getLogger('covidata')
-    # TODO: Indisponivel
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
     pt_SP = PortalTransparencia_SP(config.url_pt_SP)

@@ -4,34 +4,12 @@ from transformers import AutoTokenizer, AutoModelForTokenClassification
 from transformers import pipeline
 
 from covidata.noticias.ner.ner_base import NER
-import pandas as pd
 
 
 class BaseBERT_NER(NER):
     def __init__(self):
         self.nlp = pipeline("ner")
         self.map_labels = {'I-MISC': 'MISCELÂNEA', 'I-LOC': 'LOCAL', 'I-ORG': 'ORGANIZAÇÃO', 'I-PER': 'PESSOA'}
-
-    def extrair_entidades(self, df):
-        resultado_analise = dict()
-        for i in range(0, len(df)):
-            texto = df.loc[i, 'texto']
-            titulo = df.loc[i, 'title']
-            midia = df.loc[i, 'media']
-
-            if pd.isna(midia):
-                midia = 'N/A'
-
-            data = df.loc[i, 'date']
-            link = df.loc[i, 'link']
-            entidades_texto = self._extrair_entidades_de_texto(texto)
-            resultado_analise[(titulo, link, midia, data, texto)] = entidades_texto
-
-        df = pd.concat(
-            {k: pd.DataFrame(v, columns=['ENTIDADE', 'CLASSIFICAÇÃO']) for k, v in
-             resultado_analise.items()})
-        df.to_excel('entidades_BaseBERT.xlsx')
-        return df
 
     def _extrair_entidades_de_texto(self, texto):
         resultado = self.nlp(texto)
@@ -89,7 +67,7 @@ class BaseBERT_NER(NER):
 
             entidade_anterior = ent
 
-        #Acrescenta a última entidade
+        # Acrescenta a última entidade
         sublista = lista_entidades[indice_nova_entidade:len(lista_entidades)]
         novo_termo = ' '.join(t for t, _, _ in sublista)
 

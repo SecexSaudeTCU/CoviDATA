@@ -7,11 +7,11 @@ from covidata.noticias.parse_news import recuperar_textos
 
 
 def get_NER():
-    # from covidata.noticias.ner.spacy.spacy_ner import SpacyNER
-    # return SpacyNER(df)
+    from covidata.noticias.ner.spacy.spacy_ner import SpacyNER
+    return SpacyNER()
 
-    from covidata.noticias.ner.bert.bert_ner import BaseBERT_NER
-    return BaseBERT_NER()
+    #from covidata.noticias.ner.bert.bert_ner import BaseBERT_NER
+    #return BaseBERT_NER()
 
 
 if __name__ == '__main__':

@@ -272,6 +272,12 @@ def consolidar_layout(colunas_adicionais, df_original, dicionario_dados, esfera,
     if funcao_posprocessamento:
         df = funcao_posprocessamento(df)
 
+    # Remove espaços extras do início e do final das colunas do tipo string
+    #df_obj = df.select_dtypes(['object'])
+    #df[df_obj.columns] = df_obj.apply(lambda x: x.str.strip())
+
+    df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+
     return df
 
 
@@ -280,7 +286,6 @@ def __converter_dataframes(df_original, dicionario_dados, colunas_adicionais, uf
     df = pd.DataFrame(columns=[FONTE_DADOS, DATA_EXTRACAO_DADOS, ESFERA, UF, COD_IBGE_MUNICIPIO, MUNICIPIO_DESCRICAO])
 
     for coluna_padronizada, coluna_correspondente in dicionario_dados.items():
-        # df[coluna_padronizada] = df_original.get(coluna_correspondente, '')
         df[coluna_padronizada] = df_original.get(coluna_correspondente, np.nan)
 
     if colunas_adicionais:

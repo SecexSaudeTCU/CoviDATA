@@ -13,7 +13,7 @@ from covidata.webscraping.scrappers.AP.consolidacao_AP import consolidar
 class PortalTransparencia_AP(JSONParser):
 
     def __init__(self):
-        super().__init__(config.url_pt_AP, 'contrato_id', 'contratacoes', 'portal_transparencia', 'AP')
+        super().__init__(config.url_pt_AP, 'id', 'contratacoes', 'portal_transparencia', 'AP')
 
     def _get_elemento_raiz(self, conteudo):
         # Neste caso, não há elemento-raiz nomeado.

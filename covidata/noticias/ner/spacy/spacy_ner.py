@@ -1,9 +1,7 @@
-import pt_core_news_sm
-from spacy.tokens.doc import Doc
-
-from covidata.noticias.contratados.identificacao_contratados import IdentificadorContratados
-from covidata.noticias.ner.ner_base import NER
 import pandas as pd
+import pt_core_news_sm
+
+from covidata.noticias.ner.ner_base import NER
 
 
 class SpacyNER(NER):
@@ -22,7 +20,7 @@ class SpacyNER(NER):
         if type(texto) != float:
             doc = self.nlp(texto)
             for ent in doc.ents:
-                retorno.append((ent.string, self._get_map_labels()[ent.label_]))
+                retorno.append((' '.join(str(ent)), self._get_map_labels()[ent.label_]))
 
         return retorno
 

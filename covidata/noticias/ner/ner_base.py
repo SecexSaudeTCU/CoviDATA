@@ -10,10 +10,7 @@ class NER(ABC):
     def extrair_entidades(self, df):
         resultado_analise = dict()
         for i in range(0, len(df)):
-            try:
-                texto = df.loc[i, 'texto']
-            except:
-                print('aqui')
+            texto = df.loc[i, 'texto']
             titulo = df.loc[i, 'title']
             midia = df.loc[i, 'media']
 

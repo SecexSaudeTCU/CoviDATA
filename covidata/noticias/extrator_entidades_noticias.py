@@ -12,7 +12,13 @@ def get_NERs():
     from covidata.noticias.ner.spacy.spacy_ner import SpacyNER
     from covidata.noticias.ner.bert.bert_ner import BaseBERT_NER, Neuralmind_PT_BaseBERT_NER, \
         Neuralmind_PT_LargeBERT_NER
-    return [SpacyNER(), BaseBERT_NER(), Neuralmind_PT_BaseBERT_NER(), Neuralmind_PT_LargeBERT_NER()]
+    from covidata.noticias.ner.polyglot.polyglot_ner import PolyglotNER
+    return [#SpacyNER(),
+            PolyglotNER(),
+            #BaseBERT_NER(),
+            #Neuralmind_PT_BaseBERT_NER(),
+            #Neuralmind_PT_LargeBERT_NER()
+     ]
 
 
 if __name__ == '__main__':

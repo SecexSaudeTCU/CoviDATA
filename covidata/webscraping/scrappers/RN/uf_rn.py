@@ -19,7 +19,8 @@ class PortalTransparencia_RN(SeleniumDownloader):
     def __init__(self):
         super().__init__(path.join(config.diretorio_dados, 'RN', 'portal_transparencia', 'RioGrandeNorte'),
                          config.url_pt_RN,
-                         browser_option='--start-maximized')
+                         #browser_option='--start-maximized'
+                         )
 
     # Implementa localmente o método interno e vazio da class "SeleniumDownloader"
     def _executar(self):
@@ -67,3 +68,5 @@ def main():
     start_time = time.time()
     consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+#main()

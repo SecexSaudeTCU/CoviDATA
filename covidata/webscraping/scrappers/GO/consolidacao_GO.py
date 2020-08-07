@@ -124,6 +124,7 @@ def __consolidar_pt_despesas_Goiania(data_extracao):
 
     # Carrega os dados no formato json
     data_original = json.load(f)
+    #data_original = json.load(f, encoding='IS0-8859-1')
 
     # Chama a função "pre_processar_pt_despesas_Goiania" definida neste módulo
     df = pre_processar_pt_despesas_Goiania(data_original)
@@ -134,7 +135,6 @@ def __consolidar_pt_despesas_Goiania(data_extracao):
                            get_codigo_municipio_por_nome('Goiânia', 'GO'), data_extracao, pos_processar_pt_despesas_Goiania)
 
     return df
-
 
 def consolidar(data_extracao):
     logger = logging.getLogger('covidata')

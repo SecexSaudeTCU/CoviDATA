@@ -47,7 +47,8 @@ class TCE_BA(SeleniumDownloader):
     def __init__(self):
         super().__init__(path.join(config.diretorio_dados, 'BA', 'tce'),
                          config.url_tce_BA,
-                         browser_option='--start-maximized')
+                         #browser_option='--start-maximized'
+                         )
 
     def _executar(self):
 
@@ -80,3 +81,5 @@ def main():
     start_time = time.time()
     consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+#main()

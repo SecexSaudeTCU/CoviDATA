@@ -29,7 +29,7 @@ from covidata.webscraping.scrappers.BA import uf_ba
 from covidata.webscraping.scrappers.MT import uf_mt
 from covidata.webscraping.scrappers.GO import uf_go
 from covidata.webscraping.scrappers.RS import uf_rs
-from covidata.webscraping.scrappers.PR import uf_pr
+#from covidata.webscraping.scrappers.PR import uf_pr
 from covidata.webscraping.scrappers.SC import uf_sc
 from covidata.webscraping.scrappers.MG import uf_mg
 from covidata.webscraping.scrappers.MS import uf_ms
@@ -46,6 +46,7 @@ if __name__ == '__main__':
     logger.addHandler(logging.StreamHandler())
 
     start_time = time.time()
+    """
     logger.info('# Recuperando dados do Acre...')
     uf_ac.main()
 
@@ -71,7 +72,7 @@ if __name__ == '__main__':
     uf_es.main()
 
     logger.info('# Recuperando dados de Goiás...')
-    uf_go.main()
+    uf_go.main()    
 
     logger.info('# Recuperando dados do Maranhão...')
     uf_ma.main()
@@ -89,7 +90,7 @@ if __name__ == '__main__':
     uf_pa.main()
 
     logger.info('# Recuperando dados de Paraíba...')
-    uf_pb.main()
+    uf_pb.main()    
 
     logger.info('# Recuperando dados de Piauí...')
     uf_pi.main()
@@ -106,6 +107,7 @@ if __name__ == '__main__':
 
     logger.info('# Recuperando dados de Rio Grande do Norte...')
     uf_rn.main()
+    """
 
     logger.info('# Recuperando dados do Rio Grande do Sul...')
     uf_rs.main()

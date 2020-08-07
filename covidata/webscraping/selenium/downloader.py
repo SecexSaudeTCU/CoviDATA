@@ -7,6 +7,7 @@ from os import path
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 import time
+from sys import platform
 
 
 class SeleniumDownloader(ABC):
@@ -56,9 +57,15 @@ class SeleniumDownloader(ABC):
         prefs = {"download.default_directory": diretorio_dados}
         chromeOptions.add_experimental_option("prefs", prefs)
         chromeOptions.add_argument(browser_option)
-        #chromeOptions.add_argument('--start-maximized')
 
-        locale.setlocale(locale.LC_ALL, "pt_br")
+        chromeOptions.add_argument("--no-sandbox")
+        chromeOptions.add_argument("--disable-dev-shm-usage");
+
+        if platform == "linux" or platform == "linux2":
+            locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+        else:
+            locale.setlocale(locale.LC_ALL, "pt_br")
+
         driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
 
         driver.command_executor._commands["send_command"] = ("POST", '/session/$sessionId/chromium/send_command')

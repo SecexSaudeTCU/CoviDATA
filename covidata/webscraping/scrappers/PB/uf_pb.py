@@ -23,7 +23,8 @@ class PortalTransparencia_PB(SeleniumDownloader):
     def __init__(self):
         super().__init__(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'Paraiba'),
                          config.url_pt_PB,
-                         browser_option='--start-maximized')
+                         browser_option='--start-maximized'
+                         )
 
     # Implementa localmente o método interno e vazio da class "SeleniumDownloader"
     def _executar(self):

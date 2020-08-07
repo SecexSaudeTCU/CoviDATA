@@ -20,4 +20,4 @@ def main():
     consolidacao_SP.consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-main()
+#main()

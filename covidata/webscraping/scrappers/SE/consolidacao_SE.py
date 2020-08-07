@@ -79,7 +79,7 @@ def pos_processar_pt(df):
     for i in range(len(df)):
         cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
 
-        if len(cpf_cnpj) >= 14:
+        if len(str(cpf_cnpj)) >= 14:
             df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
         else:
             df.loc[i, consolidacao.FAVORECIDO_TIPO] = 'CPF/RG'

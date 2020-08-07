@@ -97,7 +97,8 @@ class PortalTransparencia_SE(SeleniumDownloader):
             # Acrescenta a coluna "Razão Social Favorecido" ao objeto pandas DataFrame "df_empenho_mes"
             df_empenho_mes['Razão Social Favorecido'] = df_empenho_mes['Nome do Favorecido']
             # Acrescenta a coluna "CNPJ Favorecido" ao objeto pandas DataFrame "df_empenho_mes"
-            df_empenho_mes['CNPJ Favorecido'] = df_empenho_mes['Código do Favorecido'].apply(lambda x: x.split('-')[0])
+            #df_empenho_mes['CNPJ Favorecido'] = df_empenho_mes['Código do Favorecido'].apply(lambda x: x.split('-')[0])
+            df_empenho_mes['CNPJ Favorecido'] = df_empenho_mes['Código do Favorecido']
             # Acrescenta a coluna "Mês" ao objeto pandas DataFrame "df_empenho_mes"
             df_empenho_mes['Mês'] = dict_meses[month]
 
@@ -190,7 +191,8 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
     def __init__(self):
         super().__init__(path.join(config.diretorio_dados, 'SE', 'portal_transparencia', 'Aracaju'),
                          config.url_pt_Aracaju,
-                         browser_option='--start-maximized')
+                         #browser_option='--start-maximized'
+                         )
 
     # Implementa localmente o método interno e vazio da class "SeleniumDownloader"
     def _executar(self):

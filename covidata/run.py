@@ -107,10 +107,10 @@ if __name__ == '__main__':
 
     logger.info('# Recuperando dados de Rio Grande do Norte...')
     uf_rn.main()
-    """
 
     logger.info('# Recuperando dados do Rio Grande do Sul...')
     uf_rs.main()
+    """
     # TODO: Acesso disponível apenas por meio de API
     # pt_rs_capital.main() (acesso disponível apenas por meio de API)
 

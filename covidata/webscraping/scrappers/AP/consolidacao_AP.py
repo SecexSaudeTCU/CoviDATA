@@ -1,20 +1,12 @@
-import datetime
 import logging
 from os import path
 
-import numpy as np
 import pandas as pd
 
 from covidata import config
 from covidata.municipios.ibge import get_codigo_municipio_por_nome
 from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout, salvar
-
-
-def pos_processar_contratacoes(df):
-    df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
-    df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-    return df
 
 
 def pos_processar_contratacoes_capital(df):
@@ -52,29 +44,6 @@ def pos_processar_contratacoes_capital(df):
     return df
 
 
-def consolidar_contratacoes(data_extracao):
-    dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'orgao', consolidacao.UG_DESCRICAO: 'orgao',
-                        consolidacao.MOD_APLIC_DESCRICAO: 'modalidade_processo',
-                        consolidacao.DESPESA_DESCRICAO: 'objeto', consolidacao.CONTRATADO_CNPJ: 'fornecedor_cnpj_cpf',
-                        consolidacao.CONTRATADO_DESCRICAO: 'fornecedor_razao_social',
-                        consolidacao.ITEM_EMPENHO_QUANTIDADE: 'quantidade',
-                        consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'valor_unitario',
-                        consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'valor_total',
-                        consolidacao.VALOR_CONTRATO: 'valor_total',
-                        consolidacao.FONTE_RECURSOS_COD: 'fontes_de_recursos_fr_codigo',
-                        consolidacao.FONTE_RECURSOS_DESCRICAO: 'fontes_de_recursos_fr_desc',
-                        consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'local',
-                        consolidacao.DATA_ASSINATURA: 'data_assinatura', consolidacao.NUMERO_PROCESSO: 'processo'}
-    colunas_adicionais = ['id', 'numero_siga', 'duracao', 'anexo_id']
-    planilha_original = path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'contratacoes.xlsx')
-    df_original = pd.read_excel(planilha_original)
-    fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_AP
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
-                           fonte_dados, 'AP', '', data_extracao, pos_processar_contratacoes)
-
-    return df
-
-
 def consolidar_contratacoes_capital(data_extracao):
     dicionario_dados = {consolidacao.CONTRATADO_CNPJ: 'Contratado - CNPJ / CPF',
                         consolidacao.DESPESA_DESCRICAO: 'Descrição de bem ou serviço',
@@ -101,12 +70,9 @@ def consolidar(data_extracao, df_consolidado):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Amapá')
 
-    #contratacoes = consolidar_contratacoes(data_extracao)
-
     contratacoes_capital = consolidar_contratacoes_capital(data_extracao)
     contratacoes = df_consolidado.append(contratacoes_capital)
 
     salvar(contratacoes, 'AP')
 
-
-#consolidar(datetime.datetime.now())
+# consolidar(datetime.datetime.now())

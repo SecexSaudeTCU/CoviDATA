@@ -5,9 +5,8 @@ import time
 from os import path
 
 from covidata import config
-from covidata.webscraping.scrappers.AP.PT_AP import PortalTransparencia_AP
-from covidata.webscraping.selenium.downloader import SeleniumDownloader
 from covidata.webscraping.scrappers.AP.consolidacao_AP import consolidar
+from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
 
 class PortalTransparencia_Macapa(SeleniumDownloader):
@@ -23,14 +22,6 @@ class PortalTransparencia_Macapa(SeleniumDownloader):
 def main(df_consolidado):
     data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
-
-    """
-    logger.info('Portal de transparência estadual...')
-    start_time = time.time()
-    pt_AP = PortalTransparencia_AP()
-    pt_AP.parse()
-    logger.info("--- %s segundos ---" % (time.time() - start_time))
-    """
 
     logger.info('Portal de transparência da capital...')
     start_time = time.time()

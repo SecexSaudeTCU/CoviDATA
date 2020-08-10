@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from transformers import AutoTokenizer, AutoModelForTokenClassification
+from transformers import AutoTokenizer, AutoModelForTokenClassification, BertTokenizer, BertModel
 from transformers import pipeline
 
 from covidata.noticias.ner.ner_base import NER
@@ -160,14 +160,27 @@ class Neuralmind_PT_BaseBERT_NER(Neuralmind_PT_BERT_NER):
     def __init__(self):
         self.tokenizer = AutoTokenizer.from_pretrained('neuralmind/bert-base-portuguese-cased')
         self.model = AutoModelForTokenClassification.from_pretrained('neuralmind/bert-base-portuguese-cased')
+
+
+class Neuralmind_PT_BaseBERT_NER2(Neuralmind_PT_BERT_NER):
+    def __init__(self):
+        self.tokenizer = BertTokenizer.from_pretrained(
+            'C:\\Users\\Monique\\Documents\\TCU\\SecexSaude\\bert-neuralmind\\base\\'
+            'bert-base-portuguese-cased_pytorch_checkpoint', do_lower_case=False)
+        self.model = BertModel.from_pretrained(
+            'C:\\Users\\Monique\\Documents\\TCU\\SecexSaude\\bert-neuralmind\\base\\'
+            'bert-base-portuguese-cased_pytorch_checkpoint')  # Or other BERT model class
         self.nlp = pipeline('ner', model=self.model, tokenizer=self.tokenizer)
+
+    def _extrair_entidades_originais(self, texto):
+        resultado = self.nlp(texto)
+        return resultado
 
 
 class Neuralmind_PT_LargeBERT_NER(Neuralmind_PT_BERT_NER):
     def __init__(self):
         self.tokenizer = AutoTokenizer.from_pretrained('neuralmind/bert-large-portuguese-cased')
         self.model = AutoModelForTokenClassification.from_pretrained('neuralmind/bert-large-portuguese-cased')
-        self.nlp = pipeline('ner', model=self.model, tokenizer=self.tokenizer)
 
 
 if __name__ == '__main__':
@@ -176,6 +189,4 @@ if __name__ == '__main__':
               'O Tribunal de Contas da União é um órgão sediado em Brasília.  Sua sede fica na Esplanada dos ' \
               'Ministérios, portanto muito próxima à Catedral Metropolitana.']]
     df = pd.DataFrame(dados, columns=['title', 'media', 'date', 'link', 'texto'])
-    # BaseBERT_NER().extrair_entidades(df)
-    Neuralmind_PT_BaseBERT_NER().extrair_entidades(df)
-    Neuralmind_PT_LargeBERT_NER().extrair_entidades(df)
+    Neuralmind_PT_BaseBERT_NER2().extrair_entidades(df)

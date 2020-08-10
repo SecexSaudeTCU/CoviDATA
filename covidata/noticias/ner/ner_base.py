@@ -1,7 +1,13 @@
 from abc import ABC, abstractmethod
 import pandas as pd
 
+from covidata.noticias.contratados.identificacao_contratados import filtrar_contratados
+
+
 class NER(ABC):
+
+    def __init__(self, filtrar_contratados=False):
+        self.filtrar_contratados = filtrar_contratados
 
     @abstractmethod
     def _get_map_labels(self):
@@ -20,10 +26,14 @@ class NER(ABC):
             data = df.loc[i, 'date']
             link = df.loc[i, 'link']
             entidades_texto = self._extrair_entidades_de_texto(texto)
+
+            if self.filtrar_contratados:
+                entidades_texto = filtrar_contratados(entidades_texto)
+
             resultado_analise[(titulo, link, midia, data, texto)] = entidades_texto
 
         df = pd.concat(
-            {k: pd.DataFrame(v, columns=['ENTIDADE', 'CLASSIFICAÇÃO']) for k, v in
+            {k: pd.DataFrame(v, columns=['ENTIDADE', 'CLASSIFICAÇÃO', 'ENTIDADES RELACIONADAS']) for k, v in
              resultado_analise.items()})
         return df
 

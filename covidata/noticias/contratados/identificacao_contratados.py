@@ -1,29 +1,26 @@
 from covidata.noticias.contratados.indice_contratados import buscar
+from covidata.municipios.ibge import get_municipios, get_estados
 
-class IdentificadorContratados:
-    name = 'contratados'
+# Lista de todos os municípios do país
+municipios = get_municipios()
 
-    def __init__(self, busca_exata=True, num_min_caracteres=3):
-        self.busca_exata = busca_exata
-        self.num_min_caracteres = num_min_caracteres
+# Lista de todos os estados do país
+estados = get_estados()
 
-    def __call__(self, doc):
-        doc._.entidades_originais = doc.ents
-        novas_entidades = []
-        entidades_relacionadas = []
 
-        for ent in doc._.entidades_originais:
-            termo = ent.string.strip()
+def filtrar_contratados(entidades_texto, busca_exata=True, num_min_caracteres=3):
+    resultado = []
 
-            if len(termo) > self.num_min_caracteres:
-                if self.busca_exata:
-                    termo = '"' + termo + '"'
-                resultados = buscar(termo)
+    for termo, classificacao in entidades_texto:
+        termo = termo.strip()
+        # Se o termo não se refere a uma localidade brasileira
+        if termo.upper() not in estados and termo.upper() not in municipios and termo.upper() != 'BRASIL' and len(
+                termo) > num_min_caracteres:
+            if busca_exata:
+                termo = '"' + termo + '"'
+            resultados_busca = buscar(termo)
 
-                if len(resultados) > 0:
-                    novas_entidades.append(ent)
-                    entidades_relacionadas.append(set(resultados))
+            if len(resultados_busca) > 0:
+                resultado.append((termo, classificacao, set(resultados_busca)))
 
-        doc.ents = tuple(novas_entidades)
-        doc._.entidades_relacionadas = entidades_relacionadas
-        return doc
+    return resultado

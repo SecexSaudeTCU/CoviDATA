@@ -4,6 +4,32 @@ import requests
 import json
 from covidata import config
 
+def get_estados():
+    """
+    Retorna o conjunto de todos os estados brasileiros.
+    """
+    #TODO: Reimplementar usando o fallback estados.json.
+    estados = []
+    resultado = json.loads(requests.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados').content)
+
+    for estado in resultado:
+        estados.append(estado['nome'].upper())
+
+    return set(estados)
+
+def get_municipios():
+    """
+    Retorna o conjunto de todos os municípios brasileiros.
+    """
+    # TODO: Reimplementar usando o fallback municipios.json.
+    municipios = []
+    resultado = json.loads(requests.get('https://servicodados.ibge.gov.br/api/v1/localidades/municipios').content)
+
+    for municipio in resultado:
+        municipios.append(municipio['nome'].upper())
+
+    return set(municipios)
+
 
 def get_municipios_por_uf(sigla_uf):
     """
@@ -62,3 +88,4 @@ def __get(uri, arquivo_local):
         with open(os.path.join(dirname, arquivo_local)) as json_file:
             resultado = json.load(json_file)
     return resultado
+

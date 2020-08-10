@@ -4,7 +4,8 @@ from polyglot.text import Text
 import pandas as pd
 
 class PolyglotNER(NER):
-    def __init__(self):
+    def __init__(self, filtrar_contratados=False):
+        super().__init__(filtrar_contratados)
         downloader.download("embeddings2.pt")
         downloader.download("ner2.pt")
 

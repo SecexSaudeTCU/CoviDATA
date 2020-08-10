@@ -1,20 +1,17 @@
-import os
-
 import logging
+import os
 import time
-import pandas as pd
-from covidata.noticias.gnews import executar_busca
 
+import pandas as pd
+
+from covidata.noticias.gnews import executar_busca
 from covidata.noticias.parse_news import recuperar_textos
 
 
 def get_NERs():
     from covidata.noticias.ner.spacy.spacy_ner import SpacyNER
-    from covidata.noticias.ner.bert.bert_ner import BaseBERT_NER, Neuralmind_PT_BaseBERT_NER, \
-        Neuralmind_PT_LargeBERT_NER
-    from covidata.noticias.ner.polyglot.polyglot_ner import PolyglotNER
-    return [#SpacyNER(),
-            PolyglotNER(),
+    return [SpacyNER(True),
+            #PolyglotNER(),
             #BaseBERT_NER(),
             #Neuralmind_PT_BaseBERT_NER(),
             #Neuralmind_PT_LargeBERT_NER()

@@ -8,7 +8,8 @@ import pandas as pd
 
 
 class BaseBERT_NER(NER):
-    def __init__(self):
+    def __init__(self, filtrar_contratados=False):
+        super().__init__(filtrar_contratados)
         self.nlp = pipeline("ner")
         self.map_labels = {'I-MISC': 'MISCELÂNEA', 'I-LOC': 'LOCAL', 'I-ORG': 'ORGANIZAÇÃO', 'I-PER': 'PESSOA'}
 

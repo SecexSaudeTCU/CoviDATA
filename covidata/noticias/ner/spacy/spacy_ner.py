@@ -5,11 +5,9 @@ from covidata.noticias.ner.ner_base import NER
 
 
 class SpacyNER(NER):
-    def __init__(self):
+    def __init__(self, filtrar_contratados=False):
+        super().__init__(filtrar_contratados)
         self.nlp = pt_core_news_sm.load()
-        # self.nlp.add_pipe(IdentificadorContratados(), last=True)
-        # Doc.set_extension("entidades_originais", default=[])
-        # Doc.set_extension("entidades_relacionadas", default=[])
         self.map_labels = {'MISC': 'MISCELÂNEA', 'LOC': 'LOCAL', 'ORG': 'ORGANIZAÇÃO', 'PER': 'PESSOA'}
 
     def _get_map_labels(self):
@@ -20,7 +18,7 @@ class SpacyNER(NER):
         if type(texto) != float:
             doc = self.nlp(texto)
             for ent in doc.ents:
-                retorno.append((' '.join(str(ent)), self._get_map_labels()[ent.label_]))
+                retorno.append((''.join(str(ent)), self._get_map_labels()[ent.label_]))
 
         return retorno
 

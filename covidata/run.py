@@ -2,13 +2,19 @@
 Extrai os dados de todos os portais para os quais o respectivo scrapper já foi implementado e salva o resultado
 na pasta dados, na raiz do projeto. Os novos scrapers devem ser adicionados ao script manualmente.
 """
-
+import datetime
 import logging
 import os
 import sys
 import time
 
 # Adiciona diretorio raiz ao PATH. Devido a ausência de setup.py, isto garante que as importações sempre funcionarão
+import traceback
+from collections import defaultdict
+
+from covidata import config
+from covidata.webscraping.scrappers.AP.PT_AP import PT_AP_Scraper
+
 diretorio_raiz = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
 sys.path.append(diretorio_raiz)
 
@@ -17,7 +23,7 @@ from covidata.webscraping.scrappers.CE import uf_ce
 from covidata.webscraping.scrappers.PA import uf_pa
 from covidata.webscraping.scrappers.RJ import uf_rj
 from covidata.webscraping.scrappers.PE import pt_pe_capital
-from covidata.webscraping.scrappers.AP import uf_ap
+from covidata.webscraping.scrappers.AP import uf_ap, PT_AP
 from covidata.webscraping.scrappers.RR import uf_rr
 from covidata.webscraping.scrappers.RO import uf_ro
 from covidata.webscraping.scrappers.AC import uf_ac
@@ -29,7 +35,7 @@ from covidata.webscraping.scrappers.BA import uf_ba
 from covidata.webscraping.scrappers.MT import uf_mt
 from covidata.webscraping.scrappers.GO import uf_go
 from covidata.webscraping.scrappers.RS import uf_rs
-#from covidata.webscraping.scrappers.PR import uf_pr
+from covidata.webscraping.scrappers.PR import uf_pr
 from covidata.webscraping.scrappers.SC import uf_sc
 from covidata.webscraping.scrappers.MG import uf_mg
 from covidata.webscraping.scrappers.MS import uf_ms
@@ -39,14 +45,30 @@ from covidata.webscraping.scrappers.DF import uf_df
 from covidata.webscraping.scrappers.RN import uf_rn
 from covidata.webscraping.scrappers.MA import uf_ma
 from covidata.webscraping.scrappers.PI import uf_pi
+import pandas as pd
 
 if __name__ == '__main__':
     logger = logging.getLogger('covidata')
     logger.setLevel(logging.INFO)
     logger.addHandler(logging.StreamHandler())
 
+    #No momento, estão nesta lista os scrapers mais instáveis, que apresentam erros intermitentes.
+    scrapers = {'AP':PT_AP_Scraper(config.url_pt_AP)}
+    dfs_consolidados = defaultdict(list)
+    erros = []
+
+    for uf, scraper in scrapers.items():
+        try:
+            scraper.scrap()
+            data_extracao = datetime.datetime.now()
+            df = scraper.consolidar(data_extracao)
+            dfs_consolidados[uf].append(df)
+        except:
+            traceback.print_exc()
+            erros.append(scraper.url)
+
+
     start_time = time.time()
-    """
     logger.info('# Recuperando dados do Acre...')
     uf_ac.main()
 
@@ -54,7 +76,10 @@ if __name__ == '__main__':
     uf_al.main()
 
     logger.info('# Recuperando dados do Amapá...')
-    uf_ap.main()
+    if len(dfs_consolidados['AP']) > 0:
+        uf_ap.main(dfs_consolidados['AP'][0])
+    else:
+        uf_ap.main(pd.DataFrame())
 
     logger.info('# Recuperando dados do Amazonas...')
     uf_am.main()
@@ -96,8 +121,8 @@ if __name__ == '__main__':
     uf_pi.main()
 
     #TODO Só funciona separadamente
-    #logger.info('# Recuperando dados do Paraná...')
-    #uf_pr.main()
+    logger.info('# Recuperando dados do Paraná...')
+    uf_pr.main()
 
     logger.info('# Recuperando dados de Pernambuco...')
     pt_pe_capital.main()
@@ -110,7 +135,6 @@ if __name__ == '__main__':
 
     logger.info('# Recuperando dados do Rio Grande do Sul...')
     uf_rs.main()
-    """
     # TODO: Acesso disponível apenas por meio de API
     # pt_rs_capital.main() (acesso disponível apenas por meio de API)
 
@@ -133,3 +157,6 @@ if __name__ == '__main__':
     uf_to.main()
 
     logger.info("--- %s minutos ---" % ((time.time() - start_time) / 60))
+
+    logger.info('Erros ocorridos:')
+    logger.info(erros)

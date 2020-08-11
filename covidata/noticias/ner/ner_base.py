@@ -32,9 +32,13 @@ class NER(ABC):
 
             resultado_analise[(titulo, link, midia, data, texto)] = entidades_texto
 
-        df = pd.concat(
-            {k: pd.DataFrame(v, columns=['ENTIDADE', 'CLASSIFICAÇÃO', 'ENTIDADES RELACIONADAS']) for k, v in
-             resultado_analise.items()})
+        if self.filtrar_contratados:
+            df = pd.concat(
+                {k: pd.DataFrame(v, columns=['ENTIDADE', 'CLASSIFICAÇÃO', 'ENTIDADES RELACIONADAS']) for k, v in
+                 resultado_analise.items()})
+        else:
+            df = pd.concat(
+                {k: pd.DataFrame(v, columns=['ENTIDADE', 'CLASSIFICAÇÃO']) for k, v in resultado_analise.items()})
         return df
 
     @abstractmethod

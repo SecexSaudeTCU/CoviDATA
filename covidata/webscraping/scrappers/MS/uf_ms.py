@@ -9,21 +9,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from covidata import config
+from covidata.webscraping.scrappers.MS.PT_MS import PortalTransparencia_MS
 from covidata.webscraping.scrappers.MS.consolidacao_MS import consolidar
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
-
-
-class PortalTransparencia_MS(SeleniumDownloader):
-    def __init__(self):
-        super().__init__(path.join(config.diretorio_dados, 'MS', 'portal_transparencia'), config.url_pt_MS)
-
-    def _executar(self):
-        wait = WebDriverWait(self.driver, 30)
-
-        #/html/body/div[4]/div/div/div[1]/div[1]/div/div[2]/form/div/div[2]/div/button[3]
-        element = wait.until(EC.element_to_be_clickable(
-            (By.XPATH, '/html/body/div[4]/div/div/div[1]/div[1]/div/div[2]/form/div/div[2]/div/button[3]')))
-        self.driver.execute_script("arguments[0].click();", element)
 
 
 class PortalTransparencia_CampoGrande(SeleniumDownloader):
@@ -41,21 +29,9 @@ class PortalTransparencia_CampoGrande(SeleniumDownloader):
         self.driver.execute_script("arguments[0].click();", element)
 
 
-def main():
+def main(df_consolidado):
     data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
-
-    logger.info('Portal de transparência estadual...')
-    start_time = time.time()
-    pt_MS = PortalTransparencia_MS()
-    pt_MS.download()
-
-    logger.info("--- %s segundos ---" % (time.time() - start_time))
-
-    # Renomeia o arquivo
-    diretorio = path.join(config.diretorio_dados, 'MS', 'portal_transparencia')
-    arquivo = os.listdir(diretorio)[0]
-    os.rename(path.join(diretorio, arquivo), path.join(diretorio, 'ComprasEmergenciaisMS_COVID19.csv'))
 
     start_time = time.time()
     pt_CampoGrande = PortalTransparencia_CampoGrande()
@@ -65,7 +41,7 @@ def main():
 
     logger.info('Consolidando as informações no layout padronizado...')
     start_time = time.time()
-    consolidar(data_extracao)
+    consolidar(data_extracao, df_consolidado)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-#main()
+# main()

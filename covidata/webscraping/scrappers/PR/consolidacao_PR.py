@@ -42,27 +42,6 @@ def pos_processar_licitacoes_capital(df):
     return df
 
 
-def __consolidar_aquisicoes(data_extracao, url_fonte_dados):
-    dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'ORGÃO - CONTRATANTE/MUNICÍPIO',
-                        consolidacao.UG_DESCRICAO: 'ORGÃO - CONTRATANTE/MUNICÍPIO',
-                        consolidacao.CONTRATADO_DESCRICAO: 'EMPRESA CONTRATADA/CNPJ ',
-                        consolidacao.DESPESA_DESCRICAO: 'OBJETO',
-                        consolidacao.ITEM_EMPENHO_QUANTIDADE: 'QUANTIDADE POR UNIDADES / DIÁRIAS',
-                        consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'VALOR    UNITÁRIO (R$)',
-                        consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'VALOR                          TOTAL (R$)',
-                        consolidacao.DATA_PUBLICACAO: 'DATA  PUBLICAÇÃO                       DIOE / FOLHA'}
-    colunas_adicionais = ['PRAZO              CONTRATO (mês)', 'NÚMERO DISPENSA', 'PROTOCOLO / PROCESSO']
-    planilha_original = path.join(config.diretorio_dados, 'PR', 'portal_transparencia',
-                                  'aquisicoes_e_contratacoes_0.xls')
-    df_original = pd.read_excel(planilha_original, header=6, sheet_name='UNIFICAÇÃO DOS 4 MESES')
-    fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + url_fonte_dados
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
-                           fonte_dados, 'PR', '', data_extracao)
-
-    # Como no caso de PR, em nenhum momento a informação de CNPJ é fornecida, sinalizar tipo para PJ para que, na
-    # consolidação geral seja executada a busca por CNPJs.
-    df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-    return df
 
 
 def __consolidar_aquisicoes_capital(data_extracao):
@@ -129,19 +108,17 @@ def __consolidar_dados_abertos(data_extracao, url_fonte_dados):
     return df
 
 
-def consolidar(data_extracao, url_fonte_aquisicoes, url_fonte_dados_abertos):
+def consolidar(data_extracao, url_fonte_dados_abertos, df_consolidado):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Paraná')
 
-    aquisicoes = __consolidar_aquisicoes(data_extracao, url_fonte_aquisicoes)
-
     dados_abertos = __consolidar_dados_abertos(data_extracao, url_fonte_dados_abertos)
-    aquisicoes = aquisicoes.append(dados_abertos)
+    df_consolidado = df_consolidado.append(dados_abertos)
 
     aquisicoes_capital = __consolidar_aquisicoes_capital(data_extracao)
-    aquisicoes = aquisicoes.append(aquisicoes_capital)
+    df_consolidado = df_consolidado.append(aquisicoes_capital)
 
     licitacoes_capital = __consolidar_licitacoes_capital(data_extracao)
-    aquisicoes = aquisicoes.append(licitacoes_capital)
+    df_consolidado = df_consolidado.append(licitacoes_capital)
 
-    salvar(aquisicoes, 'PR')
+    salvar(df_consolidado, 'PR')

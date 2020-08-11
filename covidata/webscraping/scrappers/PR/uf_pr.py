@@ -23,22 +23,10 @@ class PortalTransparencia_Curitiba(SeleniumDownloader):
 def portal_transparencia_PR():
     agora = datetime.datetime.now()
     mes_atual = agora.month
-    mes_anterior = mes_atual - 1
+    ano_atual = agora.year
 
     if mes_atual <= 9:
         mes_atual = '0' + str(mes_atual)
-
-    if mes_anterior <= 9:
-        mes_anterior = '0' + str(mes_anterior)
-
-    ano_atual = agora.year
-
-    nome_arquivo_aquisicoes = 'aquisicoes_e_contratacoes_0.xls'
-    url_aquisicoes = f'{config.url_pt_PR}{ano_atual}-{mes_anterior}/{nome_arquivo_aquisicoes}'
-
-    pt_PR_aquisicoes = FileDownloader(path.join(config.diretorio_dados, 'PR', 'portal_transparencia'), url_aquisicoes,
-                                      nome_arquivo_aquisicoes)
-    pt_PR_aquisicoes.download()
 
     nome_arquivo_dados_abertos = 'dados_abertos.xlsx'
     url_dados_abertos = f'{config.url_pt_PR}{ano_atual}-{mes_atual}/{nome_arquivo_dados_abertos}'
@@ -47,7 +35,10 @@ def portal_transparencia_PR():
                                          url_dados_abertos, nome_arquivo_dados_abertos)
     pt_PR_dados_abertos.download()
 
-    return url_aquisicoes, url_dados_abertos
+    return url_dados_abertos
+
+
+
 
 
 def portal_transparencia_Curitiba():
@@ -59,13 +50,13 @@ def portal_transparencia_Curitiba():
     pt_aquisicoes.download()
 
 
-def main():
+def main(df_consolidado):
     data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
 
-    url_aquisicoes, url_dados_abertos = portal_transparencia_PR()
+    url_dados_abertos = portal_transparencia_PR()
 
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
@@ -82,7 +73,7 @@ def main():
 
     logger.info('Consolidando as informações no layout padronizado...')
     start_time = time.time()
-    consolidar(data_extracao, url_aquisicoes, url_dados_abertos)
+    consolidar(data_extracao, url_dados_abertos, df_consolidado)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
 #main()

@@ -13,21 +13,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from covidata import config
 from covidata.persistencia.dao import persistir
+from covidata.webscraping.scrappers.MA.TCE_MA import TCE_MA_Downloader
 from covidata.webscraping.scrappers.MA.consolidacao_MA import consolidar
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
-
-
-class TCE_MA(SeleniumDownloader):
-    def __init__(self):
-        super().__init__(path.join(config.diretorio_dados, 'MA', 'tce'), config.url_tce_MA)
-
-    def _executar(self):
-        wait = WebDriverWait(self.driver, 30)
-
-        element = wait.until(EC.element_to_be_clickable((By.ID, 'z_n')))
-        self.driver.execute_script("arguments[0].click();", element)
-
-        self.driver.switch_to.default_content()
 
 
 class PortalTransparencia_MA(SeleniumDownloader):
@@ -64,19 +52,9 @@ def pt_sao_luis():
     persistir(df, 'portal_transparencia', 'contratacoes', 'MA', 'São Luís')
 
 
-def main():
+def main(df_consolidado):
     data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
-    logger.info('Tribunal de contas estadual...')
-    start_time = time.time()
-    tce_ma = TCE_MA()
-    tce_ma.download()
-    logger.info("--- %s segundos ---" % (time.time() - start_time))
-
-    # Renomeia o arquivo
-    diretorio = path.join(config.diretorio_dados, 'MA', 'tce')
-    arquivo = os.listdir(diretorio)[0]
-    os.rename(path.join(diretorio, arquivo), path.join(diretorio, 'licitacoes.xls'))
 
     logger.info('Portal de transparência estadual...')
     start_time = time.time()
@@ -91,7 +69,7 @@ def main():
 
     logger.info('Consolidando as informações no layout padronizado...')
     start_time = time.time()
-    consolidar(data_extracao)
+    consolidar(data_extracao, df_consolidado)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-#main()
+# main()

@@ -108,15 +108,9 @@ def __esquadrinha_json(json):
     return df
 
 
-def main():
+def main(df_consolidado):
     data_extracao = datetime.now()
     logger = logging.getLogger('covidata')
-    logger.info('Portal de transparência estadual...')
-    start_time = time.time()
-    pt_RR = FileDownloader(path.join(config.diretorio_dados, 'RR', 'portal_transparencia', 'Roraima'), config.url_pt_RR,
-                           'Dados_Portal_Transparencia_Roraima.xls')
-    pt_RR.download()
-    logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
@@ -125,5 +119,5 @@ def main():
 
     logger.info('Consolidando as informações no layout padronizado...')
     start_time = time.time()
-    consolidar(data_extracao)
+    consolidar(data_extracao, df_consolidado)
     logger.info("--- %s segundos ---" % (time.time() - start_time))

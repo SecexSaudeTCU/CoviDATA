@@ -9,9 +9,8 @@ from bs4 import BeautifulSoup
 
 from covidata import config
 from covidata.persistencia.dao import persistir
-from covidata.webscraping.downloader import FileDownloader
-from covidata.webscraping.selenium.downloader import SeleniumDownloader
 from covidata.webscraping.scrappers.AC.consolidacao_AC import consolidar
+from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
 
 def __extrair(url, informacao, indice):

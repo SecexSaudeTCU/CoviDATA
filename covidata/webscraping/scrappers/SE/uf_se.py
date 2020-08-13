@@ -7,7 +7,6 @@ import logging
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait, Select
-import numpy as np
 import pandas as pd
 
 from covidata import config
@@ -48,150 +47,13 @@ dict_unidades_aracaju = {12201: 'FUNDAÇÃO CULTURAL CIDADE DE ARACAJU',
 
 
 # Define a classe referida como herdeira da class "SeleniumDownloader"
-class PortalTransparencia_SE(SeleniumDownloader):
-
-    # Sobrescreve o construtor da class "SeleniumDownloader"
-    def __init__(self):
-        super().__init__(path.join(config.diretorio_dados, 'SE', 'portal_transparencia', 'Sergipe'),
-                         config.url_pt_SE)
-
-    # Implementa localmente o método interno e vazio da class "SeleniumDownloader"
-    def _executar(self):
-        # Inicializa objeto pandas DataFrame dos empenhos
-        df_empenho = pd.DataFrame(columns=['Unidade', 'Nº do empenho', 'Programa', 'Elemento',
-                                           'Razão Social Favorecido', 'CNPJ Favorecido', 'Mês',
-                                           'Valor Original (R$)', 'Valor Reforço (R$)',
-                                           'Valor Total (R$)'])
-
-        # Inicializa objeto pandas DataFrame das liquidações
-        df_liquidacao = pd.DataFrame(columns=['Unidade', 'Nº do empenho', 'Programa', 'Elemento',
-                                              'Razão Social Favorecido', 'CNPJ Favorecido', 'Mês',
-                                              'Valor do Mês (R$)'])
-
-        # Inicializa objeto pandas DataFrame dos pagamentos
-        df_pagamento = pd.DataFrame(columns=['Unidade', 'Programa', 'Elemento', 'Razão Social Favorecido',
-                                             'CNPJ Favorecido', 'Mês', 'Valor do Mês (R$)'])
-
-        # Itera sobre os meses do ano 2020 ("0 = Janeiro",..., "X = Mês atual")
-        for month in np.arange(0, int(datetime.today().strftime('%m'))):
-            # Seleciona o mês "month"
-            self.driver.find_element_by_id("frmPrincipal:mes").click()
-            self.driver.find_element_by_xpath(f'//*[@id="frmPrincipal:mes_{month}"]').click()
-
-            # Seleciona o botão em forma de lupa inclinada a 135 graus
-            self.driver.find_element_by_id("frmPrincipal:botaoPesquisar").click()
-
-            # Seleciona a aba "Empenhos"
-            self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas"]/ul/li[1]/a').click()
-            # Seleciona o link do arquivo "csv" respectivo
-            # self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt234"]/span[2]').click()
-            self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt232"]/span[2]').click()
-
-            # On hold por 3 segundos
-            time.sleep(3)
-
-            # Lê o arquivo "csv" de empenhos baixado para o mês "month"
-            df_empenho_mes = pd.read_csv(path.join(config.diretorio_dados, 'SE',
-                                                   'portal_transparencia', 'Sergipe', 'Elemento_de_Despesa.csv'))
-
-            # Acrescenta a coluna "Razão Social Favorecido" ao objeto pandas DataFrame "df_empenho_mes"
-            df_empenho_mes['Razão Social Favorecido'] = df_empenho_mes['Nome do Favorecido']
-            # Acrescenta a coluna "CNPJ Favorecido" ao objeto pandas DataFrame "df_empenho_mes"
-            #df_empenho_mes['CNPJ Favorecido'] = df_empenho_mes['Código do Favorecido'].apply(lambda x: x.split('-')[0])
-            df_empenho_mes['CNPJ Favorecido'] = df_empenho_mes['Código do Favorecido']
-            # Acrescenta a coluna "Mês" ao objeto pandas DataFrame "df_empenho_mes"
-            df_empenho_mes['Mês'] = dict_meses[month]
-
-            # Reordena as colunas do objeto pandas DataFrame "df_empenho_mes"
-            df_empenho_mes = df_empenho_mes[['Unidade', 'Nº do empenho', 'Programa', 'Elemento',
-                                             'Razão Social Favorecido', 'CNPJ Favorecido', 'Mês',
-                                             'Valor Original (R$)', 'Valor Reforço (R$)',
-                                             'Valor Anulado (R$)', 'Valor Acumulado (R$)']]
-
-            # Concatena "df_empenho_mes" a "df_empenho"
-            df_empenho = pd.concat([df_empenho, df_empenho_mes])
-
-            # Seleciona a aba "Liquidações"
-            self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas"]/ul/li[2]/a').click()
-            # Seleciona o link do arquivo "csv" respectivo
-            # self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt257"]/span[2]').click()
-            self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt260"]/span[2]').click()
-
-            # On hold por 3 segundos
-            time.sleep(3)
-
-            # Lê o arquivo "csv" de liquidações baixado para o mês "month"
-            df_liquidacao_mes = pd.read_csv(path.join(config.diretorio_dados, 'SE',
-                                                      'portal_transparencia', 'Sergipe', 'Elemento_de_Despesa.csv'))
-
-            # Acrescenta a coluna "Razão Social Favorecido" ao objeto pandas DataFrame "df_liquidacao_mes"
-            df_liquidacao_mes['Razão Social Favorecido'] = df_liquidacao_mes['Nome do Favorecido']
-            # Acrescenta a coluna "CNPJ Favorecido" ao objeto pandas DataFrame "df_liquidacao_mes"
-            df_liquidacao_mes['CNPJ Favorecido'] = df_liquidacao_mes['Código do Favorecido'].apply(
-                lambda x: str(x).split('-')[0])
-            # Acrescenta a coluna "Mês" ao objeto pandas DataFrame "df_liquidacao_mes"
-            df_liquidacao_mes['Mês'] = dict_meses[month]
-
-            # Reordena as colunas do objeto pandas DataFrame "df_liquidacao_mes"
-            df_liquidacao_mes = df_liquidacao_mes[['Unidade', 'Nº do empenho', 'Programa', 'Elemento',
-                                                   'Razão Social Favorecido', 'CNPJ Favorecido', 'Mês',
-                                                   'Valor do Mês (R$)']]
-
-            # Concatena "df_liquidacao_mes" a "df_liquidacao"
-            df_liquidacao = pd.concat([df_liquidacao, df_liquidacao_mes])
-
-            # Seleciona a aba "Pagamentos"
-            self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas"]/ul/li[3]/a').click()
-            # Seleciona o link do arquivo "csv" respectivo
-            # self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt276"]/span[2]').click()
-            self.driver.find_element_by_xpath('//*[@id="frmPrincipal:abas:j_idt281"]/span[2]').click()
-
-            # On hold por 3 segundos
-            time.sleep(3)
-
-            # Lê o arquivo "csv" de pagamentos baixado para o mês "month"
-            df_pagamento_mes = pd.read_csv(path.join(config.diretorio_dados, 'SE',
-                                                     'portal_transparencia', 'Sergipe', 'Elemento_de_Despesa.csv'))
-
-            # Acrescenta a coluna "Razão Social Favorecido" ao objeto pandas DataFrame "df_pagamento_mes"
-            df_pagamento_mes['Razão Social Favorecido'] = df_pagamento_mes['Nome do Favorecido']
-            # Acrescenta a coluna "CNPJ Favorecido" ao objeto pandas DataFrame "df_pagamento_mes"
-            df_pagamento_mes['CNPJ Favorecido'] = df_pagamento_mes['Código do Favorecido'].apply(
-                lambda x: x.split('-')[0])
-            # Acrescenta a coluna "Mês" ao objeto pandas DataFrame "df_pagamento_mes"
-            df_pagamento_mes['Mês'] = dict_meses[month]
-
-            # Reordena as colunas do objeto pandas DataFrame "df_pagamento_mes"
-            df_pagamento_mes = df_pagamento_mes[['Unidade', 'Programa', 'Elemento', 'Razão Social Favorecido',
-                                                 'CNPJ Favorecido', 'Mês', 'Valor do Mês (R$)']]
-
-            # Concatena "df_pagamento_mes" a "df_pagamento"
-            df_pagamento = pd.concat([df_pagamento, df_pagamento_mes])
-
-            # Cria arquivo "xlsx" e aloca file handler de escrita para a variável "writer"
-            with pd.ExcelWriter(path.join(config.diretorio_dados, 'SE',
-                                          'portal_transparencia', 'Sergipe',
-                                          'Dados_Portal_Transparencia_Sergipe.xlsx')) as writer:
-                # Salva os dados de empenhos contidos em "df_empenho" na planilha "Empenhos"
-                df_empenho.to_excel(writer, sheet_name='Empenhos', index=False)
-                # Salva os dados de liquidações contidos em "df_liquidacao" na planilha "Liquidações"
-                df_liquidacao.to_excel(writer, sheet_name='Liquidações', index=False)
-                # Salva os dados de pagamentos contidos em "df_pagamento" na planilha "Pagamentos"
-                df_pagamento.to_excel(writer, sheet_name='Pagamentos', index=False)
-
-        # Deleta o arquivo remanescente "csv" de nome "Elemento_de_Despesa"
-        os.unlink(path.join(config.diretorio_dados, 'SE',
-                            'portal_transparencia', 'Sergipe', 'Elemento_de_Despesa.csv'))
-
-
-# Define a classe referida como herdeira da class "SeleniumDownloader"
 class PortalTransparencia_Aracaju(SeleniumDownloader):
 
     # Sobrescreve o construtor da class "SeleniumDownloader"
     def __init__(self):
         super().__init__(path.join(config.diretorio_dados, 'SE', 'portal_transparencia', 'Aracaju'),
                          config.url_pt_Aracaju,
-                         #browser_option='--start-maximized'
+                         # browser_option='--start-maximized'
                          )
 
     # Implementa localmente o método interno e vazio da class "SeleniumDownloader"
@@ -408,15 +270,9 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         os.unlink(path.join(config.diretorio_dados, 'SE', 'portal_transparencia', 'Aracaju', 'Município Online.xlsx'))
 
 
-def main():
+def main(df_consolidado):
     data_extracao = datetime.now()
     logger = logging.getLogger('covidata')
-
-    logger.info('Portal de transparência estadual...')
-    start_time = time.time()
-    pt_SE = PortalTransparencia_SE()
-    pt_SE.download()
-    logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     logger.info('Portal de transparência da capital...')
     start_time = time.time()
@@ -426,8 +282,7 @@ def main():
 
     logger.info('Consolidando as informações no layout padronizado...')
     start_time = time.time()
-    consolidar(data_extracao)
+    consolidar(data_extracao, df_consolidado)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-
-#main()
+# main()

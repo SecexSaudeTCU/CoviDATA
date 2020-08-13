@@ -10,9 +10,6 @@ from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout, salvar
 
 
-
-
-
 def pos_processar_portal_transparencia_capital(df):
     df[consolidacao.MUNICIPIO_DESCRICAO] = 'São Luís'
     df = df.rename(columns={'Nº DO PROCESSO': 'Nº PROCESSO'})
@@ -26,9 +23,6 @@ def pos_processar_portal_transparencia_capital(df):
             df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
 
     return df
-
-
-
 
 
 def __consolidar_portal_transparencia_estado(data_extracao):
@@ -69,8 +63,6 @@ def consolidar(data_extracao, df_consolidado):
 
     portal_transparencia_capital = __consolidar_portal_transparencia_capital(data_extracao)
 
-    #TODO: Erro bizarro -> aqui df_consolidado = None
-    if df_consolidado:
-        df_consolidado = df_consolidado.append(portal_transparencia_capital)
+    df_consolidado = df_consolidado.append(portal_transparencia_capital)
 
     salvar(df_consolidado, 'MA')

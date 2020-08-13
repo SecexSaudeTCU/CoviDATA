@@ -1,11 +1,13 @@
 import logging
 import time
 from os import path
+
+import pandas as pd
+
 from covidata import config
 from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout
-from covidata.webscraping.json.parser import JSONParser
-import pandas as pd
+from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.scrappers.scrapper import Scraper
 
 
@@ -16,8 +18,9 @@ class PT_AP_Scraper(Scraper):
 
         logger.info('Portal de transparência estadual...')
         start_time = time.time()
-        pt_AP = PortalTransparencia_AP()
-        pt_AP.parse()
+        downloader = FileDownloader(path.join(config.diretorio_dados, 'AP', 'portal_transparencia'), config.url_pt_AP,
+                                    'contratos.xlsx')
+        downloader.download()
         logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     def consolidar(self, data_extracao):
@@ -38,7 +41,7 @@ class PT_AP_Scraper(Scraper):
                             consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'local',
                             consolidacao.DATA_ASSINATURA: 'data_assinatura', consolidacao.NUMERO_PROCESSO: 'processo'}
         colunas_adicionais = ['id', 'numero_siga', 'duracao', 'anexo_id']
-        planilha_original = path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'contratacoes.xlsx')
+        planilha_original = path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'contratos.xlsx')
         df_original = pd.read_excel(planilha_original)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_AP
         df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
@@ -50,13 +53,3 @@ class PT_AP_Scraper(Scraper):
         df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
         df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
         return df
-
-
-class PortalTransparencia_AP(JSONParser):
-
-    def __init__(self):
-        super().__init__(config.url_pt_AP, 'id', 'contratacoes', 'portal_transparencia', 'AP')
-
-    def _get_elemento_raiz(self, conteudo):
-        # Neste caso, não há elemento-raiz nomeado.
-        return conteudo

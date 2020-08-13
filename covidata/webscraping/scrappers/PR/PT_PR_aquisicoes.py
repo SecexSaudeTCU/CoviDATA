@@ -13,12 +13,13 @@ class PT_PR_AquisicoesScraper(Scraper):
         super().__init__('')
         self.url = agora = datetime.datetime.now()
         mes_atual = agora.month
+
+        if mes_atual <= 9:
+            mes_atual = '0' + str(mes_atual)
+
         ano_atual = agora.year
-        self.nome_arquivo_aquisicoes = 'aquisicoes_e_contratacoes_0.xls'
-        mes_anterior = mes_atual - 1
-        if mes_anterior <= 9:
-            mes_anterior = '0' + str(mes_anterior)
-        self.url = f'{config.url_pt_PR}{ano_atual}-{mes_anterior}/{self.nome_arquivo_aquisicoes}'
+        self.nome_arquivo_aquisicoes = 'Contratos%20Aquisi%C3%A7%C3%B5es_0.xls'
+        self.url = f'{config.url_pt_PR}{ano_atual}-{mes_atual}/{self.nome_arquivo_aquisicoes}'
 
     def scrap(self):
         self.download_aquisicoes_contratacoes()
@@ -44,8 +45,8 @@ class PT_PR_AquisicoesScraper(Scraper):
                             consolidacao.DATA_PUBLICACAO: 'DATA  PUBLICAÇÃO                       DIOE / FOLHA'}
         colunas_adicionais = ['PRAZO              CONTRATO (mês)', 'NÚMERO DISPENSA', 'PROTOCOLO / PROCESSO']
         planilha_original = path.join(config.diretorio_dados, 'PR', 'portal_transparencia',
-                                      'aquisicoes_e_contratacoes_0.xls')
-        df_original = pd.read_excel(planilha_original, header=6, sheet_name='UNIFICAÇÃO DOS 4 MESES')
+                                      'Contratos%20Aquisi%C3%A7%C3%B5es_0.xls')
+        df_original = pd.read_excel(planilha_original, header=6, sheet_name='UNIFICAÇÃO DOS 6 MESES')
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + self.url
         df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                fonte_dados, 'PR', '', data_extracao)

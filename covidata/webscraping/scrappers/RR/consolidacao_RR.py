@@ -18,6 +18,7 @@ def pos_processar_pt_BoaVista(df):
         else:
             df.loc[i, consolidacao.FAVORECIDO_TIPO] = 'CPF/RG'
 
+    df[consolidacao.MUNICIPIO_DESCRICAO] = 'Boa Vista'
     return df
 
 

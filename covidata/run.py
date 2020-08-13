@@ -14,6 +14,7 @@ import pandas as pd
 
 from covidata import config
 from covidata.webscraping.scrappers.AC import uf_ac
+from covidata.webscraping.scrappers.AC.PT_RioBranco import PT_RioBranco_Scraper
 from covidata.webscraping.scrappers.AL import uf_al
 from covidata.webscraping.scrappers.AM import uf_am
 from covidata.webscraping.scrappers.AP import uf_ap
@@ -63,7 +64,7 @@ if __name__ == '__main__':
                 'MS': PT_MS_Scraper(config.url_pt_MS), 'RR': PT_RR_Scraper(config.url_pt_RR),
                 'RN': PT_RN_Scraper(config.url_pt_RN), 'MA': TCE_MA_Scraper(config.url_tce_MA),
                 'DF': PT_DF_Scraper(config.url_pt_DF), 'SE': PT_SE_Scraper(config.url_pt_SE),
-                'TO': PT_TO_Scraper(config.url_pt_TO)}
+                'TO': PT_TO_Scraper(config.url_pt_TO), 'AC': PT_RioBranco_Scraper(config.url_pt_RioBranco)}
     dfs_consolidados = defaultdict(list)
     erros = []
 
@@ -79,7 +80,10 @@ if __name__ == '__main__':
 
     start_time = time.time()
     logger.info('# Recuperando dados do Acre...')
-    uf_ac.main()
+    if len(dfs_consolidados['AC']) > 0:
+        uf_ac.main(dfs_consolidados['AC'][0])
+    else:
+        uf_ac.main(pd.DataFrame())
 
     logger.info('# Recuperando dados de Alagoas...')
     uf_al.main()

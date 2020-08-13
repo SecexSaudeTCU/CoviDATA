@@ -97,14 +97,6 @@ def pos_processar_portal_transparencia_estadual(df):
     return df
 
 
-def pos_processar_portal_transparencia_capital(df):
-    # Elimina as sete últimas linhas
-    df.drop(df.tail(7).index, inplace=True)
-    df = df.astype({consolidacao.ANO: np.uint16, consolidacao.NUMERO_CONTRATO: np.int64})
-    df[consolidacao.MUNICIPIO_DESCRICAO] = 'RIO BRANCO'
-    return df
-
-
 def __get_nome_municipio(row, prefixo='\nPrefeitura Municipal de '):
     string_original = row[consolidacao.CONTRATANTE_DESCRICAO]
 
@@ -203,7 +195,6 @@ def __consolidar_dispensas_municipios(data_extracao):
 
 
 def __consolidar_portal_transparencia_estadual(data_extracao):
-
     # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Órgão',
                         consolidacao.VALOR_EMPENHADO: 'Valor Empenhado',
@@ -253,24 +244,7 @@ def __consolidar_portal_transparencia_estadual(data_extracao):
     return df
 
 
-def __consolidar_portal_transparencia_capital(data_extracao):
-    dicionario_dados = {consolidacao.ANO: 'Exercício', consolidacao.CONTRATADO_DESCRICAO: 'Fornecedor',
-                        consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.MOD_APLIC_DESCRICAO: 'Modalidade',
-                        consolidacao.CONTRATANTE_DESCRICAO: 'Secretaria', consolidacao.VALOR_CONTRATO: 'Valor',
-                        consolidacao.UG_DESCRICAO: 'Secretaria', consolidacao.DATA_ASSINATURA: 'Data de Assinatura',
-                        consolidacao.NUMERO_CONTRATO: 'Número do Contrato',
-                        consolidacao.NUMERO_PROCESSO: 'Número do Processo',
-                        consolidacao.DATA_FIM_VIGENCIA: 'Prazo de Vigência'}
-    df_original = pd.read_excel(
-        path.join(config.diretorio_dados, 'AC', 'portal_transparencia', 'Rio Branco', 'webexcel.xls'), header=11)
-    df = consolidar_layout([], df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
-                           consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_RioBranco, 'AC',
-                           get_codigo_municipio_por_nome('Rio Branco', 'AC'), data_extracao,
-                           pos_processar_portal_transparencia_capital)
-    return df
-
-
-def consolidar(data_extracao):
+def consolidar(data_extracao, df_consolidado):
     # TODO: Pode ser recomendável unificar os formatos de CPF e CNPJ para remover pontos e hífens.
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Acre')
@@ -293,13 +267,12 @@ def consolidar(data_extracao):
     dispensas_municipios = __consolidar_dispensas_municipios(data_extracao)
     despesas = despesas.append(dispensas_municipios, ignore_index=True, sort=False)
 
-    #TODO: Site indisponível
+    # TODO: Site indisponível
     """
     pt_estadual = __consolidar_portal_transparencia_estadual(data_extracao)
     despesas = despesas.append(pt_estadual, ignore_index=True, sort=False)
     """
 
-    pt_capital = __consolidar_portal_transparencia_capital(data_extracao)
-    despesas = despesas.append(pt_capital, ignore_index=True, sort=False)
+    df_consolidado = df_consolidado.append(despesas)
 
-    salvar(despesas, 'AC')
+    salvar(df_consolidado, 'AC')

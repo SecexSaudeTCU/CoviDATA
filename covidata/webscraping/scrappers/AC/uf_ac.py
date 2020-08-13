@@ -1,7 +1,6 @@
 import datetime
 import logging
 import time
-from os import path
 
 import pandas as pd
 import requests
@@ -10,7 +9,6 @@ from bs4 import BeautifulSoup
 from covidata import config
 from covidata.persistencia.dao import persistir
 from covidata.webscraping.scrappers.AC.consolidacao_AC import consolidar
-from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
 
 def __extrair(url, informacao, indice):
@@ -38,15 +36,6 @@ def __extrair_tabela(url, indice):
     return colunas, lista_linhas
 
 
-class PortalTransparencia_RioBranco(SeleniumDownloader):
-    def __init__(self, url):
-        super().__init__(path.join(config.diretorio_dados, 'AC', 'portal_transparencia', 'Rio Branco'), url)
-
-    def _executar(self):
-        button = self.driver.find_element_by_partial_link_text('EXCEL')
-        button.click()
-
-
 def tce_ac():
     start_time = time.time()
     __extrair(url=config.url_tce_AC_contratos, informacao='contratos', indice=0)
@@ -58,7 +47,7 @@ def tce_ac():
     return start_time
 
 
-def main():
+def main(df_consolidado):
     data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
     logger.info('Tribunal de Contas estadual...')
@@ -75,15 +64,10 @@ def main():
     logger.info("--- %s segundos ---" % (time.time() - start_time))
     """
 
-    logger.info('Portal de transparência da capital...')
-    start_time = time.time()
-    pt_RioBranco = PortalTransparencia_RioBranco(config.url_pt_RioBranco)
-    pt_RioBranco.download()
-    logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     logger.info('Consolidando as informações no layout padronizado...')
     start_time = time.time()
-    consolidar(data_extracao)
+    consolidar(data_extracao, df_consolidado)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
 #main()

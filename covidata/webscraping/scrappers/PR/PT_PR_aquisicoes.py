@@ -11,7 +11,7 @@ from os import path
 class PT_PR_AquisicoesScraper(Scraper):
     def __init__(self):
         super().__init__('')
-        self.url = agora = datetime.datetime.now()
+        agora = datetime.datetime.now()
         mes_atual = agora.month
 
         if mes_atual <= 9:

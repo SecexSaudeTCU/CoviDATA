@@ -41,7 +41,7 @@ url_pt_MG = 'http://www.transparencia.mg.gov.br/covid-19/compras-contratos'
 url_pt_MS = 'http://www.comprascoronavirus.ms.gov.br/'
 url_pt_SE = 'http://www.transparenciasergipe.se.gov.br/TRS/Covid/Despesas.xhtml'
 url_pt_PB = 'http://transparencia.pb.gov.br/coronavirus/?rpt=contratoslst_covid'
-url_pt_DF = 'http://www.coronavirus.df.gov.br/index.php/contratacoes/'
+url_pt_DF = 'http://www.coronavirus.df.gov.br/wp-content/uploads/2020/08/PLANILHA-COVID2.csv'
 url_pt_RN = 'http://transparencia.rn.gov.br/covidcomprasservicos'
 
 # URLs de portais de transparência dos Tribunais de Contas Estaduais

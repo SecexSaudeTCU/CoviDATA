@@ -1,24 +1,53 @@
 import logging
 import time
-from glob import glob
 from os import path
 
 import pandas as pd
+import requests
+from bs4 import BeautifulSoup
+from requests.adapters import HTTPAdapter
 
 from covidata import config
 from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout
+from covidata.persistencia.dao import persistir
 from covidata.webscraping.scrappers.scrapper import Scraper
-from covidata.webscraping.selenium.downloader import SeleniumDownloader
-
+from requests.packages.urllib3.util.retry import Retry
 
 class PT_RN_Scraper(Scraper):
     def scrap(self):
         logger = logging.getLogger('covidata')
         logger.info('Portal de transparência estadual...')
         start_time = time.time()
-        pt_RN = PortalTransparencia_RN()
-        pt_RN.download()
+
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/50.0.2661.102 Safari/537.36'}
+        #page = requests.get(config.url_pt_RN, headers=headers, verify=False)
+        session = requests.Session()
+        retry = Retry(connect=3, backoff_factor=0.5)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+
+        page = session.get(config.url_pt_RN, headers=headers, verify=False)
+
+        soup = BeautifulSoup(page.content, 'html.parser')
+        tabela = soup.find_all('table')[1]
+        titulos_colunas = tabela.find_all('thead')[0].find_all('th')
+        colunas = [titulo_coluna.get_text() for titulo_coluna in titulos_colunas]
+
+        linhas = tabela.find_all('tbody')[0].find_all('tr')
+        linhas_df = []
+
+        for linha in linhas:
+            tds = linha.find_all('td')
+            valores = [td.get_text().strip() for td in tds]
+            linhas_df.append(valores)
+
+        df = pd.DataFrame(linhas_df, columns=colunas)
+        persistir(df, 'portal_transparencia', 'compras_e_servicos', 'RN')
+
         logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     def consolidar(self, data_extracao):
@@ -27,28 +56,23 @@ class PT_RN_Scraper(Scraper):
     def consolidar_pt_RN(self, data_extracao):
         # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Contratante',
+                            consolidacao.UG_DESCRICAO: 'Contratante',
                             consolidacao.DESPESA_DESCRICAO: 'Objeto',
                             consolidacao.CONTRATADO_DESCRICAO: 'Contratado (a)',
-                            consolidacao.DOCUMENTO_NUMERO: 'N. Contrato',
+                            consolidacao.NUMERO_CONTRATO: 'N. Contrato',
                             consolidacao.VALOR_CONTRATO: 'Valor do Contrato (R$)',
                             consolidacao.CONTRATADO_CNPJ: 'CNPJ/CPF',
+                            consolidacao.NUMERO_PROCESSO: 'N. Processo',
+                            consolidacao.FUNDAMENTO_LEGAL: 'Fundamento Legal',
                             consolidacao.FONTE_RECURSOS_DESCRICAO: 'Fonte do Recurso',
-                            consolidacao.VALOR_PAGO: 'Valor Pago (R$)', consolidacao.DATA_ASSINATURA: 'Data Assinatura'}
+                            consolidacao.VALOR_PAGO: 'Valor Pago (R$)', consolidacao.DATA_ASSINATURA: 'Data Assinatura',
+                            consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local de execução'}
 
         # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-        colunas_adicionais = ['N. Processo', 'Modalidade', 'Fundamento Legal', 'Vigência', 'Valor anulado (R$)']
+        colunas_adicionais = ['Modalidade', 'Vigência', 'Valor anulado (R$)']
 
-        # Obtém objeto list dos arquivos armazenados no path passado como argumento para a função nativa "glob"
-        list_files = glob(path.join(config.diretorio_dados, 'RN', 'portal_transparencia', 'RioGrandeNorte/*'))
-
-        # Obtém o primeiro elemento do objeto list que corresponde ao nome do arquivo "csv" baixado
-        file_name = list_files[0]
-
-        # Lê o arquivo "csv" de nome "file_name" de contratos baixado como um objeto pandas DataFrame
-        # Usa o parâmetro "error_bad_lines" como "False" para ignorar linhas com problema do arquivo "csv" (primeira solução)
-        df_original = pd.read_csv(
-            path.join(config.diretorio_dados, 'RN', 'portal_transparencia', 'RioGrandeNorte', file_name),
-            sep=';', error_bad_lines=False)
+        df_original = pd.read_excel(
+            path.join(config.diretorio_dados, 'RN', 'portal_transparencia', 'compras_e_servicos.xls'), header=4)
 
         # Chama a função "consolidar_layout" definida em módulo importado
         df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
@@ -60,26 +84,28 @@ class PT_RN_Scraper(Scraper):
         for i in range(len(df)):
             cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
 
-            if len(cpf_cnpj) >= 14:
+            if len(cpf_cnpj) == 14:
+                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CPF
+            elif len(cpf_cnpj) > 14:
                 df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-            else:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = 'CPF/RG'
+
+            vigencia = df.loc[i, 'VIGÊNCIA']
+
+            if not pd.isna(vigencia):
+                indice_quebra_datas = vigencia.find(' a')
+
+                if indice_quebra_datas != -1:
+                    data_inicio = vigencia[0:indice_quebra_datas]
+                    indice_prazo_dias = vigencia.find(' (')
+
+                    if indice_prazo_dias != -1:
+                        data_fim = vigencia[indice_quebra_datas + 3:indice_prazo_dias]
+                    else:
+                        data_fim = vigencia[indice_quebra_datas:len(vigencia)]
+
+                    df.loc[i, consolidacao.DATA_INICIO_VIGENCIA] = data_inicio
+                    df.loc[i, consolidacao.DATA_FIM_VIGENCIA] = data_fim
+
+        df.drop(columns='VIGÊNCIA', axis=1, inplace=True)
 
         return df
-
-
-# Define a classe referida como herdeira da class "SeleniumDownloader"
-class PortalTransparencia_RN(SeleniumDownloader):
-
-    # Sobrescreve o construtor da class "SeleniumDownloader"
-    def __init__(self):
-        super().__init__(path.join(config.diretorio_dados, 'RN', 'portal_transparencia', 'RioGrandeNorte'),
-                         config.url_pt_RN,
-                         #browser_option='--start-maximized'
-                         )
-
-    # Implementa localmente o método interno e vazio da class "SeleniumDownloader"
-    def _executar(self):
-
-        # Seleciona o botão em forma de planilha do Excel
-        self.driver.find_element_by_xpath('//*[@id="DataTables_Table_0_wrapper"]/div[1]/button[2]/span/i').click()

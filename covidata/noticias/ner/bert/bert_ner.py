@@ -30,13 +30,18 @@ class BaseBERT_NER(NER):
         return resultado, ids
 
     def _pos_processar(self, resultado, ids):
+        lista_entidades = self.__agrupar_termos(ids, resultado)
+
+        retorno = self.__agrupar_entidades(lista_entidades)
+        return retorno
+
+    def __agrupar_termos(self, ids, resultado):
         indices_prefixos = []
         classificacoes = []
         scores = []
         entidades = []
         lista_entidades = []
         indices = []
-
         # Pós-processa para juntar subtokens dentro da mesma palavra
         for i, item in enumerate(resultado):
             word = item['word']
@@ -47,7 +52,6 @@ class BaseBERT_NER(NER):
 
             if '##' not in word:
                 indices_prefixos.append(i)
-
         for i in range(len(indices_prefixos)):
             prefixo_atual = indices_prefixos[i]
 
@@ -56,35 +60,22 @@ class BaseBERT_NER(NER):
             else:
                 proximo_prefixo = len(entidades)
 
-            sublista_entidades = entidades[prefixo_atual:proximo_prefixo]
-            # termo = ''.join(sublista_entidades).replace('##', '')
             sublista_scores = scores[prefixo_atual:proximo_prefixo]
             indice_melhor_score = np.asarray(sublista_scores).argmax()
             melhor_classificacao = classificacoes[prefixo_atual:proximo_prefixo][indice_melhor_score]
             sublista_indices = indices[prefixo_atual:proximo_prefixo]
             indice_prefixo = sublista_indices[0]
 
-            j = 0
-            termo = None
-
-            for palavra in ids:
-                for token in palavra:
-                    if token != self.nlp.tokenizer.cls_token_id and token != self.nlp.tokenizer.sep_token_id:
-                        if j == indice_prefixo - 1:
-                            termo = self.nlp.tokenizer.decode(palavra[1:-1])
-                            break
-                        else:
-                            j += 1
-                if termo:
-                    break
+            termo = self.__get_termo(ids, indice_prefixo)
 
             classificacao_entidade_atual = self._get_map_labels()[melhor_classificacao]
             lista_entidades.append((termo, classificacao_entidade_atual, sublista_indices))
+        return lista_entidades
 
+    def __agrupar_entidades(self, lista_entidades):
         entidade_anterior = None
         indice_nova_entidade = 0
         retorno = []
-
         for i, ent in enumerate(lista_entidades):
             classificacao_entidade_atual = ent[1]
             inicio_entidade_atual = ent[2][0]
@@ -99,11 +90,24 @@ class BaseBERT_NER(NER):
                 indice_nova_entidade = i
 
             entidade_anterior = ent
-
         # Acrescenta a última entidade
         sublista = lista_entidades[indice_nova_entidade:len(lista_entidades)]
         novo_termo = ' '.join(t for t, _, _ in sublista if t)
-
         if entidade_anterior:
             retorno.append((novo_termo, entidade_anterior[1]))
         return retorno
+
+    def __get_termo(self, ids, indice_prefixo):
+        j = 0
+        termo = None
+        for palavra in ids:
+            for token in palavra:
+                if token != self.nlp.tokenizer.cls_token_id and token != self.nlp.tokenizer.sep_token_id:
+                    if j == indice_prefixo - 1:
+                        termo = self.nlp.tokenizer.decode(palavra[1:-1])
+                        break
+                    else:
+                        j += 1
+            if termo:
+                break
+        return termo

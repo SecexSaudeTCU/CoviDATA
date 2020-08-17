@@ -8,7 +8,6 @@ def main():
     data_extracao = datetime.now()
     logger = logging.getLogger('covidata')
 
-    #TODO Saiu do ar
     pt_sp.main()
     pt_sp_capital.main()
 

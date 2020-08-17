@@ -14,6 +14,7 @@ import pandas as pd
 
 from covidata import config
 from covidata.webscraping.scrappers.AC import uf_ac
+from covidata.webscraping.scrappers.AC.PT_AC import PT_AC_Scraper
 from covidata.webscraping.scrappers.AC.PT_RioBranco import PT_RioBranco_Scraper
 from covidata.webscraping.scrappers.AL import uf_al
 from covidata.webscraping.scrappers.AM import uf_am
@@ -61,40 +62,36 @@ if __name__ == '__main__':
     logger.addHandler(logging.StreamHandler())
 
     # No momento, estão nesta lista os scrapers mais instáveis, que apresentam erros intermitentes.
-    scrapers = {'AP': PT_AP_Scraper(config.url_pt_AP), 'PR': PT_PR_AquisicoesScraper(),
-                'MS': PT_MS_Scraper(config.url_pt_MS), 'RR': PT_RR_Scraper(config.url_pt_RR),
-                'RN': PT_RN_Scraper(config.url_pt_RN), 'MA': TCE_MA_Scraper(config.url_tce_MA),
-                'DF': PT_DF_Scraper(config.url_pt_DF), 'SE': PT_SE_Scraper(config.url_pt_SE),
-                'TO': PT_TO_Scraper(config.url_pt_TO), 'AC': PT_RioBranco_Scraper(config.url_pt_RioBranco),
-                'PA': PT_Belem_Scraper(config.url_pt_Belem)}
-    dfs_consolidados = defaultdict(list)
+    map_ufs_scrapers = {'AC': [PT_AC_Scraper(config.url_pt_AC), PT_RioBranco_Scraper(config.url_pt_RioBranco)],
+                        'AP': [PT_AP_Scraper(config.url_pt_AP)], 'DF': [PT_DF_Scraper(config.url_pt_DF)],
+                        'MA': [TCE_MA_Scraper(config.url_tce_MA)], 'MS': [PT_MS_Scraper(config.url_pt_MS)],
+                        'PA': [PT_Belem_Scraper(config.url_pt_Belem)], 'PR': [PT_PR_AquisicoesScraper()],
+                        'RN': [PT_RN_Scraper(config.url_pt_RN)], 'RR': [PT_RR_Scraper(config.url_pt_RR)],
+                        'SE': [PT_SE_Scraper(config.url_pt_SE)], 'TO': [PT_TO_Scraper(config.url_pt_TO)],
+                        }
+    df_consolidado = defaultdict(pd.DataFrame)
     erros = []
 
-    for uf, scraper in scrapers.items():
-        try:
-            scraper.scrap()
-            data_extracao = datetime.datetime.now()
-            df = scraper.consolidar(data_extracao)
-            dfs_consolidados[uf].append(df)
-        except:
-            traceback.print_exc()
-            erros.append(scraper.url)
+    for uf, scrapers in map_ufs_scrapers.items():
+        for scraper in scrapers:
+            try:
+                scraper.scrap()
+                data_extracao = datetime.datetime.now()
+                df = scraper.consolidar(data_extracao)
+                df_consolidado[uf] = df_consolidado[uf].append(df)
+            except:
+                traceback.print_exc()
+                erros.append(scraper.url)
 
     start_time = time.time()
     logger.info('# Recuperando dados do Acre...')
-    if len(dfs_consolidados['AC']) > 0:
-        uf_ac.main(dfs_consolidados['AC'][0])
-    else:
-        uf_ac.main(pd.DataFrame())
+    uf_ac.main(df_consolidado['AC'])
 
     logger.info('# Recuperando dados de Alagoas...')
     uf_al.main()
 
     logger.info('# Recuperando dados do Amapá...')
-    if len(dfs_consolidados['AP']) > 0:
-        uf_ap.main(dfs_consolidados['AP'][0])
-    else:
-        uf_ap.main(pd.DataFrame())
+    uf_ap.main(df_consolidado['AP'])
 
     logger.info('# Recuperando dados do Amazonas...')
     uf_am.main()
@@ -112,28 +109,19 @@ if __name__ == '__main__':
     uf_go.main()
 
     logger.info('# Recuperando dados do Maranhão...')
-    if len(dfs_consolidados['MA']) > 0 and dfs_consolidados['MA'][0]:
-        uf_ma.main(dfs_consolidados['MA'][0])
-    else:
-        uf_ma.main(pd.DataFrame())
+    uf_ma.main(df_consolidado['MA'])
 
     logger.info('# Recuperando dados de Mato Grosso...')
     uf_mt.main()
 
     logger.info('# Recuperando dados de Mato Grosso do Sul...')
-    if len(dfs_consolidados['MS']) > 0:
-        uf_ms.main(dfs_consolidados['MS'][0])
-    else:
-        uf_ms.main(pd.DataFrame())
+    uf_ms.main(df_consolidado['MS'])
 
     logger.info('# Recuperando dados de Minas Gerais...')
     uf_mg.main()
 
     logger.info('# Recuperando dados do Pará...')
-    if len(dfs_consolidados['PA']) > 0:
-        uf_pa.main(dfs_consolidados['PA'][0])
-    else:
-        uf_pa.main(pd.DataFrame())
+    uf_pa.main(df_consolidado['PA'])
 
     logger.info('# Recuperando dados de Paraíba...')
     uf_pb.main()
@@ -142,10 +130,7 @@ if __name__ == '__main__':
     uf_pi.main()
 
     logger.info('# Recuperando dados do Paraná...')
-    if len(dfs_consolidados['PR']) > 0:
-        uf_pr.main(dfs_consolidados['PR'][0])
-    else:
-        uf_pr.main(pd.DataFrame())
+    uf_pr.main(df_consolidado['PR'])
 
     logger.info('# Recuperando dados de Pernambuco...')
     pt_pe_capital.main()
@@ -154,10 +139,7 @@ if __name__ == '__main__':
     uf_rj.main()
 
     logger.info('# Recuperando dados de Rio Grande do Norte...')
-    if len(dfs_consolidados['RN']) > 0:
-        uf_rn.main(dfs_consolidados['RN'][0])
-    else:
-        uf_rn.main(pd.DataFrame())
+    uf_rn.main(df_consolidado['RN'])
 
     logger.info('# Recuperando dados do Rio Grande do Sul...')
     uf_rs.main()
@@ -168,19 +150,13 @@ if __name__ == '__main__':
     uf_ro.main()
 
     logger.info('# Recuperando dados de Roraima...')
-    if len(dfs_consolidados['RR']) > 0:
-        uf_rr.main(dfs_consolidados['RR'][0])
-    else:
-        uf_rr.main(pd.DataFrame())
+    uf_rr.main(df_consolidado['RR'])
 
     logger.info('# Recuperando dados de Santa Catarina...')
     uf_sc.main()
 
     logger.info('# Recuperando dados de Sergipe...')
-    if len(dfs_consolidados['SE']) > 0:
-        uf_se.main(dfs_consolidados['SE'][0])
-    else:
-        uf_se.main(pd.DataFrame())
+    uf_se.main(df_consolidado['SE'])
 
     logger.info('# Recuperando dados de São Paulo...')
     uf_sp.main()

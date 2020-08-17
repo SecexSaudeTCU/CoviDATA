@@ -85,16 +85,6 @@ def pos_processar_dispensas_municipios(df):
     return df
 
 
-def pos_processar_portal_transparencia_estadual(df):
-    for i in range(len(df)):
-        cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
-
-        if len(str(cpf_cnpj)) >= 14:
-            df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-        else:
-            df.loc[i, consolidacao.FAVORECIDO_TIPO] = 'CPF/RG'
-
-    return df
 
 
 def __get_nome_municipio(row, prefixo='\nPrefeitura Municipal de '):
@@ -194,54 +184,7 @@ def __consolidar_dispensas_municipios(data_extracao):
     return df
 
 
-def __consolidar_portal_transparencia_estadual(data_extracao):
-    # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
-    dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Órgão',
-                        consolidacao.VALOR_EMPENHADO: 'Valor Empenhado',
-                        consolidacao.NUMERO_CONTRATO: 'Número Contrato',
-                        consolidacao.CONTRATADO_CNPJ: 'CNPJ',
-                        consolidacao.CONTRATADO_DESCRICAO: 'Nome Contratada',
-                        consolidacao.DATA_INICIO_VIGENCIA: 'Data Início Vigência',
-                        consolidacao.DATA_FIM_VIGENCIA: 'Data Fim Vigência',
-                        consolidacao.DOCUMENTO_NUMERO: 'Número Empenho',
-                        consolidacao.DOCUMENTO_DATA: 'Data Empenho',
-                        consolidacao.ACAO_COD: 'Código Ação',
-                        consolidacao.ACAO_DESCRICAO: 'Descrição Ação'}
 
-    # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-    colunas_adicionais = ['Situação Contratual']
-
-    # Lê o arquivo "csv" de empenhos baixado como um objeto pandas DataFrame
-    df_original = pd.read_csv(
-        path.join(config.diretorio_dados, 'AC', 'portal_transparencia', 'empenhos.csv'))
-
-    # Remove notação científica das colunas especificadas do objeto pandas DataFrame "df_original"
-    df_original['11'] = df_original['11'].apply(lambda x: '%.0f' % x)
-
-    # Seleciona as colunas de "df_original" a integrar "df"
-    df = df_original[['1', '2', '6', '7', '8', '9', '10', '11', '12', '16', '17']]
-
-    # Renomeia as colunas de "df" para nomes inteligíveis
-    df.rename(columns={'1': 'Órgão',
-                       '2': 'Situação Contratual',
-                       '5': 'Valor Empenhado',
-                       '6': 'Número Contrato',
-                       '7': 'CNPJ',
-                       '8': 'Nome Contratada',
-                       '9': 'Data Início Vigência',
-                       '10': 'Data Fim Vigência',
-                       '11': 'Número Empenho',
-                       '12': 'Data Empenho',
-                       '16': 'Código Ação',
-                       '17': 'Descrição Ação'},
-              inplace=True)
-
-    # Chama a função "consolidar_layout" definida em módulo importado
-    df = consolidar_layout(colunas_adicionais, df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
-                           consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_AC, 'AC', '',
-                           data_extracao, pos_processar_portal_transparencia_estadual)
-
-    return df
 
 
 def consolidar(data_extracao, df_consolidado):
@@ -266,12 +209,6 @@ def consolidar(data_extracao, df_consolidado):
 
     dispensas_municipios = __consolidar_dispensas_municipios(data_extracao)
     despesas = despesas.append(dispensas_municipios, ignore_index=True, sort=False)
-
-    # TODO: Site indisponível
-    """
-    pt_estadual = __consolidar_portal_transparencia_estadual(data_extracao)
-    despesas = despesas.append(pt_estadual, ignore_index=True, sort=False)
-    """
 
     df_consolidado = df_consolidado.append(despesas)
 

@@ -1,4 +1,5 @@
 import locale
+import logging
 
 import os
 from abc import ABC, abstractmethod
@@ -25,6 +26,7 @@ class SeleniumDownloader(ABC):
 
         self.driver = self.__configurar_chrome(diretorio_dados, browser_option)
         self.driver.get(url)
+        self.diretorio_dados = diretorio_dados
 
     def download(self):
         """
@@ -35,7 +37,7 @@ class SeleniumDownloader(ABC):
         self._executar()
 
         # Aguarda o download
-        time.sleep(5)
+        self.aguardar_download()
 
         self.driver.close()
         self.driver.quit()
@@ -71,6 +73,18 @@ class SeleniumDownloader(ABC):
         driver.command_executor._commands["send_command"] = ("POST", '/session/$sessionId/chromium/send_command')
         params = {'cmd': 'Page.setDownloadBehavior',
                   'params': {'behavior': 'allow', 'downloadPath': diretorio_dados}}
-        command_result = driver.execute("send_command", params)
+        driver.execute("send_command", params)
 
         return driver
+
+    def aguardar_download(self):
+        logger = logging.getLogger('covidata')
+        i = 1
+
+        while len(os.listdir(self.diretorio_dados)) == 0:
+            # Aguarda o download do arquivo
+            logger.info(f"Aguardando download do arquivo... (tentativa {i})")
+            time.sleep(5)
+            i += 1
+
+        logger.info("Download concluído.")

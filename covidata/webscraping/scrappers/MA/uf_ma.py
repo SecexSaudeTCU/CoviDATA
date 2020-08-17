@@ -44,7 +44,7 @@ def pt_sao_luis():
 
     for linha in linhas:
         data = linha.find_all("td")
-        nova_linha = [data[1].next_element.find_all('a')[0].attrs['href']]
+        nova_linha = [data[1].find_all('a')[0].attrs['href']]
         nova_linha += [data[i].get_text() for i in range(len(data))]
         lista_linhas.append(nova_linha)
 
@@ -72,4 +72,3 @@ def main(df_consolidado):
     consolidar(data_extracao, df_consolidado)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-# main()

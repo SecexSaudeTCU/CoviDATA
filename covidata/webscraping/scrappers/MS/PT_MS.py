@@ -1,10 +1,9 @@
-import time
-
-import pandas as pd
 import logging
 import os
+import time
 from os import path
 
+import pandas as pd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -22,6 +21,7 @@ class PT_MS_Scraper(Scraper):
 
         logger.info('Portal de transparência estadual...')
         start_time = time.time()
+
         pt_MS = PortalTransparencia_MS()
         pt_MS.download()
 
@@ -42,7 +42,7 @@ class PT_MS_Scraper(Scraper):
         colunas_adicionais = ['Número Processo']
         planilha_original = path.join(config.diretorio_dados, 'MS', 'portal_transparencia',
                                       'ComprasEmergenciaisMS_COVID19.csv')
-        df_original = pd.read_csv(planilha_original, sep=';', header=2, index_col=False)
+        df_original = pd.read_csv(planilha_original, sep=';', header=4, index_col=False)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_MS
         df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                fonte_dados, 'MS', '', data_extracao)
@@ -52,10 +52,12 @@ class PT_MS_Scraper(Scraper):
 
 class PortalTransparencia_MS(SeleniumDownloader):
     def __init__(self):
-        super().__init__(path.join(config.diretorio_dados, 'MS', 'portal_transparencia'), config.url_pt_MS)
+        super().__init__(path.join(config.diretorio_dados, 'MS', 'portal_transparencia'), config.url_pt_MS + 'compras')
 
     def _executar(self):
         wait = WebDriverWait(self.driver, 30)
         element = wait.until(EC.element_to_be_clickable(
-            (By.XPATH, '/html/body/div[4]/div/div/div[1]/div[1]/div/div[2]/form/div/div[2]/div/button[3]')))
+            (By.XPATH, '/html/body/div[4]/div/div/div[1]/div[1]/div/div[2]/div/div/div[1]/div[2]/div/button[2]/span'
+             )))
         self.driver.execute_script("arguments[0].click();", element)
+

@@ -31,6 +31,7 @@ from covidata.webscraping.scrappers.MS import uf_ms
 from covidata.webscraping.scrappers.MS.PT_MS import PT_MS_Scraper
 from covidata.webscraping.scrappers.MT import uf_mt
 from covidata.webscraping.scrappers.PA import uf_pa
+from covidata.webscraping.scrappers.PA.PT_Belem import PT_Belem_Scraper
 from covidata.webscraping.scrappers.PB import uf_pb
 from covidata.webscraping.scrappers.PE import pt_pe_capital
 from covidata.webscraping.scrappers.PI import uf_pi
@@ -64,7 +65,8 @@ if __name__ == '__main__':
                 'MS': PT_MS_Scraper(config.url_pt_MS), 'RR': PT_RR_Scraper(config.url_pt_RR),
                 'RN': PT_RN_Scraper(config.url_pt_RN), 'MA': TCE_MA_Scraper(config.url_tce_MA),
                 'DF': PT_DF_Scraper(config.url_pt_DF), 'SE': PT_SE_Scraper(config.url_pt_SE),
-                'TO': PT_TO_Scraper(config.url_pt_TO), 'AC': PT_RioBranco_Scraper(config.url_pt_RioBranco)}
+                'TO': PT_TO_Scraper(config.url_pt_TO), 'AC': PT_RioBranco_Scraper(config.url_pt_RioBranco),
+                'PA': PT_Belem_Scraper(config.url_pt_Belem)}
     dfs_consolidados = defaultdict(list)
     erros = []
 
@@ -128,7 +130,10 @@ if __name__ == '__main__':
     uf_mg.main()
 
     logger.info('# Recuperando dados do Pará...')
-    uf_pa.main()
+    if len(dfs_consolidados['PA']) > 0:
+        uf_pa.main(dfs_consolidados['PA'][0])
+    else:
+        uf_pa.main(pd.DataFrame())
 
     logger.info('# Recuperando dados de Paraíba...')
     uf_pb.main()

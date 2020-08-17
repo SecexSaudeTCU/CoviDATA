@@ -5,7 +5,6 @@ from os import path
 import pandas as pd
 
 from covidata import config
-from covidata.municipios.ibge import get_codigo_municipio_por_nome
 from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout, salvar
 
@@ -22,21 +21,6 @@ def pos_processar_portal_transparencia_estadual(df):
     return df
 
 
-def pos_processar_portal_transparencia_capital(df):
-    df['temp'] = df[consolidacao.UG_DESCRICAO]
-    df[consolidacao.UG_COD] = df.apply(lambda row: row['temp'][0:row['temp'].find('-')], axis=1)
-    df[consolidacao.UG_DESCRICAO] = df.apply(lambda row: row['temp'][row['temp'].find('-') + 1:len(row['temp'])],
-                                             axis=1)
-    df = df.drop(['temp'], axis=1)
-
-    df['temp'] = df[consolidacao.FONTE_RECURSOS_DESCRICAO]
-    df[consolidacao.FONTE_RECURSOS_COD] = df.apply(lambda row: row['temp'][0:row['temp'].find('-')], axis=1)
-    df[consolidacao.FONTE_RECURSOS_DESCRICAO] = df.apply(
-        lambda row: row['temp'][row['temp'].find('-') + 1:len(row['temp'])], axis=1)
-    df = df.drop(['temp'], axis=1)
-
-    df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
-    return df
 
 
 def __consolidar_portal_transparencia_estadual(data_extracao):
@@ -59,19 +43,6 @@ def __consolidar_portal_transparencia_estadual(data_extracao):
     return df
 
 
-def __consolidar_portal_transparencia_capital(data_extracao):
-    dicionario_dados = {consolidacao.DOCUMENTO_NUMERO: 'Empenho', consolidacao.UG_DESCRICAO: 'Unidade Gestora',
-                        consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.FONTE_RECURSOS_DESCRICAO: 'Fonte',
-                        consolidacao.CONTRATADO_DESCRICAO: 'Fornecedor', consolidacao.VALOR_CONTRATO: 'Valor',
-                        consolidacao.DOCUMENTO_DATA: 'Data', consolidacao.SITUACAO: 'Situacao'}
-    planilha_original = path.join(config.diretorio_dados, 'PA', 'portal_transparencia', 'Belem',
-                                  'Prefeitura Municipal de Belém - Transparência COVID-19 - Despesas.xlsx')
-    df_original = pd.read_excel(planilha_original, header=1)
-    fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Belem
-    df = consolidar_layout([], df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL, fonte_dados, 'PA',
-                           get_codigo_municipio_por_nome('Belém', 'PA'), data_extracao,
-                           pos_processar_portal_transparencia_capital)
-    return df
 
 
 def __consolidar_tcm(data_extracao):
@@ -89,13 +60,12 @@ def __consolidar_tcm(data_extracao):
     salvar(fornecedores_por_qtd_municipios, 'PA', '_fornecedores_por_qtd_municipios')
 
 
-def consolidar(data_extracao):
+def consolidar(data_extracao, df_consolidado):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Pará')
 
     portal_transparencia_estadual = __consolidar_portal_transparencia_estadual(data_extracao)
-    portal_transparencia_capital = __consolidar_portal_transparencia_capital(data_extracao)
-    portal_transparencia_estadual = portal_transparencia_estadual.append(portal_transparencia_capital)
+    portal_transparencia_estadual = portal_transparencia_estadual.append(df_consolidado)
 
     salvar(portal_transparencia_estadual, 'PA')
 

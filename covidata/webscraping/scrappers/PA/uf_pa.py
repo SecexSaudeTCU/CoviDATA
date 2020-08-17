@@ -10,7 +10,7 @@ import pandas as pd
 from covidata import config
 from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.scrappers.PA.consolidacao_PA import consolidar
-from covidata.webscraping.scrappers.PA import pt_belem
+
 
 def pt_PA():
     downloader = FileDownloader(path.join(config.diretorio_dados, 'PA', 'portal_transparencia'), config.url_pt_PA,
@@ -38,7 +38,7 @@ def pt_PA():
         df.to_excel(os.path.join(downloader.diretorio_dados, 'covid.xlsx'))
 
 
-def main():
+def main(df_consolidado):
     data_extracao = datetime.datetime.now()
     logger = logging.getLogger('covidata')
     logger.info('Portal de transparência estadual...')
@@ -57,12 +57,9 @@ def main():
     tcm_PA_2.download()
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-    #Processamento relativo à capital
-    pt_belem.main()
-
     logger.info('Consolidando as informações no layout padronizado...')
     start_time = time.time()
-    consolidar(data_extracao)
+    consolidar(data_extracao, df_consolidado)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
 #main()

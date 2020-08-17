@@ -3,11 +3,16 @@ import logging
 import time
 from os import path
 
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.wait import WebDriverWait
+
 from covidata import config
 from covidata.util.excel import exportar_arquivo_para_xlsx
 from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.scrappers.PR.consolidacao_PR import consolidar
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
+from selenium.webdriver.support import expected_conditions as EC
 
 
 class PortalTransparencia_Curitiba(SeleniumDownloader):
@@ -16,8 +21,18 @@ class PortalTransparencia_Curitiba(SeleniumDownloader):
                          config.url_pt_Curitiba_aquisicoes)
 
     def _executar(self):
+        # Seleciona o campo "Data Início" e seta a data de início de busca
+        campo_data_inicial = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.NAME, "ctl00$cphMasterPrincipal$txtDataInicial")))
+        campo_data_inicial.send_keys(Keys.HOME)
+        campo_data_inicial.send_keys('01032020')
+
         button = self.driver.find_element_by_class_name('excel')
         button.click()
+
+        # Aqui, não é possível confiar na checagem de download da superclasse, uma vez que no mesmo diretório há outros
+        # arquivos.
+        time.sleep(5)
 
 
 def portal_transparencia_PR():
@@ -36,9 +51,6 @@ def portal_transparencia_PR():
     pt_PR_dados_abertos.download()
 
     return url_dados_abertos
-
-
-
 
 
 def portal_transparencia_Curitiba():
@@ -76,4 +88,8 @@ def main(df_consolidado):
     consolidar(data_extracao, url_dados_abertos, df_consolidado)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-#main()
+"""
+import pandas as pd
+
+main(pd.DataFrame())
+"""

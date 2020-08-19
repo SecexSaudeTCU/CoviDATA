@@ -31,7 +31,7 @@ url_pt_AL = 'http://transparencia.al.gov.br:8080/transparencia_relatorios/transp
 url_pt_MA = 'http://www.transparencia.ma.gov.br/app/compras/covid#lista'
 url_pt_TO = 'http://www.gestao.cge.to.gov.br/projetos/contratos_covid/consulta_contrato_covid_2/'
 url_pt_BA = 'http://www.saude.ba.gov.br/temasdesaude/coronavirus/contratacoes-covid19/'
-url_pt_MT = 'http://www.transparencia.mt.gov.br/-/contratos-covid-19'
+url_pt_MT = 'http://consultas.transparencia.mt.gov.br/compras/contratos_covid_completo/'
 url_pt_GO = 'http://www.monitoramentoegestao.com.br/download_arquivos/aquisicoes.csv'
 url_pt_RS = 'https://www.compras.rs.gov.br/transparencia/editais-covid19.csv?contexto=Celic'
 url_pt_PR = 'http://www.coronavirus.pr.gov.br/sites/cadastrocovid19/arquivos_restritos/files/documento/'

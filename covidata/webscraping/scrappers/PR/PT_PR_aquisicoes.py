@@ -25,7 +25,7 @@ class PT_PR_AquisicoesScraper(Scraper):
         self.download_aquisicoes_contratacoes()
 
     def consolidar(self, data_extracao):
-        return self.__consolidar_aquisicoes(data_extracao)
+        return self.__consolidar_aquisicoes(data_extracao), False
 
     def download_aquisicoes_contratacoes(self):
 

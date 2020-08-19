@@ -28,6 +28,7 @@ class PT_DF_Scraper(Scraper):
         dados = self.__consolidar_dados_portal_transparencia(data_extracao)
         salvar(dados, 'DF')
         logger.info("--- %s segundos ---" % (time.time() - start_time))
+        return dados, True
 
     def __consolidar_dados_portal_transparencia(self, data_extracao):
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'ÓRGÃO', consolidacao.UG_DESCRICAO: 'ÓRGÃO',

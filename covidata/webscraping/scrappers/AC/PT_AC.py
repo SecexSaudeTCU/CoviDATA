@@ -23,7 +23,7 @@ class PT_AC_Scraper(Scraper):
         logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     def consolidar(self, data_extracao):
-        return self.__consolidar_portal_transparencia_estadual(data_extracao)
+        return self.__consolidar_portal_transparencia_estadual(data_extracao), False
 
     def __consolidar_portal_transparencia_estadual(self, data_extracao):
         # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes

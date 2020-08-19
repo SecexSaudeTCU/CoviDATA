@@ -32,7 +32,7 @@ class TCE_MA_Scraper(Scraper):
         os.rename(path.join(diretorio, arquivo), path.join(diretorio, 'licitacoes.xls'))
 
     def consolidar(self, data_extracao):
-        pass
+        return self.__consolidar_licitacoes(data_extracao), False
 
     def __consolidar_licitacoes(self, data_extracao):
         dicionario_dados = {consolidacao.MUNICIPIO_DESCRICAO: 'ENTE', consolidacao.CONTRATANTE_DESCRICAO: 'UNIDADE',

@@ -9,6 +9,7 @@ import time
 
 import pandas as pd
 from newspaper import Article
+import jsonlines
 
 
 def get_text(url, max_retries=5, sleep=5):
@@ -36,13 +37,23 @@ def recuperar_textos(caminho_arquivo_noticias):
     df = pd.read_excel(caminho_arquivo_noticias)
     textos = []
     logger = logging.getLogger('covidata')
+    textos_json = []
 
     for i, row in df.iterrows():
         logger.info(f'Processando URL {i}')
         texto = get_text(row.link)
         textos.append(texto)
+        textos_json.append({'text': texto})
 
     df['texto'] = textos
     df.to_excel('com_textos.xlsx')
-    return df
 
+    metade = int(len(textos_json) / 2)
+
+    with jsonlines.open('json1.jsonl', 'w') as writer:
+        writer.write_all(textos_json[:metade])
+
+    with jsonlines.open('json2.jsonl', 'w') as writer:
+        writer.write_all(textos_json[metade:])
+
+    return df

@@ -23,7 +23,7 @@ class PT_RioBranco_Scraper(Scraper):
         logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     def consolidar(self, data_extracao):
-        return self.__consolidar_portal_transparencia_capital(data_extracao)
+        return self.__consolidar_portal_transparencia_capital(data_extracao), False
 
     def __consolidar_portal_transparencia_capital(self, data_extracao):
         dicionario_dados = {consolidacao.ANO: 'Exercício', consolidacao.CONTRATADO_DESCRICAO: 'Fornecedor',

@@ -67,7 +67,7 @@ class PT_RR_Scraper(Scraper):
         for arquivo in self.arquivos:
             df = df.append(self.__consolidar_arquivo(data_extracao, arquivo))
 
-        return df
+        return df, False
 
     def __consolidar_arquivo(self, data_extracao, arquivo):
         # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes

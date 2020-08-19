@@ -79,7 +79,7 @@ class PT_TO_Scraper(Scraper):
         contratos = self.__consolidar_contratos(data_extracao)
 
         salvar(contratos, 'TO')
-        return contratos
+        return contratos, True
 
     def __consolidar_contratos(self, data_extracao):
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Órgão', consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ',

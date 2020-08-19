@@ -23,7 +23,7 @@ class PT_Belem_Scraper(Scraper):
         logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     def consolidar(self, data_extracao):
-        return self.__consolidar_portal_transparencia_capital(data_extracao)
+        return self.__consolidar_portal_transparencia_capital(data_extracao), False
 
     def __consolidar_portal_transparencia_capital(self, data_extracao):
         dicionario_dados = {consolidacao.DOCUMENTO_NUMERO: 'Empenho', consolidacao.UG_DESCRICAO: 'Unidade Gestora',

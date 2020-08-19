@@ -24,7 +24,7 @@ class PT_AP_Scraper(Scraper):
         logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     def consolidar(self, data_extracao):
-        return self.consolidar_contratacoes(data_extracao)
+        return self.consolidar_contratacoes(data_extracao), False
 
     def consolidar_contratacoes(self, data_extracao):
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'orgao', consolidacao.UG_DESCRICAO: 'orgao',

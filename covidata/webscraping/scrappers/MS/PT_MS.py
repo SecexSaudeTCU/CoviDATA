@@ -33,7 +33,7 @@ class PT_MS_Scraper(Scraper):
         os.rename(path.join(diretorio, arquivo), path.join(diretorio, 'ComprasEmergenciaisMS_COVID19.csv'))
 
     def consolidar(self, data_extracao):
-        return self.__consolidar_compras_emergenciais(data_extracao)
+        return self.__consolidar_compras_emergenciais(data_extracao), False
 
     def __consolidar_compras_emergenciais(self, data_extracao):
         dicionario_dados = {consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ', consolidacao.CONTRATADO_DESCRICAO: 'Credor',

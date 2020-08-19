@@ -51,7 +51,7 @@ class PT_RN_Scraper(Scraper):
         logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     def consolidar(self, data_extracao):
-        return self.consolidar_pt_RN(data_extracao)
+        return self.consolidar_pt_RN(data_extracao), False
 
     def consolidar_pt_RN(self, data_extracao):
         # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes

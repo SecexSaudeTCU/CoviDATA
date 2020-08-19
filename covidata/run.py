@@ -13,9 +13,11 @@ from collections import defaultdict
 import pandas as pd
 
 from covidata import config
-from covidata.webscraping.scrappers.AC import uf_ac
+from covidata.persistencia.consolidacao import salvar
 from covidata.webscraping.scrappers.AC.PT_AC import PT_AC_Scraper
 from covidata.webscraping.scrappers.AC.PT_RioBranco import PT_RioBranco_Scraper
+from covidata.webscraping.scrappers.AC.TCE_AC import TCE_AC_ContratosScraper, TCE_AC_DespesasScraper, \
+    TCE_AC_ContratosMunicipiosScraper, TCE_AC_DespesasMunicipiosScraper
 from covidata.webscraping.scrappers.AL import uf_al
 from covidata.webscraping.scrappers.AM import uf_am
 from covidata.webscraping.scrappers.AP import uf_ap
@@ -30,7 +32,7 @@ from covidata.webscraping.scrappers.MA.TCE_MA import TCE_MA_Scraper
 from covidata.webscraping.scrappers.MG import uf_mg
 from covidata.webscraping.scrappers.MS import uf_ms
 from covidata.webscraping.scrappers.MS.PT_MS import PT_MS_Scraper
-from covidata.webscraping.scrappers.MT import uf_mt
+from covidata.webscraping.scrappers.MT.PT_MT import PT_MT_Scraper
 from covidata.webscraping.scrappers.PA import uf_pa
 from covidata.webscraping.scrappers.PA.PT_Belem import PT_Belem_Scraper
 from covidata.webscraping.scrappers.PB import uf_pb
@@ -49,7 +51,6 @@ from covidata.webscraping.scrappers.SC import uf_sc
 from covidata.webscraping.scrappers.SE import uf_se
 from covidata.webscraping.scrappers.SE.PT_SE import PT_SE_Scraper
 from covidata.webscraping.scrappers.SP import uf_sp
-
 # Adiciona diretorio raiz ao PATH. Devido a ausência de setup.py, isto garante que as importações sempre funcionarão
 from covidata.webscraping.scrappers.TO.PT_TO import PT_TO_Scraper
 
@@ -62,13 +63,24 @@ if __name__ == '__main__':
     logger.addHandler(logging.StreamHandler())
 
     # No momento, estão nesta lista os scrapers mais instáveis, que apresentam erros intermitentes.
-    map_ufs_scrapers = {'AC': [PT_AC_Scraper(config.url_pt_AC), PT_RioBranco_Scraper(config.url_pt_RioBranco)],
-                        'AP': [PT_AP_Scraper(config.url_pt_AP)], 'DF': [PT_DF_Scraper(config.url_pt_DF)],
-                        'MA': [TCE_MA_Scraper(config.url_tce_MA)], 'MS': [PT_MS_Scraper(config.url_pt_MS)],
-                        'PA': [PT_Belem_Scraper(config.url_pt_Belem)], 'PR': [PT_PR_AquisicoesScraper()],
-                        'RN': [PT_RN_Scraper(config.url_pt_RN)], 'RR': [PT_RR_Scraper(config.url_pt_RR)],
-                        'SE': [PT_SE_Scraper(config.url_pt_SE)], 'TO': [PT_TO_Scraper(config.url_pt_TO)],
-                        }
+    map_ufs_scrapers = {
+        'AC': [PT_AC_Scraper(config.url_pt_AC), PT_RioBranco_Scraper(config.url_pt_RioBranco),
+               TCE_AC_ContratosScraper(config.url_tce_AC_contratos),
+               TCE_AC_DespesasScraper(config.url_tce_AC_despesas),
+               TCE_AC_ContratosMunicipiosScraper(config.url_tce_AC_contratos_municipios),
+               TCE_AC_DespesasMunicipiosScraper(config.url_tce_AC_despesas_municipios)],
+        'AP': [PT_AP_Scraper(config.url_pt_AP)],
+        'DF': [PT_DF_Scraper(config.url_pt_DF)],
+        'MA': [TCE_MA_Scraper(config.url_tce_MA)],
+        'MS': [PT_MS_Scraper(config.url_pt_MS)],
+        'MT': [PT_MT_Scraper(config.url_pt_MT)],
+        'PA': [PT_Belem_Scraper(config.url_pt_Belem)],
+        'PR': [PT_PR_AquisicoesScraper()],
+        'RN': [PT_RN_Scraper(config.url_pt_RN)],
+        'RR': [PT_RR_Scraper(config.url_pt_RR)],
+        'SE': [PT_SE_Scraper(config.url_pt_SE)],
+        'TO': [PT_TO_Scraper(config.url_pt_TO)],
+    }
     df_consolidado = defaultdict(pd.DataFrame)
     erros = []
 
@@ -77,15 +89,16 @@ if __name__ == '__main__':
             try:
                 scraper.scrap()
                 data_extracao = datetime.datetime.now()
-                df = scraper.consolidar(data_extracao)
+                df, salvo = scraper.consolidar(data_extracao)
                 df_consolidado[uf] = df_consolidado[uf].append(df)
+
+                if not salvo:
+                    salvar(df_consolidado[uf], uf)
             except:
                 traceback.print_exc()
                 erros.append(scraper.url)
 
     start_time = time.time()
-    logger.info('# Recuperando dados do Acre...')
-    uf_ac.main(df_consolidado['AC'])
 
     logger.info('# Recuperando dados de Alagoas...')
     uf_al.main()
@@ -110,9 +123,6 @@ if __name__ == '__main__':
 
     logger.info('# Recuperando dados do Maranhão...')
     uf_ma.main(df_consolidado['MA'])
-
-    logger.info('# Recuperando dados de Mato Grosso...')
-    uf_mt.main()
 
     logger.info('# Recuperando dados de Mato Grosso do Sul...')
     uf_ms.main(df_consolidado['MS'])

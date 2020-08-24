@@ -29,7 +29,7 @@ def extrair_entidades():
         logger.info('Aplicando implementação ' + algoritmo)
         start_time = time.time()
         df_resultado = ner.extrair_entidades(df)
-        ner.avaliar()
+        print(ner.avaliar())
         logger.info("--- %s segundos ---" % (time.time() - start_time))
         df_resultado.to_excel(writer, sheet_name=algoritmo)
     writer.save()

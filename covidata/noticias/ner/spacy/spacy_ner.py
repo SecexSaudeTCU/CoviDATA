@@ -1,11 +1,22 @@
-import jsonlines
-import pandas as pd
-import pt_core_news_sm
-from spacy.gold import GoldParse
-from spacy.scorer import Scorer
+import pickle
+import random
+import warnings
 
-from covidata.noticias.ner.ner_base import NER, Avaliacao
+import jsonlines
+import pt_core_news_sm
+import spacy
+from sklearn.model_selection import train_test_split
+from spacy.gold import GoldParse
 from spacy.gold import biluo_tags_from_offsets
+from spacy.scorer import Scorer
+from spacy.util import compounding, minibatch
+
+from covidata import config
+from covidata.noticias.ner.ner_base import NER, Avaliacao
+
+# Mapeia os nomes das categorias de entidade usadas pela aplicação (ex.: base de treinamento rotulada) nos nomes
+# de categoria correspondentes usados pelo Spacy.
+map_app_cats_to_spacy_cats = {'PESSOA': 'PER', 'LOC': 'LOC', 'ORG': 'ORG', 'PUB': 'PUB'}
 
 
 class SpacyNER(NER):
@@ -15,11 +26,6 @@ class SpacyNER(NER):
 
         # Mapeia os nomes das categorias de entidade usados pelo Spacy em nomes úteis ao usuário final
         self.map_spacy_cats_to_user_cats = {'MISC': 'MISCELÂNEA', 'LOC': 'LOCAL', 'ORG': 'ORGANIZAÇÃO', 'PER': 'PESSOA'}
-
-        # Mapeia os nomes das categorias de entidade usadas pela aplicação (ex.: base de treinamento rotulada) nos nomes
-        # de categoria correspondentes usados pelo Spacy.
-        self.map_app_cats_to_spacy_cats = {'PESSOA': 'PER', 'LOC': 'LOC', 'ORG': 'ORG'}
-
         self.modo_avalicao = modo_avaliacao
         self.preds = []
         self.textos = []
@@ -48,7 +54,7 @@ class SpacyNER(NER):
         y_true = []
         y_pred = []
 
-        with jsonlines.open('labeled_4_labels.jsonl') as reader:
+        with jsonlines.open(config.arquivo_dados_treinamento_noticias) as reader:
             for obj in reader:
                 texto = obj['text']
                 labels = obj['labels']
@@ -88,10 +94,82 @@ class AvaliacaoSpacy(Avaliacao):
                str(self.scorer.scores['ents_per_type'])
 
 
+def criar_base_treinamento():
+    dados_treinamento = []
+
+    with jsonlines.open(config.arquivo_dados_treinamento_noticias) as reader:
+        for obj in reader:
+            texto = obj['text']
+            labels = obj['labels']
+            entidades = []
+
+            for label in labels:
+                inicio = label[0]
+                fim = label[1]
+                categoria = label[2]
+                entidades.append((inicio, fim, map_app_cats_to_spacy_cats[categoria]))
+
+            dados_treinamento.append((texto, {'entities': entidades}))
+
+    with open('base_spacy.pickle', 'wb') as fp:
+        pickle.dump(dados_treinamento, fp)
+
+
+def treinar():
+    random.seed(0)
+    nlp = pt_core_news_sm.load()
+
+    if 'ner' not in nlp.pipe_names:
+        ner = nlp.create_pipe('ner')
+        nlp.add_pipe(ner)
+    else:
+        ner = nlp.get_pipe('ner')
+
+    # Adiciona o novo label "PUB"
+    ner.add_label('PUB')
+
+    optimizer = nlp.resume_training()
+    move_names = list(ner.move_names)
+    n_iter = 30
+
+    # Desabilita ouros pipelines para treinar apenas NER
+    other_pipes = [pipe for pipe in nlp.pipe_names if pipe != 'ner']
+
+    with open('base_spacy.pickle', 'rb') as pickle_file:
+        TOTAL_DATA = pickle.load(pickle_file)
+
+    TRAIN_DATA, TESTING_DATA = train_test_split(TOTAL_DATA, test_size=0.3, random_state=42)
+
+    with nlp.disable_pipes(*other_pipes):
+        # show warnings for misaligned entity spans once
+        warnings.filterwarnings("once", category=UserWarning, module='spacy')
+
+        sizes = compounding(1.0, 4.0, 1.001)
+        # batch up the examples using spaCy's minibatch
+        for itn in range(n_iter):
+            random.shuffle(TRAIN_DATA)
+            batches = minibatch(TRAIN_DATA, size=sizes)
+            losses = {}
+            for batch in batches:
+                texts, annotations = zip(*batch)
+                nlp.update(texts, annotations, sgd=optimizer, drop=0.35, losses=losses)
+            print("Losses", losses)
+
+    # save model to output directory
+    nlp.meta["name"] = 'spacy_PUB'  # rename model
+    nlp.to_disk('.')
+
+    # test the saved model
+    nlp2 = spacy.load('.')
+    # Check the classes have loaded back consistently
+    assert nlp2.get_pipe("ner").move_names == move_names
+
+    for texto, _ in TESTING_DATA:
+        doc2 = nlp2(texto)
+        for ent in doc2.ents:
+            print(ent.label_, ent.text)
+
+
 if __name__ == '__main__':
-    df = pd.DataFrame()
-    dados = [['', '', '', '',
-              'O Tribunal de Contas da União é um órgão sediado em Brasília.  Sua sede fica na Esplanada dos ' \
-              'Ministérios, portanto muito próxima à Catedral Metropolitana.']]
-    df = pd.DataFrame(dados, columns=['title', 'media', 'date', 'link', 'texto'])
-    SpacyNER().extrair_entidades(df)
+    #criar_base_treinamento()
+    treinar()

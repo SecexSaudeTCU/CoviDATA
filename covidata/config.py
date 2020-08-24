@@ -10,9 +10,7 @@ diretorio_dados = diretorio_raiz.joinpath('dados')
 
 diretorio_base_cnpjs = diretorio_dados.joinpath('CNPJ-sqlite', 'CNPJ_full.db')
 diretorio_noticias = diretorio_dados.joinpath('noticias')
-
-# Arquivo que contém a data/hora em que a extração foi iniciada.
-arquivo_data_extracao = diretorio_dados.joinpath('data.txt')
+arquivo_dados_treinamento_noticias = diretorio_noticias.joinpath('labeled_4_labels.jsonl')
 
 # URL para a API de localidades do IBGE
 url_api_ibge = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados'
@@ -27,7 +25,7 @@ url_pt_RO = 'http://comprasemergenciais-covid19.ro.gov.br/Grafico/DespesasDireta
 url_pt_AC = 'http://sesacrenetnovo.ac.gov.br/relatorio/api/public/dashboard/c80bba1d-c560-4273-b15c-a4fbb3a0d954/card/786?parameters=%5B%5D'
 url_pt_ES = 'https://coronavirus.es.gov.br/Media/Coronavirus/Transparencia/DadosAbertos/dados-contratos-emergenciais-covid-19.csv?v=49'
 url_pt_SP = 'https://www.saopaulo.sp.gov.br/coronavirus/transparencia/'
-url_pt_AL = 'http://transparencia.al.gov.br:8080/transparencia_relatorios/transparencia_relatorios/despesa/json-despesa-covid19-itens?offset=0&tipo=xls&nome_contratado=&nota_empenho=&processo=&contrato=&objeto=&orgao=&codigo_elemento=&'
+url_pt_AL = 'http://transparencia.al.gov.br/despesa/json-despesa-covid19-itens/?order=asc&offset=0'
 url_pt_MA = 'http://www.transparencia.ma.gov.br/app/compras/covid#lista'
 url_pt_TO = 'http://www.gestao.cge.to.gov.br/projetos/contratos_covid/consulta_contrato_covid_2/'
 url_pt_BA = 'http://www.saude.ba.gov.br/temasdesaude/coronavirus/contratacoes-covid19/'

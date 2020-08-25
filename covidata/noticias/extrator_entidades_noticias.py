@@ -2,11 +2,12 @@ import logging
 import os
 import time
 
-import jsonlines
 import pandas as pd
 
+from covidata import config
 from covidata.noticias.gnews import executar_busca
 from covidata.noticias.parse_news import recuperar_textos
+from os import path
 
 
 def get_NERs():
@@ -14,7 +15,11 @@ def get_NERs():
     from covidata.noticias.ner.bert.bert_ner import BaseBERT_NER
     from covidata.noticias.ner.polyglot.polyglot_ner import PolyglotNER
 
-    return [SpacyNER(True), PolyglotNER(True), BaseBERT_NER()]
+    return [SpacyNER(), SpacyNER(diretorio_modelo_treinado=os.path.join(config.diretorio_raiz_modelos, 'spacy_PUB'),
+                                 labels_validos=['PESSOA', 'LOC', 'ORG', 'PUB'], nome_algoritmo='FineTunedSpacyPUB'),
+            # PolyglotNER(True),
+            # BaseBERT_NER()
+            ]
 
 
 def extrair_entidades():
@@ -25,7 +30,7 @@ def extrair_entidades():
     ners = get_NERs()
     writer = pd.ExcelWriter(os.path.join('ner.xlsx'), engine='xlsxwriter')
     for ner in ners:
-        algoritmo = ner.__class__.__name__
+        algoritmo = ner.get_nome_algoritmo()
         logger.info('Aplicando implementação ' + algoritmo)
         start_time = time.time()
         df_resultado = ner.extrair_entidades(df)

@@ -11,6 +11,7 @@ diretorio_dados = diretorio_raiz.joinpath('dados')
 diretorio_base_cnpjs = diretorio_dados.joinpath('CNPJ-sqlite', 'CNPJ_full.db')
 diretorio_noticias = diretorio_dados.joinpath('noticias')
 arquivo_dados_treinamento_noticias = diretorio_noticias.joinpath('labeled_4_labels.jsonl')
+diretorio_raiz_modelos = diretorio_noticias.joinpath('modelos')
 
 # URL para a API de localidades do IBGE
 url_api_ibge = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados'

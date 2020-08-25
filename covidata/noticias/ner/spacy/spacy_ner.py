@@ -20,12 +20,21 @@ map_app_cats_to_spacy_cats = {'PESSOA': 'PER', 'LOC': 'LOC', 'ORG': 'ORG', 'PUB'
 
 
 class SpacyNER(NER):
-    def __init__(self, filtrar_contratados=False, modo_avaliacao=True, labels_validos=['PESSOA', 'LOC', 'ORG']):
-        super().__init__(filtrar_contratados)
-        self.nlp = pt_core_news_sm.load()
+    def __init__(self, filtrar_contratados=False, modo_avaliacao=True, labels_validos=['PESSOA', 'LOC', 'ORG'],
+                 diretorio_modelo_treinado=None, nome_algoritmo=None):
+        super().__init__(filtrar_contratados, nome_algoritmo)
+
+        # Caso tenha sido passado como parâmetro o diretório onde se encontra um modelo treinado (cujo fine tunning foi
+        # feito para uma base de treinamento específica).
+        if diretorio_modelo_treinado:
+            self.nlp = spacy.load(diretorio_modelo_treinado)
+        else:
+            # Caso contrário, carrega o modelo default pré-treinado para Português.
+            self.nlp = pt_core_news_sm.load()
 
         # Mapeia os nomes das categorias de entidade usados pelo Spacy em nomes úteis ao usuário final
-        self.map_spacy_cats_to_user_cats = {'MISC': 'MISCELÂNEA', 'LOC': 'LOCAL', 'ORG': 'ORGANIZAÇÃO', 'PER': 'PESSOA'}
+        self.map_spacy_cats_to_user_cats = {'MISC': 'MISCELÂNEA', 'LOC': 'LOCAL', 'ORG': 'ORGANIZAÇÃO', 'PER': 'PESSOA',
+                                            'PUB': 'INSTITUIÇÃO PÚBLICA'}
         self.modo_avalicao = modo_avaliacao
         self.preds = []
         self.textos = []
@@ -64,7 +73,7 @@ class SpacyNER(NER):
                 for entity in labels:
                     if entity[2] in self.labels_validos:
                         # Traduz no nome de categoria correspondente adotado pelo Spacy.
-                        entity[2] = self.map_app_cats_to_spacy_cats[entity[2]]
+                        entity[2] = map_app_cats_to_spacy_cats[entity[2]]
                         text_entities.append(entity)
 
                 # Avaliação a nível de tokens
@@ -89,7 +98,7 @@ class AvaliacaoSpacy(Avaliacao):
         self.scorer = scorer
 
     def __str__(self):
-        return super().__str__() + '\nAvaliação de nível de tokens:\n' + f'f-1 = {self.scorer.ents_f}\n' + \
+        return super().__str__() + '\nAvaliação a nível de tokens:\n' + f'f-1 = {self.scorer.ents_f}\n' + \
                f'precisão = {self.scorer.ents_p}\n' + f'recall = {self.scorer.ents_r}\n' + 'Por tipo de entidade:\n' + \
                str(self.scorer.scores['ents_per_type'])
 
@@ -171,5 +180,5 @@ def treinar():
 
 
 if __name__ == '__main__':
-    #criar_base_treinamento()
+    # criar_base_treinamento()
     treinar()

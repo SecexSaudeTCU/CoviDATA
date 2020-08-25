@@ -10,12 +10,19 @@ from covidata.noticias.contratados.identificacao_contratados import filtrar_cont
 
 class NER(ABC):
 
-    def __init__(self, filtrar_contratados=False):
+    def __init__(self, filtrar_contratados=False, nome_algoritmo=None):
         self.filtrar_contratados = filtrar_contratados
+        self.__nome_algoritmo = nome_algoritmo
 
     @abstractmethod
     def _get_map_labels(self):
         pass
+
+    def get_nome_algoritmo(self):
+        if self.__nome_algoritmo:
+            return self.__nome_algoritmo
+
+        return self.__class__.__name__
 
     def extrair_entidades(self, df):
         resultado_analise = dict()
@@ -52,6 +59,7 @@ class NER(ABC):
     def avaliar(self):
         return ''
 
+
 class Avaliacao():
     def __init__(self, y_true, y_pred):
         self.f1 = f1_score(y_true, y_pred)
@@ -59,4 +67,4 @@ class Avaliacao():
         self.relatorio_classificacao = classification_report(y_true, y_pred)
 
     def __str__(self):
-        return f'f-1 = {self.f1}\n' + f'acurácia = {self.acuracia}\n' + 'Relatório = \n' + self.relatorio_classificacao
+        return 'Avaliação a nível de entidades:\n' + f'f-1 = {self.f1}\n' + f'acurácia = {self.acuracia}\n' + 'Relatório = \n' + self.relatorio_classificacao

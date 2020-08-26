@@ -21,7 +21,8 @@ map_app_cats_to_spacy_cats = {'PESSOA': 'PER', 'LOC': 'LOC', 'ORG': 'ORG', 'PUB'
 
 class SpacyNER(NER):
     def __init__(self, filtrar_contratados=False, modo_avaliacao=True, labels_validos=['PESSOA', 'LOC', 'ORG'],
-                 diretorio_modelo_treinado=None, nome_algoritmo=None):
+                 diretorio_modelo_treinado=None, nome_algoritmo=None,
+                 arquivo_validacao=None):
         super().__init__(filtrar_contratados, nome_algoritmo)
 
         # Caso tenha sido passado como parâmetro o diretório onde se encontra um modelo treinado (cujo fine tunning foi
@@ -37,8 +38,8 @@ class SpacyNER(NER):
                                             'PUB': 'INSTITUIÇÃO PÚBLICA'}
         self.modo_avalicao = modo_avaliacao
         self.preds = []
-        self.textos = []
         self.labels_validos = labels_validos
+        self.arquivo_validaco = arquivo_validacao
 
     def _get_map_labels(self):
         return self.map_spacy_cats_to_user_cats
@@ -63,7 +64,7 @@ class SpacyNER(NER):
         y_true = []
         y_pred = []
 
-        with jsonlines.open(config.arquivo_dados_treinamento_noticias) as reader:
+        with jsonlines.open(self.arquivo_validaco) as reader:
             for obj in reader:
                 texto = obj['text']
                 labels = obj['labels']
@@ -99,14 +100,16 @@ class AvaliacaoSpacy(Avaliacao):
 
     def __str__(self):
         return super().__str__() + '\nAvaliação a nível de tokens:\n' + f'f-1 = {self.scorer.ents_f}\n' + \
-               f'precisão = {self.scorer.ents_p}\n' + f'recall = {self.scorer.ents_r}\n' + 'Por tipo de entidade:\n' + \
-               str(self.scorer.scores['ents_per_type'])
+               f'precisão = {self.scorer.ents_p}\n' + f'recall = {self.scorer.ents_r}\n'\
+               #TODO: Esta saída está reportando resultados inconsistentes.
+               #+ 'Por tipo de entidade:\n' + \
+               #str(self.scorer.scores['ents_per_type'])
 
 
-def criar_base_treinamento():
+def criar_base_treinamento_validacao():
     dados_treinamento = []
 
-    with jsonlines.open(config.arquivo_dados_treinamento_noticias) as reader:
+    with jsonlines.open(config.arquivo_noticias_rotulado) as reader:
         for obj in reader:
             texto = obj['text']
             labels = obj['labels']
@@ -144,10 +147,7 @@ def treinar():
     # Desabilita ouros pipelines para treinar apenas NER
     other_pipes = [pipe for pipe in nlp.pipe_names if pipe != 'ner']
 
-    with open('base_spacy.pickle', 'rb') as pickle_file:
-        TOTAL_DATA = pickle.load(pickle_file)
-
-    TRAIN_DATA, TESTING_DATA = train_test_split(TOTAL_DATA, test_size=0.3, random_state=42)
+    TESTING_DATA, TRAIN_DATA = get_bases_treinamento_validacao()
 
     with nlp.disable_pipes(*other_pipes):
         # show warnings for misaligned entity spans once
@@ -179,6 +179,33 @@ def treinar():
             print(ent.label_, ent.text)
 
 
+def get_bases_treinamento_validacao():
+    with open('base_spacy.pickle', 'rb') as pickle_file:
+        TOTAL_DATA = pickle.load(pickle_file)
+    TRAIN_DATA, TESTING_DATA = train_test_split(TOTAL_DATA, test_size=0.3, random_state=42)
+    return TESTING_DATA, TRAIN_DATA
+
+
+def criar_base_validacao():
+    validacao, _ = get_bases_treinamento_validacao()
+    textos_validacao = set()
+
+    for texto, _ in validacao:
+        textos_validacao.add(texto.strip())
+
+    linhas_val = []
+    with jsonlines.open(config.arquivo_noticias_rotulado) as reader:
+        for obj in reader:
+            if obj['text'] in textos_validacao:
+                linhas_val.append(obj)
+
+    linhas_val = sorted(linhas_val, key=lambda i: i['text'])
+
+    with jsonlines.open('json_val.jsonl', 'w') as writer:
+        writer.write_all(linhas_val)
+
+
 if __name__ == '__main__':
     # criar_base_treinamento()
-    treinar()
+    # treinar()
+    criar_base_validacao()

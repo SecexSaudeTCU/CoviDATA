@@ -99,11 +99,11 @@ class AvaliacaoSpacy(Avaliacao):
         self.scorer = scorer
 
     def __str__(self):
-        return super().__str__() + '\nAvaliação a nível de tokens:\n' + f'f-1 = {self.scorer.ents_f}\n' + \
-               f'precisão = {self.scorer.ents_p}\n' + f'recall = {self.scorer.ents_r}\n'\
-               #TODO: Esta saída está reportando resultados inconsistentes.
-               #+ 'Por tipo de entidade:\n' + \
-               #str(self.scorer.scores['ents_per_type'])
+        return super().__str__() + '\nAvaliação a nível de tokens:\n' + f'precisão = {self.scorer.ents_p}\n' + \
+               f'recall = {self.scorer.ents_r}\n' + f'f-1 = {self.scorer.ents_f}\n'
+        # TODO: Esta saída está reportando resultados inconsistentes.
+        # + 'Por tipo de entidade:\n' + \
+        # str(self.scorer.scores['ents_per_type'])
 
 
 def criar_base_treinamento_validacao():

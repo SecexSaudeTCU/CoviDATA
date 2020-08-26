@@ -4,6 +4,8 @@ import pandas as pd
 from seqeval.metrics import accuracy_score
 from seqeval.metrics import classification_report
 from seqeval.metrics import f1_score
+from seqeval.metrics import precision_score
+from seqeval.metrics import recall_score
 
 from covidata.noticias.contratados.identificacao_contratados import filtrar_contratados
 
@@ -64,7 +66,10 @@ class Avaliacao():
     def __init__(self, y_true, y_pred):
         self.f1 = f1_score(y_true, y_pred)
         self.acuracia = accuracy_score(y_true, y_pred)
+        self.precisao = precision_score(y_true, y_pred)
+        self.recall = recall_score(y_true, y_pred)
         self.relatorio_classificacao = classification_report(y_true, y_pred)
 
     def __str__(self):
-        return 'Avaliação a nível de entidades:\n' + f'f-1 = {self.f1}\n' + f'acurácia = {self.acuracia}\n' + 'Relatório = \n' + self.relatorio_classificacao
+        return 'Avaliação a nível de entidades:\n' + f'precisão = {self.precisao}\n' + f'recall = {self.recall}\n' + \
+               f'f-1 = {self.f1}\n' + f'acurácia = {self.acuracia}\n' + 'Relatório = \n' + self.relatorio_classificacao

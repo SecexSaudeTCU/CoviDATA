@@ -15,8 +15,36 @@ class BaseBERT_NER(NER):
 
     def _extrair_entidades_de_texto(self, texto):
         if texto.strip() != '':
-            resultado, ids = self._extrair_entidades_originais(texto)
-            return self._pos_processar(resultado, ids)
+            # Respeitando o tamanho máximo de sequência para o qual o modelo foi originalmente treinado, quebra em
+            # diferentes documentos quanto forem necessários.
+            tokens = self.nlp.tokenizer.encode(texto)
+
+            if len(tokens) > self.nlp.tokenizer.max_len:
+                # Quebra o texto em textos menores.  Utiliza o número de caracteres como heurística, pois no pior caso o
+                # tokenizador do BERT vai quebrar o texto em um token para cada caracter.
+                textos = []
+                palavras = texto.split()
+                f = 0
+                inicio_atual = 0
+
+                for p in palavras:
+                    i = texto.find(p, f)
+                    f = i + len(p)
+                    if f >= inicio_atual + self.nlp.tokenizer.max_len:
+                        textos.append(texto[inicio_atual: i])
+                        inicio_atual = i
+
+                textos.append(texto[inicio_atual: len(texto)])
+                retornos = []
+
+                for subtexto in textos:
+                    resultado, ids = self._extrair_entidades_originais(subtexto)
+                    retornos += self._pos_processar(resultado, ids)
+
+                return retornos
+            else:
+                resultado, ids = self._extrair_entidades_originais(texto)
+                return self._pos_processar(resultado, ids)
         else:
             return []
 

@@ -20,7 +20,7 @@ def get_NERs():
         #SpacyNER(diretorio_modelo_treinado=os.path.join(config.diretorio_raiz_modelos, 'spacy_PUB'),
          #            labels_validos=['PESSOA', 'LOC', 'ORG', 'PUB'], nome_algoritmo='FineTunedSpacyPUB',
          #            arquivo_validacao=path.join(config.diretorio_noticias, 'json_val.jsonl'), modo_avaliacao=True),
-             PolyglotNER(),
+             #PolyglotNER(),
              BaseBERT_NER()
             ]
 

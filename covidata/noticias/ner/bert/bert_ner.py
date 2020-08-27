@@ -6,6 +6,13 @@ from covidata.noticias.ner.ner_base import NER
 
 class BaseBERT_NER(NER):
     def __init__(self, filtrar_contratados=False):
+        """
+        Inicializa com o modelo padrão para o BERT, a saber:
+        model = 'dbmdz/bert-large-cased-finetuned-conll03-english'
+        tokenizer = 'dbmdz/bert-large-cased-finetuned-conll03-english'
+
+        (Modelo e toklenizador treinados na língua inglesa, case sensitive).
+        """
         super().__init__(filtrar_contratados)
         self.nlp = pipeline("ner")
         self.map_labels = {'I-MISC': 'MISCELÂNEA', 'I-LOC': 'LOCAL', 'I-ORG': 'ORGANIZAÇÃO', 'I-PER': 'PESSOA'}
@@ -18,8 +25,10 @@ class BaseBERT_NER(NER):
             # Respeitando o tamanho máximo de sequência para o qual o modelo foi originalmente treinado, quebra em
             # diferentes documentos quanto forem necessários.
             tokens = self.nlp.tokenizer.encode(texto)
+            max_len = self.nlp.tokenizer.max_len
+            max_len -= self.nlp.tokenizer.num_special_tokens_to_add()
 
-            if len(tokens) > self.nlp.tokenizer.max_len:
+            if len(tokens) > max_len:
                 # Quebra o texto em textos menores.  Utiliza o número de caracteres como heurística, pois no pior caso o
                 # tokenizador do BERT vai quebrar o texto em um token para cada caracter.
                 textos = []
@@ -30,7 +39,7 @@ class BaseBERT_NER(NER):
                 for p in palavras:
                     i = texto.find(p, f)
                     f = i + len(p)
-                    if f >= inicio_atual + self.nlp.tokenizer.max_len:
+                    if f >= inicio_atual + max_len:
                         textos.append(texto[inicio_atual: i])
                         inicio_atual = i
 
@@ -139,3 +148,4 @@ class BaseBERT_NER(NER):
             if termo:
                 break
         return termo
+

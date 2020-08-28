@@ -13,6 +13,16 @@ diretorio_noticias = diretorio_dados.joinpath('noticias')
 arquivo_noticias_rotulado = diretorio_noticias.joinpath('labeled_4_labels.jsonl')
 diretorio_raiz_modelos = diretorio_noticias.joinpath('modelos')
 
+diretorio_modelo_neuralmind_bert_base = diretorio_raiz_modelos.joinpath('bert-neuralmind').joinpath('base')
+subdiretorio_modelo_neuralmind_bert_base = diretorio_modelo_neuralmind_bert_base.joinpath(
+    'bert-base-portuguese-cased_pytorch_checkpoint')
+vocab_bert_base = diretorio_modelo_neuralmind_bert_base.joinpath('vocab.txt')
+
+diretorio_modelo_neuralmind_bert_large = diretorio_raiz_modelos.joinpath('bert-neuralmind').joinpath('large')
+subdiretorio_modelo_neuralmind_bert_large = diretorio_modelo_neuralmind_bert_large.joinpath(
+    'bert-large-portuguese-cased_pytorch_checkpoint')
+vocab_bert_large = diretorio_modelo_neuralmind_bert_large.joinpath('vocab.txt')
+
 # URL para a API de localidades do IBGE
 url_api_ibge = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados'
 

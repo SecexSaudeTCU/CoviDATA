@@ -1,3 +1,4 @@
+import logging
 import re
 from operator import itemgetter
 from typing import Dict, Tuple, List
@@ -7,15 +8,16 @@ import numpy as np
 import torch
 from seqeval.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.model_selection import train_test_split
-from torch.utils.data import DataLoader
-from transformers import BertModel, DistilBertTokenizerFast, TrainingArguments, Trainer, \
-    DistilBertForTokenClassification, BertForTokenClassification, AdamW, EvalPrediction
 from torch import nn
+from torch.utils.data import DataLoader
+from transformers import DistilBertTokenizerFast, TrainingArguments, Trainer, \
+    BertForTokenClassification, EvalPrediction, AutoConfig
 
 from covidata import config
-import logging
 
-logging.basicConfig(level=logging.INFO)
+
+# logging.basicConfig(level=logging.INFO)
+from covidata.noticias.ner.bert.bert_utils import pre_processar_texto
 
 
 class NoticiasDataset(torch.utils.data.Dataset):
@@ -33,9 +35,12 @@ class NoticiasDataset(torch.utils.data.Dataset):
 
 
 def treinar():
-    unique_tags, train_dataset, val_dataset, tokenizer, id2tag = processar_base()
+    unique_tags, train_dataset, val_dataset, tokenizer, id2tag, tag2id = processar_base()
+    configuracao = AutoConfig.from_pretrained(str(config.subdiretorio_modelo_neuralmind_bert_base), id2label=id2tag,
+                                              label2id=tag2id)
     model = BertForTokenClassification.from_pretrained(config.subdiretorio_modelo_neuralmind_bert_base,
-                                                       num_labels=len(unique_tags))
+                                                       #num_labels=len(unique_tags),
+                                                       config=configuracao)
 
     training_args = TrainingArguments(
         output_dir='./results',  # output directory
@@ -46,9 +51,9 @@ def treinar():
         per_device_eval_batch_size=1,  # batch size for evaluation
         warmup_steps=500,  # number of warmup steps for learning rate scheduler
         weight_decay=0.01,  # strength of weight decay
-        #logging_dir='./logs',  # directory for storing logs
+        # logging_dir='./logs',  # directory for storing logs
         logging_steps=10,
-        evaluate_during_training=True,
+        # evaluate_during_training=True,
     )
 
     def align_predictions(predictions: np.ndarray, label_ids: np.ndarray) -> Tuple[List[int], List[int]]:
@@ -84,6 +89,9 @@ def treinar():
 
     trainer.train()
 
+    logging.basicConfig(level=logging.INFO)
+    trainer.evaluate(val_dataset)
+
 
 def processar_base():
     tokenizer = DistilBertTokenizerFast.from_pretrained('neuralmind/bert-base-portuguese-cased'
@@ -116,7 +124,7 @@ def processar_base():
     train_dataset = NoticiasDataset(train_encodings, train_labels)
     val_dataset = NoticiasDataset(val_encodings, val_labels)
 
-    return unique_tags, train_dataset, val_dataset, tokenizer, id2tag
+    return unique_tags, train_dataset, val_dataset, tokenizer, id2tag, tag2id
 
 
 def encode_tags(tags, encodings, tag2id, tokenizer, textos):
@@ -148,37 +156,6 @@ def pre_processar_base(textos, tags, tokenizer):
         nova_lista_tags += tag_docs
 
     return nova_lista_textos, nova_lista_tags
-
-
-def pre_processar_texto(tokens, tags, tokenizer, max_len):
-    subword_len_counter = 0
-    indices_sublistas = [0]
-    token_docs = []
-    tag_docs = []
-
-    for i, token in enumerate(tokens):
-        current_subwords_len = len(tokenizer.tokenize(token))
-
-        # Filtra caracteres especiais
-        if current_subwords_len == 0:
-            continue
-
-        if (subword_len_counter + current_subwords_len) >= max_len:
-            indices_sublistas.append(i)
-            subword_len_counter = current_subwords_len
-        else:
-            subword_len_counter += current_subwords_len
-
-    for i in range(0, len(indices_sublistas)):
-        if i + 1 < len(indices_sublistas):
-            sublista = tokens[indices_sublistas[i]:indices_sublistas[i + 1]]
-            token_docs.append(sublista)
-            tag_docs.append(tags[indices_sublistas[i]:indices_sublistas[i + 1]])
-        else:
-            token_docs.append(tokens[indices_sublistas[i]:])
-            tag_docs.append(tags[indices_sublistas[i]:])
-
-    return token_docs, tag_docs
 
 
 def get_textos_tags():

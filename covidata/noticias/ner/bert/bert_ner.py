@@ -1,6 +1,7 @@
 import numpy as np
-from transformers import pipeline
+from transformers import pipeline, BertForTokenClassification, DistilBertTokenizerFast, AutoTokenizer
 
+from covidata import config
 from covidata.noticias.ner.ner_base import NER
 
 
@@ -14,7 +15,11 @@ class BaseBERT_NER(NER):
         (Modelo e toklenizador treinados na língua inglesa, case sensitive).
         """
         super().__init__(filtrar_contratados)
-        self.nlp = pipeline("ner")
+        tokenizer = DistilBertTokenizerFast.from_pretrained('neuralmind/bert-base-portuguese-cased'
+                                                            , model_max_length=512
+                                                            , do_lower_case=False
+                                                            )
+        self.nlp = pipeline("ner", tokenizer=tokenizer)
         self.map_labels = {'I-MISC': 'MISCELÂNEA', 'I-LOC': 'LOCAL', 'I-ORG': 'ORGANIZAÇÃO', 'I-PER': 'PESSOA'}
 
     def _get_map_labels(self):
@@ -149,3 +154,19 @@ class BaseBERT_NER(NER):
                 break
         return termo
 
+
+class FinedTunedBERT_NER(BaseBERT_NER):
+    def __init__(self, filtrar_contratados=False):
+        super().__init__(filtrar_contratados)
+        model = BertForTokenClassification.from_pretrained(config.diretorio_modelo_bert_finetuned)
+        tokenizer = DistilBertTokenizerFast.from_pretrained('neuralmind/bert-base-portuguese-cased'
+                                                            , model_max_length=512
+                                                            , do_lower_case=False
+                                                            )
+        self.nlp = pipeline('ner', model=model, tokenizer=tokenizer)
+
+    def _get_map_labels(self):
+        return {'B-ORG': 'ORGANIZAÇÃO', 'I-ORG': 'ORGANIZAÇÃO', 'L-ORG': 'ORGANIZAÇÃO', 'B-PESSOA': 'PESSOA',
+                'I-PESSOA': 'PESSOA', 'L-PESSOA': 'PESSOA', 'B-PUB': 'INSTITUIÇÃO PÚBLICA',
+                'I-PUB': 'INSTITUIÇÃO PÚBLICA', 'L-PUB': 'INSTITUIÇÃO PÚBLICA', 'B-LOC': 'LOCAL', 'I-LOC': 'LOCAL',
+                'L-LOC': 'LOCAL'}

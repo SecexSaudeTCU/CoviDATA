@@ -7,7 +7,7 @@ import pandas as pd
 
 from covidata import config
 from covidata.noticias.gnews import executar_busca
-from covidata.noticias.ner.bert.bert_ner import BaseBERT_NER
+from covidata.noticias.ner.bert.bert_ner import BaseBERT_NER, FinedTunedBERT_NER
 from covidata.noticias.ner.polyglot.polyglot_ner import PolyglotNER
 from covidata.noticias.parse_news import recuperar_textos
 
@@ -16,13 +16,14 @@ def get_NERs():
     from covidata.noticias.ner.spacy.spacy_ner import SpacyNER
 
     return [
-        #SpacyNER(arquivo_validacao=path.join(config.diretorio_noticias, 'json_val.jsonl'), modo_avaliacao=True),
-        #SpacyNER(diretorio_modelo_treinado=os.path.join(config.diretorio_raiz_modelos, 'spacy_PUB'),
-         #            labels_validos=['PESSOA', 'LOC', 'ORG', 'PUB'], nome_algoritmo='FineTunedSpacyPUB',
-         #            arquivo_validacao=path.join(config.diretorio_noticias, 'json_val.jsonl'), modo_avaliacao=True),
-             #PolyglotNER(),
-             BaseBERT_NER()
-            ]
+        # SpacyNER(arquivo_validacao=path.join(config.diretorio_noticias, 'json_val.jsonl'), modo_avaliacao=True),
+        # SpacyNER(diretorio_modelo_treinado=os.path.join(config.diretorio_raiz_modelos, 'spacy_PUB'),
+        #            labels_validos=['PESSOA', 'LOC', 'ORG', 'PUB'], nome_algoritmo='FineTunedSpacyPUB',
+        #            arquivo_validacao=path.join(config.diretorio_noticias, 'json_val.jsonl'), modo_avaliacao=True),
+        # PolyglotNER(),
+        # BaseBERT_NER(),
+        FinedTunedBERT_NER()
+    ]
 
 
 def extrair_entidades(arquivo):
@@ -37,7 +38,7 @@ def extrair_entidades(arquivo):
         logger.info('Aplicando implementação ' + algoritmo)
         start_time = time.time()
         df_resultado = ner.extrair_entidades(df)
-        #print(ner.avaliar())
+        # print(ner.avaliar())
         logger.info("--- %s segundos ---" % (time.time() - start_time))
         df_resultado.to_excel(writer, sheet_name=algoritmo)
     writer.save()

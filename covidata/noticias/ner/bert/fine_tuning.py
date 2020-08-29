@@ -1,14 +1,21 @@
 import re
 from operator import itemgetter
+from typing import Dict, Tuple, List
 
 import jsonlines
 import numpy as np
 import torch
+from seqeval.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.model_selection import train_test_split
+from torch.utils.data import DataLoader
 from transformers import BertModel, DistilBertTokenizerFast, TrainingArguments, Trainer, \
-    DistilBertForTokenClassification, BertForTokenClassification
+    DistilBertForTokenClassification, BertForTokenClassification, AdamW, EvalPrediction
+from torch import nn
 
 from covidata import config
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 
 class NoticiasDataset(torch.utils.data.Dataset):
@@ -26,44 +33,63 @@ class NoticiasDataset(torch.utils.data.Dataset):
 
 
 def treinar():
-    unique_tags, train_dataset, val_dataset, tokenizer = processar_base()
-    # model = BertModel.from_pretrained(config.subdiretorio_modelo_neuralmind_bert_base, num_labels=len(unique_tags))
-    # model = BertForTokenClassification.from_pretrained(config.subdiretorio_modelo_neuralmind_bert_base,
-    #                                                        num_labels=len(unique_tags))
-    model = DistilBertForTokenClassification.from_pretrained('distilbert-base-cased', num_labels=len(unique_tags))
+    unique_tags, train_dataset, val_dataset, tokenizer, id2tag = processar_base()
+    model = BertForTokenClassification.from_pretrained(config.subdiretorio_modelo_neuralmind_bert_base,
+                                                       num_labels=len(unique_tags))
 
     training_args = TrainingArguments(
         output_dir='./results',  # output directory
         num_train_epochs=3,  # total number of training epochs
-        per_device_train_batch_size=16,  # batch size per device during training
-        per_device_eval_batch_size=64,  # batch size for evaluation
+        # per_device_train_batch_size=16,  # batch size per device during training
+        # per_device_eval_batch_size=64,  # batch size for evaluation
+        per_device_train_batch_size=1,  # batch size per device during training
+        per_device_eval_batch_size=1,  # batch size for evaluation
         warmup_steps=500,  # number of warmup steps for learning rate scheduler
         weight_decay=0.01,  # strength of weight decay
-        logging_dir='./logs',  # directory for storing logs
+        #logging_dir='./logs',  # directory for storing logs
         logging_steps=10,
+        evaluate_during_training=True,
     )
 
-    #device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-    device = torch.device('cpu')
-    model.to(device)
+    def align_predictions(predictions: np.ndarray, label_ids: np.ndarray) -> Tuple[List[int], List[int]]:
+        preds = np.argmax(predictions, axis=2)
+        batch_size, seq_len = preds.shape
+        out_label_list = [[] for _ in range(batch_size)]
+        preds_list = [[] for _ in range(batch_size)]
+
+        for i in range(batch_size):
+            for j in range(seq_len):
+                if label_ids[i, j] != nn.CrossEntropyLoss().ignore_index:
+                    out_label_list[i].append(id2tag[label_ids[i][j]])
+                    preds_list[i].append(id2tag[preds[i][j]])
+
+        return preds_list, out_label_list
+
+    def compute_metrics(p: EvalPrediction) -> Dict:
+        preds_list, out_label_list = align_predictions(p.predictions, p.label_ids)
+        return {
+            "accuracy_score": accuracy_score(out_label_list, preds_list),
+            "precision": precision_score(out_label_list, preds_list),
+            "recall": recall_score(out_label_list, preds_list),
+            "f1": f1_score(out_label_list, preds_list),
+        }
 
     trainer = Trainer(
         model=model,  # the instantiated 🤗 Transformers model to be trained
         args=training_args,  # training arguments, defined above
         train_dataset=train_dataset,  # training dataset
-        eval_dataset=val_dataset  # evaluation dataset
+        eval_dataset=val_dataset,  # evaluation dataset,
+        compute_metrics=compute_metrics
     )
 
-    ###
-    #model.resize_token_embeddings(len(tokenizer))
-    ###
-    trainer.model.to(device)
     trainer.train()
 
 
 def processar_base():
-    tokenizer = DistilBertTokenizerFast.from_pretrained(config.vocab_bert_base, do_lower_case=False)
-
+    tokenizer = DistilBertTokenizerFast.from_pretrained('neuralmind/bert-base-portuguese-cased'
+                                                        , model_max_length=512
+                                                        , do_lower_case=False
+                                                        )
     # Obtém a base rotulada a partir de um arquivo JSONL gerado pela ferramenta de anotação Docanno
     textos, tags = get_textos_tags()
     textos, tags = pre_processar_base(textos, tags, tokenizer)
@@ -82,21 +108,22 @@ def processar_base():
     val_encodings = tokenizer(val_texts, is_pretokenized=True, return_offsets_mapping=True, padding=True,
                               truncation=True)
 
-    train_labels = encode_tags(train_tags, train_encodings, tag2id)
-    val_labels = encode_tags(val_tags, val_encodings, tag2id)
+    train_labels = encode_tags(train_tags, train_encodings, tag2id, tokenizer, train_texts)
+    val_labels = encode_tags(val_tags, val_encodings, tag2id, tokenizer, val_texts)
 
     train_encodings.pop("offset_mapping")  # we don't want to pass this to the model
     val_encodings.pop("offset_mapping")
     train_dataset = NoticiasDataset(train_encodings, train_labels)
     val_dataset = NoticiasDataset(val_encodings, val_labels)
 
-    return unique_tags, train_dataset, val_dataset, tokenizer
+    return unique_tags, train_dataset, val_dataset, tokenizer, id2tag
 
 
-def encode_tags(tags, encodings, tag2id):
+def encode_tags(tags, encodings, tag2id, tokenizer, textos):
     labels = [[tag2id[tag] for tag in doc] for doc in tags]
     encoded_labels = []
-    for doc_labels, doc_offset in zip(labels, encodings.offset_mapping):
+
+    for i, (doc_labels, doc_offset) in enumerate(zip(labels, encodings.offset_mapping)):
         # create an empty array of -100
         doc_enc_labels = np.ones(len(doc_offset), dtype=int) * -100
         arr_offset = np.array(doc_offset)
@@ -109,10 +136,7 @@ def encode_tags(tags, encodings, tag2id):
 
 
 def pre_processar_base(textos, tags, tokenizer):
-    # TODO: O tokenizador da Neuralmind está retornando 1000000000000000019884624838656 para max_len, mas desconfio que
-    # este valor esteja errado.  De qualquer forma, estou assumindo o valor default de 512 do BERT.
-    # max_len = tokenizer.max_len - tokenizer.num_special_tokens_to_add()
-    max_len = 512 - tokenizer.num_special_tokens_to_add()
+    max_len = tokenizer.max_len - tokenizer.num_special_tokens_to_add()
     nova_lista_textos = []
     nova_lista_tags = []
 
@@ -139,15 +163,16 @@ def pre_processar_texto(tokens, tags, tokenizer, max_len):
         if current_subwords_len == 0:
             continue
 
-        if (subword_len_counter + current_subwords_len) > max_len:
+        if (subword_len_counter + current_subwords_len) >= max_len:
             indices_sublistas.append(i)
-            subword_len_counter = 0
+            subword_len_counter = current_subwords_len
         else:
             subword_len_counter += current_subwords_len
 
     for i in range(0, len(indices_sublistas)):
         if i + 1 < len(indices_sublistas):
-            token_docs.append(tokens[indices_sublistas[i]:indices_sublistas[i + 1]])
+            sublista = tokens[indices_sublistas[i]:indices_sublistas[i + 1]]
+            token_docs.append(sublista)
             tag_docs.append(tags[indices_sublistas[i]:indices_sublistas[i + 1]])
         else:
             token_docs.append(tokens[indices_sublistas[i]:])

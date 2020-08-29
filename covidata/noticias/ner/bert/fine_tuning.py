@@ -2,7 +2,7 @@ import logging
 import re
 from operator import itemgetter
 from typing import Dict, Tuple, List
-
+import pandas as pd
 import jsonlines
 import numpy as np
 import torch
@@ -17,7 +17,7 @@ from covidata import config
 
 
 # logging.basicConfig(level=logging.INFO)
-from covidata.noticias.ner.bert.bert_utils import pre_processar_texto
+from covidata.noticias.ner.bert.bert_utils import pre_processar_tokens
 
 
 class NoticiasDataset(torch.utils.data.Dataset):
@@ -94,17 +94,7 @@ def treinar():
 
 
 def processar_base():
-    tokenizer = DistilBertTokenizerFast.from_pretrained('neuralmind/bert-base-portuguese-cased'
-                                                        , model_max_length=512
-                                                        , do_lower_case=False
-                                                        )
-    # Obtém a base rotulada a partir de um arquivo JSONL gerado pela ferramenta de anotação Docanno
-    textos, tags = get_textos_tags()
-    textos, tags = pre_processar_base(textos, tags, tokenizer)
-
-    # Divide os textos com quantidade de tokens maior do que o suportado em textos menores.
-
-    train_texts, val_texts, train_tags, val_tags = train_test_split(textos, tags, test_size=.2, random_state=42)
+    tags, tokenizer, train_tags, train_texts, val_tags, val_texts = __criar_base_treinamento_validacao()
 
     unique_tags = set(tag for doc in tags for tag in doc)
 
@@ -125,6 +115,19 @@ def processar_base():
     val_dataset = NoticiasDataset(val_encodings, val_labels)
 
     return unique_tags, train_dataset, val_dataset, tokenizer, id2tag, tag2id
+
+
+def __criar_base_treinamento_validacao():
+    tokenizer = DistilBertTokenizerFast.from_pretrained('neuralmind/bert-base-portuguese-cased'
+                                                        , model_max_length=512
+                                                        , do_lower_case=False
+                                                        )
+    # Obtém a base rotulada a partir de um arquivo JSONL gerado pela ferramenta de anotação Docanno
+    textos, tags = get_textos_tags()
+    textos, tags = pre_processar_base(textos, tags, tokenizer)
+    # Divide os textos com quantidade de tokens maior do que o suportado em textos menores.
+    train_texts, val_texts, train_tags, val_tags = train_test_split(textos, tags, test_size=.2, random_state=42)
+    return tags, tokenizer, train_tags, train_texts, val_tags, val_texts
 
 
 def encode_tags(tags, encodings, tag2id, tokenizer, textos):
@@ -151,7 +154,7 @@ def pre_processar_base(textos, tags, tokenizer):
     for i in range(0, len(textos)):
         tokens = textos[i]
         ts = tags[i]
-        token_docs, tag_docs = pre_processar_texto(tokens, ts, tokenizer, max_len)
+        token_docs, tag_docs = pre_processar_tokens(tokens, ts, tokenizer, max_len)
         nova_lista_textos += token_docs
         nova_lista_tags += tag_docs
 
@@ -204,4 +207,16 @@ def get_textos_tags():
     return token_docs, tag_docs
 
 
-treinar()
+#treinar()
+_, _, _, _, _, val_texts = __criar_base_treinamento_validacao()
+df = pd.DataFrame(columns=['title','media','date','link'])
+textos = []
+
+for val_text in val_texts:
+    textos.append(' '.join(val_text))
+
+df['textos'] = textos
+df.to_excel('bert_validacao.xlsx')
+
+
+

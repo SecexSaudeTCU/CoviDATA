@@ -27,15 +27,13 @@ class NER(ABC):
         return self.__class__.__name__
 
     def extrair_entidades(self, df):
+        df = df.fillna('N/A')
         resultado_analise = dict()
+
         for i in range(0, len(df)):
             texto = df.loc[i, 'texto']
             titulo = df.loc[i, 'title']
             midia = df.loc[i, 'media']
-
-            if pd.isna(midia):
-                midia = 'N/A'
-
             data = df.loc[i, 'date']
             link = df.loc[i, 'link']
             entidades_texto = self._extrair_entidades_de_texto(texto)
@@ -51,7 +49,8 @@ class NER(ABC):
                  resultado_analise.items()})
         else:
             df = pd.concat(
-                {k: pd.DataFrame(v, columns=['ENTIDADE', 'CLASSIFICAÇÃO']) for k, v in resultado_analise.items()})
+                    {k: pd.DataFrame(v, columns=['ENTIDADE', 'CLASSIFICAÇÃO']) for k, v in resultado_analise.items()})
+
         return df
 
     @abstractmethod

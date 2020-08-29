@@ -2,6 +2,7 @@ import numpy as np
 from transformers import pipeline, BertForTokenClassification, DistilBertTokenizerFast, AutoTokenizer
 
 from covidata import config
+from covidata.noticias.ner.bert.bert_utils import pre_processar_texto
 from covidata.noticias.ner.ner_base import NER
 
 
@@ -34,21 +35,7 @@ class BaseBERT_NER(NER):
             max_len -= self.nlp.tokenizer.num_special_tokens_to_add()
 
             if len(tokens) > max_len:
-                # Quebra o texto em textos menores.  Utiliza o número de caracteres como heurística, pois no pior caso o
-                # tokenizador do BERT vai quebrar o texto em um token para cada caracter.
-                textos = []
-                palavras = texto.split()
-                f = 0
-                inicio_atual = 0
-
-                for p in palavras:
-                    i = texto.find(p, f)
-                    f = i + len(p)
-                    if f >= inicio_atual + max_len:
-                        textos.append(texto[inicio_atual: i])
-                        inicio_atual = i
-
-                textos.append(texto[inicio_atual: len(texto)])
+                textos = pre_processar_texto(texto, self.nlp.tokenizer, max_len)
                 retornos = []
 
                 for subtexto in textos:
@@ -170,3 +157,35 @@ class FinedTunedBERT_NER(BaseBERT_NER):
                 'I-PESSOA': 'PESSOA', 'L-PESSOA': 'PESSOA', 'B-PUB': 'INSTITUIÇÃO PÚBLICA',
                 'I-PUB': 'INSTITUIÇÃO PÚBLICA', 'L-PUB': 'INSTITUIÇÃO PÚBLICA', 'B-LOC': 'LOCAL', 'I-LOC': 'LOCAL',
                 'L-LOC': 'LOCAL'}
+
+    def _pos_processar(self, resultado, ids):
+        retorno = []
+        tokens_termo_atual = []
+        entidade_atual = None
+        indice_anterior = None
+
+        for item in resultado:
+            entity = item['entity']
+            word = item['word']
+
+            #if 'B-' in entity and (not indice_anterior or (item['index'] > indice_anterior + 1)):
+            if not indice_anterior or (item['index'] > indice_anterior + 1):
+                if entidade_atual:
+                    retorno.append((' '.join(tokens_termo_atual), entidade_atual))
+                tokens_termo_atual = [word.replace('##','')]
+                entidade_atual = self._get_map_labels()[entity]
+            else:
+                # É possível que o modelo reporte 'I' ou 'L' mesmo que seja o início da entidade.
+                if len(tokens_termo_atual) == 0:
+                    tokens_termo_atual = [word.replace('##', '')]
+                elif '##' in word:
+                    tokens_termo_atual[-1] = tokens_termo_atual[-1] + word.replace('##', '')
+                else:
+                    tokens_termo_atual.append(word)
+
+                entidade_atual = self._get_map_labels()[entity]
+
+            indice_anterior = item['index']
+
+        retorno.append((' '.join(tokens_termo_atual), entidade_atual))
+        return retorno

@@ -15,6 +15,8 @@ from transformers import DistilBertTokenizerFast, TrainingArguments, Trainer, \
 
 from covidata import config
 
+# Code is partially inspired by https://huggingface.co/transformers/master/custom_datasets.html
+# See https://github.com/neuralmind-ai/portuguese-bert for info about the Neuralmind pretained model.
 
 # logging.basicConfig(level=logging.INFO)
 from covidata.noticias.ner.bert.bert_utils import pre_processar_tokens
@@ -39,7 +41,7 @@ def treinar():
     configuracao = AutoConfig.from_pretrained(str(config.subdiretorio_modelo_neuralmind_bert_base), id2label=id2tag,
                                               label2id=tag2id)
     model = BertForTokenClassification.from_pretrained(config.subdiretorio_modelo_neuralmind_bert_base,
-                                                       #num_labels=len(unique_tags),
+                                                       # num_labels=len(unique_tags),
                                                        config=configuracao)
 
     training_args = TrainingArguments(
@@ -207,9 +209,9 @@ def get_textos_tags():
     return token_docs, tag_docs
 
 
-#treinar()
+# treinar()
 _, _, _, _, _, val_texts = __criar_base_treinamento_validacao()
-df = pd.DataFrame(columns=['title','media','date','link'])
+df = pd.DataFrame(columns=['title', 'media', 'date', 'link'])
 textos = []
 
 for val_text in val_texts:
@@ -217,6 +219,3 @@ for val_text in val_texts:
 
 df['textos'] = textos
 df.to_excel('bert_validacao.xlsx')
-
-
-

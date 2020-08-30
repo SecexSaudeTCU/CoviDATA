@@ -1,5 +1,6 @@
 import re
 
+# Code is partially inspired by https://huggingface.co/transformers/master/custom_datasets.html
 
 def pre_processar_tokens(tokens, tags, tokenizer, max_len):
     subword_len_counter = 0

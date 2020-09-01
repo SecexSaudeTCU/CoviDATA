@@ -4,6 +4,7 @@ import time
 from datetime import datetime
 import logging
 
+from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -19,8 +20,10 @@ class TCE_Piaui(SeleniumDownloader):
 
     # Sobrescreve o construtor da class "SeleniumDownloader"
     def __init__(self):
-        super().__init__(path.join(config.diretorio_dados, 'PI', 'tce'),
-                         config.url_tce_PI)
+        super().__init__(path.join(config.diretorio_dados, 'PI', 'tce',),
+                         config.url_tce_PI,
+                         browser_option='--start-maximized'
+                         )
 
     # Implementa localmente o método interno e vazio da class "SeleniumDownloader"
     def _executar(self):
@@ -44,7 +47,9 @@ class TCE_Piaui(SeleniumDownloader):
         time.sleep(5)
 
         # Seleciona o símbolo na forma de planilha Excel
-        self.driver.find_element_by_xpath('//*[@id="formDtContratos:dtContratos_paginator_top"]/div/a/span').click()
+        #self.driver.find_element_by_xpath('//*[@id="formDtContratos:dtContratos_paginator_top"]/div/a/span').click()
+
+        soup = BeautifulSoup(self.driver.page_source, 'html.parser')
 
 
 def main():
@@ -61,3 +66,5 @@ def main():
     start_time = time.time()
     consolidar(data_extracao)
     logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+main()

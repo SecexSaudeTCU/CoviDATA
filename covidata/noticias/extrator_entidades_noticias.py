@@ -59,5 +59,5 @@ def obter_textos():
 if __name__ == '__main__':
     # obter_textos()
 
-    #extrair_entidades(os.path.join(config.diretorio_noticias, 'com_textos_baseline_val.xlsx'))
-    extrair_entidades(os.path.join(config.diretorio_noticias, 'bert_validacao.xlsx'))
+    extrair_entidades(os.path.join(config.diretorio_noticias, 'com_textos_baseline.xlsx'))
+    #extrair_entidades(os.path.join(config.diretorio_noticias, 'bert_validacao.xlsx'))

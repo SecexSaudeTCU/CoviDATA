@@ -44,11 +44,9 @@ class JSONParser(ABC):
         classe.
         :return:
         """
-        nome_arquivo = self.nome_dados + '.json'
-        downloader = FileDownloader(self.diretorio, self.url, nome_arquivo)
-        downloader.download()
+        diretorio, nome_arquivo = self._download()
 
-        with open(os.path.join(downloader.diretorio_dados, downloader.nome_arquivo)) as json_file:
+        with open(os.path.join(diretorio, nome_arquivo)) as json_file:
             dados = json.load(json_file)
             conteudo = self._get_elemento_raiz(dados)
 
@@ -94,6 +92,14 @@ class JSONParser(ABC):
 
             persistir_dados_hierarquicos(df_principal, dfs_auxiliares, self.fonte, self.nome_dados, self.uf,
                                          self.cidade)
+
+    def _download(self):
+        nome_arquivo = self.nome_dados + '.json'
+        downloader = FileDownloader(self.diretorio, self.url, nome_arquivo)
+        downloader.download()
+        diretorio = downloader.diretorio_dados
+        nome_arquivo = downloader.nome_arquivo
+        return diretorio, nome_arquivo
 
     def __processar_e_salvar_json(self, diretorio, url):
         if not path.exists(self.diretorio):

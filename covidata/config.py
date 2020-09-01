@@ -23,7 +23,7 @@ subdiretorio_modelo_neuralmind_bert_large = diretorio_modelo_neuralmind_bert_lar
     'bert-large-portuguese-cased_pytorch_checkpoint')
 vocab_bert_large = diretorio_modelo_neuralmind_bert_large.joinpath('vocab.txt')
 
-diretorio_modelo_bert_finetuned=diretorio_raiz_modelos.joinpath('bert-neuralmind-finetuned')
+diretorio_modelo_bert_finetuned = diretorio_raiz_modelos.joinpath('bert-neuralmind-finetuned')
 
 # URL para a API de localidades do IBGE
 url_api_ibge = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados'

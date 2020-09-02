@@ -2,9 +2,10 @@ import logging
 import re
 from operator import itemgetter
 from typing import Dict, Tuple, List
-import pandas as pd
+
 import jsonlines
 import numpy as np
+import pandas as pd
 import torch
 from seqeval.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.model_selection import train_test_split
@@ -14,30 +15,54 @@ from transformers import DistilBertTokenizerFast, TrainingArguments, Trainer, \
     BertForTokenClassification, EvalPrediction, AutoConfig
 
 from covidata import config
+from covidata.noticias.ner.bert.bert_utils import pre_processar_tokens
+
 
 # Code is partially inspired by https://huggingface.co/transformers/master/custom_datasets.html
 # See https://github.com/neuralmind-ai/portuguese-bert for info about the Neuralmind pretained model.
 
-# logging.basicConfig(level=logging.INFO)
-from covidata.noticias.ner.bert.bert_utils import pre_processar_tokens
-
 
 class NoticiasDataset(torch.utils.data.Dataset):
+    """
+    Implementação de Dataset a ser processado pelo Pytorch.
+    """
+
     def __init__(self, encodings, labels):
+        """
+        Construtor da classe.
+
+        :param encodings As "features", ou variáveis independentes. Codificada como uma sequência de identificadores de
+        tokens no vocabulário adotado, contendo também informações adicionais (ex.: submáscaras de atenção utilizadas
+        pelo modelo BERT).
+        :param labels As categorias-alvo atribuídas a cada token da sequência de entrada.
+        """
         self.encodings = encodings
         self.labels = labels
 
     def __getitem__(self, idx):
+        """
+        Retorna o item referenciado por um determinado índice.
+
+        :param idx O índice.
+        :return O item indexado pelo respectivo índice no dataset.
+        """
         item = {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
         item['labels'] = torch.tensor(self.labels[idx])
         return item
 
     def __len__(self):
+        """
+        Retorna a quantidade de itens no dataset.
+        """
         return len(self.labels)
 
 
 def treinar():
-    unique_tags, train_dataset, val_dataset, tokenizer, id2tag, tag2id = processar_base()
+    """
+    Treina o modelo ("fine-tunind"), utilizando como modelo pré-treinado o BERTimbau - Portuguese BERT, da Neuralmind
+    (https://github.com/neuralmind-ai/portuguese-bert).
+    """
+    unique_tags, train_dataset, val_dataset, tokenizer, id2tag, tag2id = __processar_base()
     configuracao = AutoConfig.from_pretrained(str(config.subdiretorio_modelo_neuralmind_bert_base), id2label=id2tag,
                                               label2id=tag2id)
     model = BertForTokenClassification.from_pretrained(config.subdiretorio_modelo_neuralmind_bert_base,
@@ -53,9 +78,7 @@ def treinar():
         per_device_eval_batch_size=1,  # batch size for evaluation
         warmup_steps=500,  # number of warmup steps for learning rate scheduler
         weight_decay=0.01,  # strength of weight decay
-        # logging_dir='./logs',  # directory for storing logs
-        logging_steps=10,
-        # evaluate_during_training=True,
+        logging_steps=10
     )
 
     def align_predictions(predictions: np.ndarray, label_ids: np.ndarray) -> Tuple[List[int], List[int]]:
@@ -95,7 +118,7 @@ def treinar():
     trainer.evaluate(val_dataset)
 
 
-def processar_base():
+def __processar_base():
     tags, tokenizer, train_tags, train_texts, val_tags, val_texts = __criar_base_treinamento_validacao()
 
     unique_tags = set(tag for doc in tags for tag in doc)
@@ -108,8 +131,8 @@ def processar_base():
     val_encodings = tokenizer(val_texts, is_pretokenized=True, return_offsets_mapping=True, padding=True,
                               truncation=True)
 
-    train_labels = encode_tags(train_tags, train_encodings, tag2id, tokenizer, train_texts)
-    val_labels = encode_tags(val_tags, val_encodings, tag2id, tokenizer, val_texts)
+    train_labels = __encode_tags(train_tags, train_encodings, tag2id, tokenizer, train_texts)
+    val_labels = __encode_tags(val_tags, val_encodings, tag2id, tokenizer, val_texts)
 
     train_encodings.pop("offset_mapping")  # we don't want to pass this to the model
     val_encodings.pop("offset_mapping")
@@ -125,14 +148,14 @@ def __criar_base_treinamento_validacao():
                                                         , do_lower_case=False
                                                         )
     # Obtém a base rotulada a partir de um arquivo JSONL gerado pela ferramenta de anotação Docanno
-    textos, tags = get_textos_tags()
-    textos, tags = pre_processar_base(textos, tags, tokenizer)
+    textos, tags = __get_textos_tags()
+    textos, tags = __pre_processar_base(textos, tags, tokenizer)
     # Divide os textos com quantidade de tokens maior do que o suportado em textos menores.
     train_texts, val_texts, train_tags, val_tags = train_test_split(textos, tags, test_size=.2, random_state=42)
     return tags, tokenizer, train_tags, train_texts, val_tags, val_texts
 
 
-def encode_tags(tags, encodings, tag2id, tokenizer, textos):
+def __encode_tags(tags, encodings, tag2id, tokenizer, textos):
     labels = [[tag2id[tag] for tag in doc] for doc in tags]
     encoded_labels = []
 
@@ -148,7 +171,7 @@ def encode_tags(tags, encodings, tag2id, tokenizer, textos):
     return encoded_labels
 
 
-def pre_processar_base(textos, tags, tokenizer):
+def __pre_processar_base(textos, tags, tokenizer):
     max_len = tokenizer.max_len - tokenizer.num_special_tokens_to_add()
     nova_lista_textos = []
     nova_lista_tags = []
@@ -163,7 +186,7 @@ def pre_processar_base(textos, tags, tokenizer):
     return nova_lista_textos, nova_lista_tags
 
 
-def get_textos_tags():
+def __get_textos_tags():
     token_docs = []
     tag_docs = []
 
@@ -209,7 +232,6 @@ def get_textos_tags():
     return token_docs, tag_docs
 
 
-# treinar()
 _, _, _, _, _, val_texts = __criar_base_treinamento_validacao()
 df = pd.DataFrame(columns=['title', 'media', 'date', 'link'])
 textos = []

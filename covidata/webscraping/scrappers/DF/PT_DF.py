@@ -1,3 +1,4 @@
+import datetime
 import logging
 import os
 import time
@@ -17,7 +18,14 @@ class PT_DF_Scraper(Scraper):
         logger = logging.getLogger('covidata')
         logger.info('Portal de transparência distrital...')
         start_time = time.time()
-        FileDownloader(os.path.join(config.diretorio_dados, 'DF', 'portal_transparencia'), config.url_pt_DF,
+        agora = datetime.datetime.now()
+        mes_atual = str(agora.month)
+
+        if mes_atual < 10:
+            mes_atual = '0' + mes_atual
+
+        FileDownloader(os.path.join(config.diretorio_dados, 'DF', 'portal_transparencia'),
+                       config.url_pt_DF + mes_atual + '/PLANILHA-COVID2.csv',
                        'PLANILHA-COVID2.csv').download()
         logger.info("--- %s segundos ---" % (time.time() - start_time))
 
@@ -40,7 +48,7 @@ class PT_DF_Scraper(Scraper):
                             consolidacao.VALOR_CONTRATO: 'VALOR TOTAL',
                             consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'LOCAL ENTREGA/EXECUÇÃO',
                             consolidacao.NUMERO_PROCESSO: 'PROCESSO', consolidacao.DATA_CELEBRACAO: 'CELEBRAÇÃO',
-                            consolidacao.NUMERO_CONTRATO:'INSTRUMENTO CONTRATUAL'}
+                            consolidacao.NUMERO_CONTRATO: 'INSTRUMENTO CONTRATUAL'}
         colunas_adicionais = ['VIGÊNCIA', 'PUBLICAÇÃO DODF', 'PORTAL COVID-19',
                               'link_convenio',
                               'link_contrato', 'link_processo', 'link_plano_de_trabalho', 'link_justificativa',

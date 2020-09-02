@@ -28,6 +28,7 @@ from covidata.webscraping.scrappers.CE import uf_ce
 from covidata.webscraping.scrappers.DF.PT_DF import PT_DF_Scraper
 from covidata.webscraping.scrappers.ES import uf_es
 from covidata.webscraping.scrappers.GO import uf_go
+from covidata.webscraping.scrappers.GO.PT_Goiania import PT_Goiania_Scraper
 from covidata.webscraping.scrappers.MA import uf_ma
 from covidata.webscraping.scrappers.MA.TCE_MA import TCE_MA_Scraper
 from covidata.webscraping.scrappers.MG import uf_mg
@@ -37,24 +38,24 @@ from covidata.webscraping.scrappers.MT.PT_MT import PT_MT_Scraper
 from covidata.webscraping.scrappers.PA import uf_pa
 from covidata.webscraping.scrappers.PA.PT_Belem import PT_Belem_Scraper
 from covidata.webscraping.scrappers.PB import uf_pb
-from covidata.webscraping.scrappers.PE import pt_pe_capital
-from covidata.webscraping.scrappers.PI import uf_pi
+from covidata.webscraping.scrappers.PE.PT_Recife import PT_Recife_Scraper
+from covidata.webscraping.scrappers.PI.TCE_PI import TCE_PI_Scraper
 from covidata.webscraping.scrappers.PR import uf_pr
 from covidata.webscraping.scrappers.PR.PT_PR_aquisicoes import PT_PR_AquisicoesScraper
 from covidata.webscraping.scrappers.RJ import uf_rj
 from covidata.webscraping.scrappers.RN import uf_rn
 from covidata.webscraping.scrappers.RN.PT_RN import PT_RN_Scraper
 from covidata.webscraping.scrappers.RO import uf_ro
-from covidata.webscraping.scrappers.RR import uf_rr
+from covidata.webscraping.scrappers.RR.PT_BoaVista import PT_BoaVista_Scraper
 from covidata.webscraping.scrappers.RR.PT_RR import PT_RR_Scraper
 from covidata.webscraping.scrappers.RS import uf_rs
 from covidata.webscraping.scrappers.SC import uf_sc
 from covidata.webscraping.scrappers.SE import uf_se
 from covidata.webscraping.scrappers.SE.PT_SE import PT_SE_Scraper
 from covidata.webscraping.scrappers.SP import uf_sp
-# Adiciona diretorio raiz ao PATH. Devido a ausência de setup.py, isto garante que as importações sempre funcionarão
 from covidata.webscraping.scrappers.TO.PT_TO import PT_TO_Scraper
 
+# Adiciona diretorio raiz ao PATH. Devido a ausência de setup.py, isto garante que as importações sempre funcionarão
 diretorio_raiz = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
 sys.path.append(diretorio_raiz)
 
@@ -73,13 +74,16 @@ if __name__ == '__main__':
         'AL': [PT_AL_Scraper(config.url_pt_AL)],
         'AP': [PT_AP_Scraper(config.url_pt_AP)],
         'DF': [PT_DF_Scraper(config.url_pt_DF)],
+        'GO': [PT_Goiania_Scraper(config.url_pt_Goiania_despesas)],
         'MA': [TCE_MA_Scraper(config.url_tce_MA)],
         'MS': [PT_MS_Scraper(config.url_pt_MS)],
         'MT': [PT_MT_Scraper(config.url_pt_MT)],
         'PA': [PT_Belem_Scraper(config.url_pt_Belem)],
+        'PE': [PT_Recife_Scraper(config.url_pt_Recife)],
+        'PI': [TCE_PI_Scraper(config.url_tce_PI)],
         'PR': [PT_PR_AquisicoesScraper()],
         'RN': [PT_RN_Scraper(config.url_pt_RN)],
-        'RR': [PT_RR_Scraper(config.url_pt_RR)],
+        'RR': [PT_RR_Scraper(config.url_pt_RR), PT_BoaVista_Scraper(config.url_pt_BoaVista)],
         'SE': [PT_SE_Scraper(config.url_pt_SE)],
         'TO': [PT_TO_Scraper(config.url_pt_TO)],
     }
@@ -92,7 +96,10 @@ if __name__ == '__main__':
                 scraper.scrap()
                 data_extracao = datetime.datetime.now()
                 df, salvo = scraper.consolidar(data_extracao)
-                dfs_consolidados[uf] = dfs_consolidados[uf].append(df)
+
+                if not salvo:
+                    # Se o dataframe já não foi salvo/consolidado, deverá ser salvo ao final do processamento.
+                    dfs_consolidados[uf] = dfs_consolidados[uf].append(df)
             except:
                 traceback.print_exc()
                 erros.append(scraper.url)
@@ -120,7 +127,8 @@ if __name__ == '__main__':
     uf_es.main()
 
     logger.info('# Recuperando dados de Goiás...')
-    uf_go.main()
+    uf_go.main(dfs_consolidados['GO'])
+    dfs_consolidados.pop('GO')
 
     logger.info('# Recuperando dados do Maranhão...')
     uf_ma.main(dfs_consolidados['MA'])
@@ -140,15 +148,9 @@ if __name__ == '__main__':
     logger.info('# Recuperando dados de Paraíba...')
     uf_pb.main()
 
-    logger.info('# Recuperando dados de Piauí...')
-    uf_pi.main()
-
     logger.info('# Recuperando dados do Paraná...')
     uf_pr.main(dfs_consolidados['PR'])
     dfs_consolidados.pop('PR')
-
-    logger.info('# Recuperando dados de Pernambuco...')
-    pt_pe_capital.main()
 
     logger.info('# Recuperando dados do Rio de Janeiro...')
     uf_rj.main()
@@ -165,10 +167,6 @@ if __name__ == '__main__':
     logger.info('# Recuperando dados de Rondônia...')
     uf_ro.main()
 
-    logger.info('# Recuperando dados de Roraima...')
-    uf_rr.main(dfs_consolidados['RR'])
-    dfs_consolidados.pop('RR')
-
     logger.info('# Recuperando dados de Santa Catarina...')
     uf_sc.main()
 
@@ -181,7 +179,7 @@ if __name__ == '__main__':
 
     logger.info("--- %s minutos ---" % ((time.time() - start_time) / 60))
 
-    #Salvando dataframes que ainda não foram salvos
+    # Salvando dataframes que ainda não foram salvos
     for uf, df_consolidado in dfs_consolidados.items():
         salvar(df_consolidado, uf)
 

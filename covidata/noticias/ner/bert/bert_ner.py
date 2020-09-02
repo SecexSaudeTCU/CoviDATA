@@ -7,15 +7,15 @@ from covidata.noticias.ner.ner_base import NER
 
 
 class BaseBERT_NER(NER):
-    def __init__(self, filtrar_contratados=False):
+    def __init__(self):
         """
         Inicializa com o modelo padrão para o BERT, a saber:
         model = 'dbmdz/bert-large-cased-finetuned-conll03-english'
-        tokenizer = 'dbmdz/bert-large-cased-finetuned-conll03-english'
+        (Modelo treinado na língua inglesa, case sensitive).
 
-        (Modelo e toklenizador treinados na língua inglesa, case sensitive).
+        Utiliza o tokenizador para língua portuguesa neuralmind/bert-base-portuguese-cased.
         """
-        super().__init__(filtrar_contratados)
+        super().__init__()
         tokenizer = DistilBertTokenizerFast.from_pretrained('neuralmind/bert-base-portuguese-cased'
                                                             , model_max_length=512
                                                             , do_lower_case=False
@@ -143,8 +143,13 @@ class BaseBERT_NER(NER):
 
 
 class FinedTunedBERT_NER(BaseBERT_NER):
-    def __init__(self, filtrar_contratados=False):
-        super().__init__(filtrar_contratados)
+    def __init__(self):
+        """
+        Inicializa o modelo treinado para a tarefa específicas (extração dos tipos de entidades estabelecidos para
+        textos de notícias).
+        Utiliza o tokenizador para língua portuguesa neuralmind/bert-base-portuguese-cased.
+        """
+        super().__init__()
         model = BertForTokenClassification.from_pretrained(config.diretorio_modelo_bert_finetuned)
         tokenizer = DistilBertTokenizerFast.from_pretrained('neuralmind/bert-base-portuguese-cased'
                                                             , model_max_length=512
@@ -168,14 +173,12 @@ class FinedTunedBERT_NER(BaseBERT_NER):
             entity = item['entity']
             word = item['word']
 
-            #if 'B-' in entity and (not indice_anterior or (item['index'] > indice_anterior + 1)):
             if not indice_anterior or (item['index'] > indice_anterior + 1):
                 if entidade_atual:
                     retorno.append((' '.join(tokens_termo_atual), entidade_atual))
-                tokens_termo_atual = [word.replace('##','')]
+                tokens_termo_atual = [word.replace('##', '')]
                 entidade_atual = self._get_map_labels()[entity]
             else:
-                # É possível que o modelo reporte 'I' ou 'L' mesmo que seja o início da entidade.
                 if len(tokens_termo_atual) == 0:
                     tokens_termo_atual = [word.replace('##', '')]
                 elif '##' in word:

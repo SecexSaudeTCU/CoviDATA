@@ -7,26 +7,44 @@ from seqeval.metrics import f1_score
 from seqeval.metrics import precision_score
 from seqeval.metrics import recall_score
 
-from covidata.noticias.contratados.identificacao_contratados import filtrar_contratados
-
 
 class NER(ABC):
+    """
+    Classe-base para implementações (algoritmos) específicas de reconhecimento de entidades nomeadas (named entity
+    recognition - NER).
+    """
 
-    def __init__(self, filtrar_contratados=False, nome_algoritmo=None):
-        self.filtrar_contratados = filtrar_contratados
+    def __init__(self, nome_algoritmo=None):
+        """
+        Construtor da classe.
+        """
         self.__nome_algoritmo = nome_algoritmo
 
     @abstractmethod
     def _get_map_labels(self):
+        """
+        Deve retornar um mapeamento (dicionário) de nomes de rótulos (categorias) utilizados pela implementação
+        interna (algoritmo/biblioteca) para os nomes de rótulos/categorias visíveis pelo usuário final.
+        """
         pass
 
     def get_nome_algoritmo(self):
+        """
+        Retorna o nome do algoritmo. Caso não tenha sido especificado na chamada ao construtor da classe, utiliza por
+        padrão o nome da classe.
+        """
         if self.__nome_algoritmo:
             return self.__nome_algoritmo
 
         return self.__class__.__name__
 
     def extrair_entidades(self, df):
+        """
+        Retorna as entidades encontradas nos textos contidos no dataframe passado como parâmetro.
+
+        :param df Dataframe que contém os textos e seus respectivos metadados.
+        :return Dataframe preenchido com as entidades encontradas.
+        """
         df = df.fillna('N/A')
         resultado_analise = dict()
 
@@ -37,27 +55,28 @@ class NER(ABC):
             data = df.loc[i, 'date']
             link = df.loc[i, 'link']
             entidades_texto = self._extrair_entidades_de_texto(texto)
-
-            if self.filtrar_contratados:
-                entidades_texto = filtrar_contratados(entidades_texto)
-
             resultado_analise[(titulo, link, midia, data, texto)] = entidades_texto
 
-        if self.filtrar_contratados:
-            df = pd.concat(
-                {k: pd.DataFrame(v, columns=['ENTIDADE', 'CLASSIFICAÇÃO', 'ENTIDADES RELACIONADAS']) for k, v in
-                 resultado_analise.items()})
-        else:
-            df = pd.concat(
-                    {k: pd.DataFrame(v, columns=['ENTIDADE', 'CLASSIFICAÇÃO']) for k, v in resultado_analise.items()})
+        df = pd.concat(
+            {k: pd.DataFrame(v, columns=['ENTIDADE', 'CLASSIFICAÇÃO']) for k, v in resultado_analise.items()})
 
         return df
 
     @abstractmethod
     def _extrair_entidades_de_texto(self, texto):
+        """
+        Retorna as entidades encontradas em um texto específico.
+
+        :param texto O texto a ser analisado.
+        :return As entidades encontradas, como uma lista de tuplas do tipo (termo, categoria), onde termo é a string que
+        contém a entidade nomeadas, e categoria é a classificação (tipo de entidade).
+        """
         pass
 
     def avaliar(self):
+        """
+        Retorna métricas de avaliação do modelo, em forma de string.
+        """
         return ''
 
 

@@ -13,7 +13,7 @@ def buscar_por_razao_social(razao_social):
     registros = resultado['records']
 
     for registro in registros:
-        retorno.append((registro['razao_social'], registro['cnpj']))
+        retorno.append((registro['razao_social'], registro['cnpj'], 'BUSCA EXATA ÍNDICE'))
 
     # Se a busca exata não retornou nenhum resultado, tenta a busca sem aspas
     if len(retorno) == 0:
@@ -22,6 +22,6 @@ def buscar_por_razao_social(razao_social):
         registros = resultado['records']
 
         for registro in registros:
-            retorno.append((registro['razao_social'], registro['cnpj']))
+            retorno.append((registro['razao_social'], registro['cnpj'], 'BUSCA APROXIMADA ÍNDICE'))
 
     return retorno

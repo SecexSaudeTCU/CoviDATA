@@ -1,11 +1,10 @@
 import os
-import re
 import time
 
 import pandas as pd
-import unidecode
 
 from covidata import config
+from covidata.cnpj.busca_util import processar_descricao_contratado
 from covidata.cnpj.rfb import DAO_RFB
 from covidata.persistencia import consolidacao
 from covidata.cnpj.indice import buscar_por_razao_social
@@ -80,10 +79,10 @@ def __processar_uf(df, map_nome_cnpjs, map_nomes_cnpjs_sugeridos):
 def __inferir_cnpj(dao_rfb, df, i, map_nomes_exatos_cnpjs, map_nomes_cnpjs_sugeridos):
     descricao_contratado = df.loc[i, consolidacao.CONTRATADO_DESCRICAO]
     if not pd.isna(descricao_contratado) and not pd.isnull(descricao_contratado):
-        descricao_contratado = __processar_descricao_contratado(descricao_contratado)
+        descricao_contratado = processar_descricao_contratado(descricao_contratado)
 
         if descricao_contratado != '':
-            cnpjs = dao_rfb.buscar_cnpj_por_razao_social_ou_nome_fantasia(descricao_contratado)
+            cnpjs = dao_rfb.buscar_cnpj_por_razao_social(descricao_contratado)
 
             if len(cnpjs) == 1:
                 df.loc[i, consolidacao.CONTRATADO_CNPJ] = cnpjs[0]
@@ -96,22 +95,6 @@ def __inferir_cnpj(dao_rfb, df, i, map_nomes_exatos_cnpjs, map_nomes_cnpjs_suger
                 resultados_no_indice = buscar_por_razao_social(descricao_contratado)
                 df.loc[i, consolidacao.CNPJ_INFERIDO] = 'VER ABA CNPJs SUGERIDOS'
                 map_nomes_cnpjs_sugeridos[df.loc[i, consolidacao.CONTRATADO_DESCRICAO]] = resultados_no_indice
-
-
-def __processar_descricao_contratado(descricao):
-    descricao = descricao.strip()
-    descricao = descricao.upper()
-
-    # Remove espaços extras
-    descricao = re.sub(' +', ' ', descricao)
-
-    # Remove acentos
-    descricao = unidecode.unidecode(descricao)
-
-    # Remova caracteres especiais
-    descricao = descricao.replace('&', '').replace('/', '').replace('-', '')
-
-    return descricao
 
 
 consolidar()

@@ -9,17 +9,6 @@ from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout, salvar
 
 
-def pos_processar_dados_abertos(df):
-    df[consolidacao.ANO] += 2000
-    df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
-
-    # Como no caso de PR, em nenhum momento a informação de CNPJ é fornecida, sinalizar tipo para PJ para que, na
-    # consolidação geral seja executada a busca por CNPJs.
-    df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-
-    return df
-
-
 def pos_processar_aquisicoes_capital(df):
     df[consolidacao.MUNICIPIO_DESCRICAO] = 'Curitiba'
     df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
@@ -40,8 +29,6 @@ def pos_processar_licitacoes_capital(df):
     df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
 
     return df
-
-
 
 
 def __consolidar_aquisicoes_capital(data_extracao):
@@ -89,31 +76,9 @@ def __consolidar_licitacoes_capital(data_extracao):
     return df
 
 
-def __consolidar_dados_abertos(data_extracao, url_fonte_dados):
-    dicionario_dados = {consolidacao.ANO: 'ANO', consolidacao.DOCUMENTO_NUMERO: 'EMPENHO',
-                        consolidacao.FUNCAO_COD: 'FUNÇÃO', consolidacao.SUBFUNCAO_COD: 'SUBFUNÇÃO',
-                        consolidacao.PROGRAMA_COD: 'PROGRAMA', consolidacao.MOD_APLICACAO_COD: 'MODALIDADE',
-                        consolidacao.ELEMENTO_DESPESA_COD: 'ELEMENTO',
-                        consolidacao.SUB_ELEMENTO_DESPESA_COD: 'SUBELEMENTO', consolidacao.FONTE_RECURSOS_COD: 'FONTE',
-                        consolidacao.VALOR_EMPENHADO: 'EMPENHADO', consolidacao.VALOR_LIQUIDADO: 'LIQUIDADO',
-                        consolidacao.VALOR_PAGO: 'PAGO', consolidacao.CATEGORIA_ECONOMICA_COD: 'CATEGORIA',
-                        consolidacao.CONTA_CORRENTE: 'CONTA CORRENTE', consolidacao.ESPECIE: 'ESPECIE'}
-    colunas_adicionais = ['MÊS', 'PODER', 'UNIDADE CONTÁBIL', 'UNIDADE ORÇAMENTÁRIA', 'P_A_OE', 'NATUREZA', 'NATUREZA2',
-                          'OBRA_META', 'HISTORICO', 'Modalidade2']
-    planilha_original = path.join(config.diretorio_dados, 'PR', 'portal_transparencia', 'dados_abertos.xlsx')
-    df_original = pd.read_excel(planilha_original)
-    fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + url_fonte_dados
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
-                           fonte_dados, 'PR', '', data_extracao, pos_processar_dados_abertos)
-    return df
-
-
-def consolidar(data_extracao, url_fonte_dados_abertos, df_consolidado):
+def consolidar(data_extracao, df_consolidado):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Paraná')
-
-    dados_abertos = __consolidar_dados_abertos(data_extracao, url_fonte_dados_abertos)
-    df_consolidado = df_consolidado.append(dados_abertos)
 
     aquisicoes_capital = __consolidar_aquisicoes_capital(data_extracao)
     df_consolidado = df_consolidado.append(aquisicoes_capital)

@@ -21,7 +21,7 @@ class PT_DF_Scraper(Scraper):
         agora = datetime.datetime.now()
         mes_atual = str(agora.month)
 
-        if mes_atual < 10:
+        if int(mes_atual) < 10:
             mes_atual = '0' + mes_atual
 
         FileDownloader(os.path.join(config.diretorio_dados, 'DF', 'portal_transparencia'),

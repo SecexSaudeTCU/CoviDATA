@@ -32,10 +32,5 @@ class DAO_RFB:
         cursor = c.execute("SELECT * FROM empresas WHERE razao_social = ?", (nome,))
         return cursor.fetchall()
 
-    def buscar_todos(self):
-        c = self.conn.cursor()
-        cursor = c.execute("SELECT * FROM empresas")
-        return cursor
-
     def encerrar_conexao(self):
         self.conn.close()

@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+from pandas.errors import ParserError
 
 from covidata import config
 from covidata.municipios.ibge import get_codigo_municipio_por_nome
@@ -78,7 +79,11 @@ class PT_Recife_Scraper(Scraper):
                      glob(os.path.join(x[0], '*.csv'))]
 
         for planilha_original in planilhas:
-            df_original = pd.read_csv(planilha_original)
+            try:
+                df_original = pd.read_csv(planilha_original)
+            except ParserError:
+                df_original = pd.read_csv(planilha_original, header=1)
+
             df = self.__processar_df_original(colunas_adicionais, data_extracao, df_original, dicionario_dados)
             df_final = df_final.append(df)
 

@@ -146,7 +146,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             # Acrescenta a coluna "Razão Social Favorecido" ao objeto pandas DataFrame "df_empenho_mes"
             df_empenho_mes['Razão Social Favorecido'] = df_empenho_mes['Nome do Favorecido']
             # Acrescenta a coluna "CNPJ Favorecido" ao objeto pandas DataFrame "df_empenho_mes"
-            #df_empenho_mes['CNPJ Favorecido'] = df_empenho_mes['Código do Favorecido'].apply(lambda x: x.split('-')[0])
+            # df_empenho_mes['CNPJ Favorecido'] = df_empenho_mes['Código do Favorecido'].apply(lambda x: x.split('-')[0])
             df_empenho_mes['CNPJ Favorecido'] = df_empenho_mes['Código do Favorecido']
             # Acrescenta a coluna "Mês" ao objeto pandas DataFrame "df_empenho_mes"
             df_empenho_mes['Mês'] = dict_meses[month]
@@ -205,8 +205,7 @@ class PortalTransparencia_SE(SeleniumDownloader):
             # Acrescenta a coluna "Razão Social Favorecido" ao objeto pandas DataFrame "df_pagamento_mes"
             df_pagamento_mes['Razão Social Favorecido'] = df_pagamento_mes['Nome do Favorecido']
             # Acrescenta a coluna "CNPJ Favorecido" ao objeto pandas DataFrame "df_pagamento_mes"
-            df_pagamento_mes['CNPJ Favorecido'] = df_pagamento_mes['Código do Favorecido'].apply(
-                lambda x: x.split('-')[0])
+            df_pagamento_mes['CNPJ Favorecido'] = df_pagamento_mes['Código do Favorecido']
             # Acrescenta a coluna "Mês" ao objeto pandas DataFrame "df_pagamento_mes"
             df_pagamento_mes['Mês'] = dict_meses[month]
 

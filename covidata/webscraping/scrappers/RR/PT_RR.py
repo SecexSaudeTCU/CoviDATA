@@ -40,8 +40,10 @@ class PortalTransparencia_Roraima(SeleniumDownloader):
                     url = link['href']
                     diretorio = path.join(config.diretorio_dados, 'RR', 'portal_transparencia')
                     nome_arquivo = 'arquivo' + str(i) + '.xls'
-                    FileDownloader(diretorio, url, nome_arquivo).download()
-                    self.arquivos.append(path.join(diretorio, nome_arquivo))
+                    status_code = FileDownloader(diretorio, url, nome_arquivo).download()
+
+                    if status_code == 200:
+                        self.arquivos.append(path.join(diretorio, nome_arquivo))
 
                 self.driver.back()
                 input_exercicio = self.driver.find_element_by_name('exercicio')

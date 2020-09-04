@@ -32,7 +32,7 @@ from covidata.webscraping.scrappers.GO.PT_Goiania import PT_Goiania_Scraper
 from covidata.webscraping.scrappers.MA import uf_ma
 from covidata.webscraping.scrappers.MA.TCE_MA import TCE_MA_Scraper
 from covidata.webscraping.scrappers.MG import uf_mg
-from covidata.webscraping.scrappers.MS import uf_ms
+from covidata.webscraping.scrappers.MS.PT_CampoGrande import PT_CampoGrande_Scraper
 from covidata.webscraping.scrappers.MS.PT_MS import PT_MS_Scraper
 from covidata.webscraping.scrappers.MT.PT_MT import PT_MT_Scraper
 from covidata.webscraping.scrappers.PA import uf_pa
@@ -41,7 +41,7 @@ from covidata.webscraping.scrappers.PB import uf_pb
 from covidata.webscraping.scrappers.PE.PT_Recife import PT_Recife_Scraper
 from covidata.webscraping.scrappers.PI.TCE_PI import TCE_PI_Scraper
 from covidata.webscraping.scrappers.PR import uf_pr
-from covidata.webscraping.scrappers.PR.PT_PR_aquisicoes import PT_PR_AquisicoesScraper
+from covidata.webscraping.scrappers.PR.PT_PR import PT_PR_Aquisicoes_Scraper, PT_PR_DadosAbertos_Scraper
 from covidata.webscraping.scrappers.RJ import uf_rj
 from covidata.webscraping.scrappers.RN import uf_rn
 from covidata.webscraping.scrappers.RN.PT_RN import PT_RN_Scraper
@@ -76,12 +76,12 @@ if __name__ == '__main__':
         'DF': [PT_DF_Scraper(config.url_pt_DF)],
         'GO': [PT_Goiania_Scraper(config.url_pt_Goiania_despesas)],
         'MA': [TCE_MA_Scraper(config.url_tce_MA)],
-        'MS': [PT_MS_Scraper(config.url_pt_MS)],
+        'MS': [PT_MS_Scraper(config.url_pt_MS), PT_CampoGrande_Scraper(config.url_pt_CampoGrande)],
         'MT': [PT_MT_Scraper(config.url_pt_MT)],
         'PA': [PT_Belem_Scraper(config.url_pt_Belem)],
         'PE': [PT_Recife_Scraper(config.url_pt_Recife)],
         'PI': [TCE_PI_Scraper(config.url_tce_PI)],
-        'PR': [PT_PR_AquisicoesScraper()],
+        'PR': [PT_PR_Aquisicoes_Scraper(config.url_pt_PR_aquisicoes), PT_PR_DadosAbertos_Scraper()],
         'RN': [PT_RN_Scraper(config.url_pt_RN)],
         'RR': [PT_RR_Scraper(config.url_pt_RR), PT_BoaVista_Scraper(config.url_pt_BoaVista)],
         'SE': [PT_SE_Scraper(config.url_pt_SE)],
@@ -133,10 +133,6 @@ if __name__ == '__main__':
     logger.info('# Recuperando dados do Maranhão...')
     uf_ma.main(dfs_consolidados['MA'])
     dfs_consolidados.pop('MA')
-
-    logger.info('# Recuperando dados de Mato Grosso do Sul...')
-    uf_ms.main(dfs_consolidados['MS'])
-    dfs_consolidados.pop('MS')
 
     logger.info('# Recuperando dados de Minas Gerais...')
     uf_mg.main()

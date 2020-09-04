@@ -23,7 +23,7 @@ class FileDownloader:
     def download(self):
         """
         Executa o download do arquivo.
-        :return:
+        :return: O HTTP status code da requisição.
         """
         if not path.exists(self.diretorio_dados):
             os.makedirs(self.diretorio_dados)
@@ -32,10 +32,14 @@ class FileDownloader:
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) '
                           'Chrome/50.0.2661.102 Safari/537.36'}
         r = requests.get(self.url, headers=headers, verify=False)
-        caminho_arquivo = os.path.join(self.diretorio_dados, self.nome_arquivo)
 
-        with open(caminho_arquivo, 'wb') as f:
-            f.write(r.content)
+        if r.status_code != 500:
+            caminho_arquivo = os.path.join(self.diretorio_dados, self.nome_arquivo)
+
+            with open(caminho_arquivo, 'wb') as f:
+                f.write(r.content)
+
+        return r.status_code
 
 
 def download(url, diretorio, caminho_completo):

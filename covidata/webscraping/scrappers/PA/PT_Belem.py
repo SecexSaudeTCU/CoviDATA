@@ -13,6 +13,7 @@ from covidata.persistencia.consolidacao import consolidar_layout
 from covidata.webscraping.scrappers.scrapper import Scraper
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
+
 class PT_Belem_Scraper(Scraper):
     def scrap(self):
         logger = logging.getLogger('covidata')
@@ -26,7 +27,9 @@ class PT_Belem_Scraper(Scraper):
         return self.__consolidar_portal_transparencia_capital(data_extracao), False
 
     def __consolidar_portal_transparencia_capital(self, data_extracao):
-        dicionario_dados = {consolidacao.DOCUMENTO_NUMERO: 'Empenho', consolidacao.UG_DESCRICAO: 'Unidade Gestora',
+        dicionario_dados = {consolidacao.DOCUMENTO_NUMERO: 'Empenho',
+                            consolidacao.UG_DESCRICAO: 'Unidade Gestora/Órgão Contratante',
+                            consolidacao.CONTRATANTE_DESCRICAO: 'Unidade Gestora/Órgão Contratante',
                             consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.FONTE_RECURSOS_DESCRICAO: 'Fonte',
                             consolidacao.CONTRATADO_DESCRICAO: 'Fornecedor', consolidacao.VALOR_CONTRATO: 'Valor',
                             consolidacao.DOCUMENTO_DATA: 'Data', consolidacao.SITUACAO: 'Situacao'}
@@ -40,12 +43,6 @@ class PT_Belem_Scraper(Scraper):
         return df
 
     def pos_processar_portal_transparencia_capital(self, df):
-        df['temp'] = df[consolidacao.UG_DESCRICAO]
-        df[consolidacao.UG_COD] = df.apply(lambda row: row['temp'][0:row['temp'].find('-')], axis=1)
-        df[consolidacao.UG_DESCRICAO] = df.apply(lambda row: row['temp'][row['temp'].find('-') + 1:len(row['temp'])],
-                                                 axis=1)
-        df = df.drop(['temp'], axis=1)
-
         df['temp'] = df[consolidacao.FONTE_RECURSOS_DESCRICAO]
         df[consolidacao.FONTE_RECURSOS_COD] = df.apply(lambda row: row['temp'][0:row['temp'].find('-')], axis=1)
         df[consolidacao.FONTE_RECURSOS_DESCRICAO] = df.apply(
@@ -64,7 +61,7 @@ class PortalTransparencia_Belem(SeleniumDownloader):
     def _executar(self):
         wait = WebDriverWait(self.driver, 30)
 
-        #Aguarda pelo carregamento completo da página
+        # Aguarda pelo carregamento completo da página
         time.sleep(10)
 
         frame = wait.until(EC.visibility_of_element_located((By.NAME, 'myiFrame')))

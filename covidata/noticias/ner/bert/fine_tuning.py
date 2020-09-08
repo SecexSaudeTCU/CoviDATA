@@ -232,12 +232,16 @@ def __get_textos_tags():
     return token_docs, tag_docs
 
 
-_, _, _, _, _, val_texts = __criar_base_treinamento_validacao()
-df = pd.DataFrame(columns=['title', 'media', 'date', 'link'])
-textos = []
+def criar_arquivo_para_validacao():
+    _, _, _, _, _, val_texts = __criar_base_treinamento_validacao()
+    df = pd.DataFrame(columns=['title', 'media', 'date', 'link'])
+    textos = []
+    for val_text in val_texts:
+        textos.append(' '.join(val_text))
+    df['textos'] = textos
+    df.to_excel('bert_validacao.xlsx')
 
-for val_text in val_texts:
-    textos.append(' '.join(val_text))
 
-df['textos'] = textos
-df.to_excel('bert_validacao.xlsx')
+#criar_arquivo_para_validacao()
+
+treinar()

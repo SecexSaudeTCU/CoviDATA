@@ -1,17 +1,21 @@
+import logging
 import os
-from os import path
 import time
 from datetime import datetime, timedelta
-import logging
+from os import path
 
+import pandas as pd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait, Select
-import pandas as pd
+from selenium.webdriver.support.select import Select
+from selenium.webdriver.support.wait import WebDriverWait
 
 from covidata import config
+from covidata.municipios.ibge import get_codigo_municipio_por_nome
+from covidata.persistencia import consolidacao
+from covidata.persistencia.consolidacao import consolidar_layout
+from covidata.webscraping.scrappers.scrapper import Scraper
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
-from covidata.webscraping.scrappers.SE.consolidacao_SE import consolidar
 
 dict_meses = {0: 'Janeiro',
               1: 'Fevereiro',
@@ -46,6 +50,110 @@ dict_unidades_aracaju = {12201: 'FUNDAÇÃO CULTURAL CIDADE DE ARACAJU',
                          28101: 'SECRETARIA MUNICIPAL DO MEIO AMBIENTE'}
 
 
+
+class PT_Aracaju_Scraper(Scraper):
+    def scrap(self):
+        logger = logging.getLogger('covidata')
+
+        logger.info('Portal de transparência da capital...')
+        start_time = time.time()
+        pt_Aracaju = PortalTransparencia_Aracaju()
+        pt_Aracaju.download()
+        logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+    def consolidar(self, data_extracao):
+        return self.consolidar_pt_Aracaju(data_extracao), False
+
+    def consolidar_pt_Aracaju(self, data_extracao):
+        # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
+        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Órgão',
+                            consolidacao.UG_DESCRICAO: 'Unidade',
+                            consolidacao.DOCUMENTO_NUMERO: 'Empenho',
+                            consolidacao.CONTRATADO_DESCRICAO: 'Nome Favorecido',
+                            consolidacao.CONTRATADO_CNPJ: 'CNPJ/CPF Favorecido',
+                            consolidacao.VALOR_PAGO: 'Pago',
+                            consolidacao.DESPESA_DESCRICAO: 'DsEmpenho',
+                            consolidacao.ELEMENTO_DESPESA_DESCRICAO: 'DsItemDespesa',
+                            consolidacao.FONTE_RECURSOS_COD: 'Dotação',
+                            consolidacao.VALOR_LIQUIDADO: 'Liquidado',
+                            consolidacao.VALOR_EMPENHADO: 'Empenhado'}
+
+        # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
+        colunas_adicionais = ['Data Pagamento', 'Processo', 'Pagamento Retido', 'Nota de Pagamento',
+                              'Data Liquidação', 'Liquidação', 'Documento', 'Liquidado Retido',
+                              'Data Empenho', 'Empenhado Anulado', 'Empenhado Reforçado']
+
+        df_empenhos = pd.read_excel(path.join(config.diretorio_dados, 'SE', 'portal_transparencia',
+                                              'Aracaju', 'Dados_Portal_Transparencia_Aracaju.xlsx'),
+                                    sheet_name='Empenhos')
+
+        df_liquidacoes = pd.read_excel(path.join(config.diretorio_dados, 'SE', 'portal_transparencia',
+                                                 'Aracaju', 'Dados_Portal_Transparencia_Aracaju.xlsx'),
+                                       sheet_name='Liquidações')
+
+        df_pagamentos = pd.read_excel(path.join(config.diretorio_dados, 'SE', 'portal_transparencia',
+                                                'Aracaju', 'Dados_Portal_Transparencia_Aracaju.xlsx'),
+                                      sheet_name='Pagamentos')
+
+        df = self.pre_processar_pt_Aracaju(df_empenhos, df_liquidacoes, df_pagamentos)
+
+        # Chama a função "consolidar_layout" definida em módulo importado
+        df = consolidar_layout(colunas_adicionais, df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+                               consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Aracaju, 'SE',
+                               get_codigo_municipio_por_nome('Aracaju', 'SE'), data_extracao, self.pos_processar_pt)
+
+        return df
+
+    def pre_processar_pt_Aracaju(self, df1, df2, df3):
+        # Renomeia colunas do objeto pandas DataFrame "df1"
+        df1.rename(index=str,
+                   columns={'Data': 'Data Empenho',
+                            'Anulado': 'Empenhado Anulado',
+                            'Reforçado': 'Empenhado Reforçado'},
+                   inplace=True)
+
+        # Renomeia colunas do objeto pandas DataFrame "df2"
+        df2.rename(index=str,
+                   columns={'Data': 'Data Liquidação',
+                            'Liq': 'Liquidação',
+                            'Retido': 'Liquidado Retido'},
+                   inplace=True)
+
+        # Renomeia colunas do objeto pandas DataFrame "df3"
+        df3.rename(index=str,
+                   columns={'Data': 'Data Pagamento',
+                            'Retido': 'Pagamento Retido'},
+                   inplace=True)
+
+        # Faz o merge de "df3" com parte de "df2" por uma coluna tendo por base "df3"
+        df = pd.merge(df3, df2[
+            ['Data Liquidação', 'Empenho', 'Liquidação', 'Dotação', 'Documento', 'Liquidado', 'Liquidado Retido']],
+                      how='left',
+                      left_on='Empenho',
+                      right_on='Empenho')
+
+        # Faz o merge de "df" com "df1" por uma coluna tendo por base "df"
+        df = pd.merge(df, df1[['Data Empenho', 'Empenho', 'Empenhado', 'Empenhado Anulado', 'Empenhado Reforçado']],
+                      how='left',
+                      left_on='Empenho',
+                      right_on='Empenho')
+
+        print(list(df.columns))
+
+        return df
+
+    def pos_processar_pt(self, df):
+        for i in range(len(df)):
+            cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
+
+            if len(str(cpf_cnpj)) >= 14:
+                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
+            else:
+                df.loc[i, consolidacao.FAVORECIDO_TIPO] = 'CPF/RG'
+
+        return df
+
+
 # Define a classe referida como herdeira da class "SeleniumDownloader"
 class PortalTransparencia_Aracaju(SeleniumDownloader):
 
@@ -62,8 +170,8 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         wait = WebDriverWait(self.driver, 45)
 
         # Entra no iframe de id "dados"
-        iframe = wait.until(EC.visibility_of_element_located((By.ID, 'dados')))
-        self.driver.switch_to.frame(iframe)
+        #iframe = wait.until(EC.visibility_of_element_located((By.ID, 'dados')))
+        #self.driver.switch_to.frame(iframe)
 
         # Aba "Empenhos" (default do iframe):
         # Coloca o campo dropdown dos meses do ano com o valor "Selecione"
@@ -118,8 +226,8 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
 
         # Aba "Liquidações":
         # Entra no iframe de id "dados"
-        iframe = wait.until(EC.visibility_of_element_located((By.ID, 'dados')))
-        self.driver.switch_to.frame(iframe)
+        #iframe = wait.until(EC.visibility_of_element_located((By.ID, 'dados')))
+        #self.driver.switch_to.frame(iframe)
 
         # Seleciona a aba "Liquidações"
         element = wait.until(EC.visibility_of_element_located((By.ID, 'lnkLiquidacoes')))
@@ -168,11 +276,6 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         df_liquidacao['Unidade'].replace(dict_unidades_aracaju, inplace=True)
 
         # Renomeia colunas especificadas
-        """
-        df_liquidacao.rename(index=str,
-                             columns={'DsItemDespesa': 'DsEmpenho', 'Unnamed: 14': 'DsItemDespesa'},
-                             inplace=True)
-        """
         df_liquidacao.rename(index=str,
                              columns={'DsItemDespesa': 'DsEmpenho'},
                              inplace=True)
@@ -183,12 +286,6 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         df_liquidacao['CNPJ/CPF Favorecido'] = df_liquidacao['Credor'].apply(lambda x: x.split(' - ')[0])
 
         # Reordena as colunas do objeto pandas DataFrame "df_liquidacao"
-        """
-        df_liquidacao = df_liquidacao[['Órgão', 'Unidade', 'Data', 'Empenho',
-                                       'Liq', 'Nome Favorecido', 'CNPJ/CPF Favorecido',
-                                       'Dotação', 'Documento', 'Liquidado', 'Retido',
-                                       'DsEmpenho', 'DsItemDespesa']]
-        """
         df_liquidacao = df_liquidacao[['Órgão', 'Unidade', 'Data', 'Empenho',
                                        'Liq', 'Nome Favorecido', 'CNPJ/CPF Favorecido',
                                        'Dotação', 'Documento', 'Liquidado', 'Retido',
@@ -196,8 +293,8 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
 
         # Aba "Pagamentos":
         # Entra no iframe de id "dados"
-        iframe = wait.until(EC.visibility_of_element_located((By.ID, 'dados')))
-        self.driver.switch_to.frame(iframe)
+        #iframe = wait.until(EC.visibility_of_element_located((By.ID, 'dados')))
+        #self.driver.switch_to.frame(iframe)
 
         # Seleciona a aba "Pagamentos"
         element = wait.until(EC.visibility_of_element_located((By.ID, 'lnkPagamentos')))
@@ -268,21 +365,3 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
 
         # Deleta o arquivo "xlsx" de nome "Município Online"
         os.unlink(path.join(config.diretorio_dados, 'SE', 'portal_transparencia', 'Aracaju', 'Município Online.xlsx'))
-
-
-def main(df_consolidado):
-    data_extracao = datetime.now()
-    logger = logging.getLogger('covidata')
-
-    logger.info('Portal de transparência da capital...')
-    start_time = time.time()
-    pt_Aracaju = PortalTransparencia_Aracaju()
-    pt_Aracaju.download()
-    logger.info("--- %s segundos ---" % (time.time() - start_time))
-
-    logger.info('Consolidando as informações no layout padronizado...')
-    start_time = time.time()
-    consolidar(data_extracao, df_consolidado)
-    logger.info("--- %s segundos ---" % (time.time() - start_time))
-
-# main()

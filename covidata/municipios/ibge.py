@@ -1,21 +1,24 @@
 import os
+from collections import defaultdict
 
 import requests
 import json
 from covidata import config
 
-def get_estados():
+
+
+def get_ufs():
     """
-    Retorna o conjunto de todos os estados brasileiros.
+    Retorna o mapeamento de nomes de estados para siglas.
     """
     #TODO: Reimplementar usando o fallback estados.json.
-    estados = []
+    estados = dict()
     resultado = json.loads(requests.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados').content)
 
     for estado in resultado:
-        estados.append(estado['nome'].upper())
+        estados[estado['nome'].upper()] = estado['sigla']
 
-    return set(estados)
+    return estados
 
 def get_municipios():
     """
@@ -30,6 +33,14 @@ def get_municipios():
 
     return set(municipios)
 
+def get_map_municipios_estados():
+    municipios = json.loads(requests.get('https://servicodados.ibge.gov.br/api/v1/localidades/municipios').content)
+    resultado = defaultdict(list)
+
+    for municipio in municipios:
+        resultado[municipio['nome'].upper()].append(municipio['microrregiao']['mesorregiao']['UF']['sigla'])
+
+    return resultado
 
 def get_municipios_por_uf(sigla_uf):
     """
@@ -88,4 +99,3 @@ def __get(uri, arquivo_local):
         with open(os.path.join(dirname, arquivo_local)) as json_file:
             resultado = json.load(json_file)
     return resultado
-

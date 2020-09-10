@@ -62,15 +62,14 @@ class PT_Recife_Scraper(Scraper):
         return dispensas, True
 
     def __consolidar_dispensas(self, data_extracao):
-        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Órgão', consolidacao.UG_DESCRICAO: 'Órgão',
-                            consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.CONTRATADO_CNPJ: 'CNPJ',
-                            consolidacao.CONTRATADO_DESCRICAO: 'Nome Fornecedor',
-                            consolidacao.VALOR_CONTRATO: 'Valor por Fornecedor\n(R$)',
-                            consolidacao.DATA_FIM_VIGENCIA: 'Data Vigência',
-                            consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local de Execução'}
-        colunas_adicionais = ['Nº Dispensa', 'Anulação/ Revogação/ Retificação/\nSuspensão',
-                              'Data de Empenho/\nContrato',
-                              'Data de Empenho\nContrato']
+        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'unidade', consolidacao.UG_DESCRICAO: 'unidade',
+                            consolidacao.DESPESA_DESCRICAO: 'objeto', consolidacao.CONTRATADO_CNPJ: 'cnpj_cpf',
+                            consolidacao.CONTRATADO_DESCRICAO: 'nome_fornecedor',
+                            consolidacao.VALOR_CONTRATO: 'valor_fornecedor',
+                            consolidacao.DATA_FIM_VIGENCIA: 'data_vigencia',
+                            consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'local_de_execucao'}
+        colunas_adicionais = ['num_dispensa', 'situacao_dispensa', 'data_de_empenho_contrato', 'arquivo_dispensa',
+                              'arquivo_situacao']
         df_final = pd.DataFrame()
 
         # Processando arquivos Excel
@@ -93,6 +92,7 @@ class PT_Recife_Scraper(Scraper):
         # Procura pelo cabeçalho:
         mask = np.column_stack([df_original[col].str.contains(colunas_adicionais[0], na=False) for col in df_original])
         df_original.columns = df_original[mask].values.tolist()[0]
+
         # Remove as linhas anteriores ao cabeçalho
         while df_original.iloc[0, 0] != df_original.columns[0]:
             df_original = df_original.drop(df_original.index[0])

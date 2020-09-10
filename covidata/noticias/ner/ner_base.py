@@ -1,4 +1,6 @@
+import time
 from abc import ABC, abstractmethod
+from collections import Counter
 
 import pandas as pd
 from seqeval.metrics import accuracy_score
@@ -6,6 +8,8 @@ from seqeval.metrics import classification_report
 from seqeval.metrics import f1_score
 from seqeval.metrics import precision_score
 from seqeval.metrics import recall_score
+
+from covidata.municipios.ibge import get_map_municipios_estados, get_ufs
 
 
 class NER(ABC):
@@ -19,6 +23,7 @@ class NER(ABC):
         Construtor da classe.
         """
         self.__nome_algoritmo = nome_algoritmo
+        self.map_municipios_estados = get_map_municipios_estados()
 
     @abstractmethod
     def _get_map_labels(self):
@@ -54,13 +59,48 @@ class NER(ABC):
             midia = df.loc[i, 'media']
             data = df.loc[i, 'date']
             link = df.loc[i, 'link']
-            entidades_texto = self._extrair_entidades_de_texto(texto)
-            resultado_analise[(titulo, link, midia, data, texto)] = entidades_texto
+            start_time = time.time()
+            print(f'Extraindo entidades texto {i}...')
+            entidades_texto = self._extrair_entidades_de_texto(titulo + '. ' + texto)
+            print("--- %s segundos ---" % (time.time() - start_time))
+            # resultado_analise[(titulo, link, midia, data, texto)] = entidades_texto
+
+            # Utiliza heurística para tentar inferir a UF da ocorrência
+            print('Identificando UF da ocorrência...')
+            uf_ocorrencia = self.inferir_uf_ocorrencia(entidades_texto)
+            print("--- %s segundos ---" % (time.time() - start_time))
+            if len(uf_ocorrencia) > 0:
+                uf_ocorrencia = uf_ocorrencia[0][0]
+            else:
+                uf_ocorrencia = 'N/A'
+
+            resultado_analise[(titulo, link, midia, data, texto, uf_ocorrencia)] = entidades_texto
 
         df = pd.concat(
             {k: pd.DataFrame(v, columns=['ENTIDADE', 'CLASSIFICAÇÃO']) for k, v in resultado_analise.items()})
 
         return df
+
+    def inferir_uf_ocorrencia(self, entidades_texto):
+        ufs = get_ufs()
+        siglas = set(ufs.values())
+        cnt = Counter()
+
+        for entidade, tipo in entidades_texto:
+            if tipo == 'LOCAL':
+                nome_local = entidade.strip().upper()
+                # Pode ser referência a UF
+                if len(nome_local) == 2:
+                    if nome_local in siglas:
+                        cnt[entidade] += 1
+                elif nome_local in ufs:
+                    cnt[ufs[nome_local]] += 1
+                else:
+                    estados = self.map_municipios_estados[nome_local]
+                    for estado in estados:
+                        cnt[estado] += 1
+
+        return cnt.most_common(1)
 
     @abstractmethod
     def _extrair_entidades_de_texto(self, texto):

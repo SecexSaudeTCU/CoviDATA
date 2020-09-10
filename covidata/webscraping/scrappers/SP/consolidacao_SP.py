@@ -1,13 +1,3 @@
-import datetime
-import logging
-from os import path
-
-import pandas as pd
-
-from covidata import config
-from covidata.municipios.ibge import get_codigo_municipio_por_nome
-from covidata.persistencia import consolidacao
-from covidata.persistencia.consolidacao import consolidar_layout, salvar
 import logging
 from os import path
 
@@ -28,20 +18,6 @@ def pre_processar_tcm(df):
                        'Licitação': 'Número Licitação',
                        'Processo Externo': 'Número Processo'},
               inplace=True)
-
-    return df
-
-
-def pos_processar_pt_SP_capital(df):
-    df[consolidacao.MUNICIPIO_DESCRICAO] = 'São Paulo'
-
-    for i in range(len(df)):
-        cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
-
-        if len(str(cpf_cnpj)) >= 14:
-            df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-        else:
-            df.loc[i, consolidacao.FAVORECIDO_TIPO] = 'CPF/RG'
 
     return df
 
@@ -83,31 +59,6 @@ def consolidar_PT(data_extracao):
     return df
 
 
-def consolidar_pt_SP_capital(data_extracao):
-    # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
-    dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Órgão',
-                        consolidacao.CONTRATADO_DESCRICAO: 'Contratada',
-                        consolidacao.CONTRATADO_CNPJ: 'CNPJ',
-                        consolidacao.DESPESA_DESCRICAO: 'Objeto',
-                        consolidacao.VALOR_CONTRATO: 'Valor Total'}
-
-    # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-    colunas_adicionais = ['Número Processo', 'Data Publicação', 'Modalidade Licitação', 'Item',
-                          'Quantidade', 'Unidade Item', 'PU Item', 'Prazo', 'Unidade tempo',
-                          'Local Entrega', 'Texto Publicado']
-
-    # Lê o arquivo "xlsx" de licitações baixado como um objeto pandas DataFrame
-    df_original = pd.read_excel(path.join(config.diretorio_dados, 'SP', 'portal_transparencia', 'São Paulo',
-                                          'Portal_Transparencia_SP_capital.xlsx'))
-
-    # Chama a função "consolidar_layout" definida em módulo importado
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
-                           consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_SaoPaulo, 'SP',
-                           get_codigo_municipio_por_nome('São Paulo', 'SP'), data_extracao, pos_processar_pt_SP_capital)
-
-    return df
-
-
 def consolidar_tcm(data_extracao):
     # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Órgão',
@@ -134,22 +85,19 @@ def consolidar_tcm(data_extracao):
     return df
 
 
-def consolidar(data_extracao):
+def consolidar(data_extracao, df_consolidado):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Sâo Paulo')
 
-    #TODO: Indisponível/instável
     consolidacoes = consolidar_PT(data_extracao)
 
-    consolidacoes_capital = consolidar_pt_SP_capital(data_extracao)
-    consolidacoes = consolidacoes.append(consolidacoes_capital)
+    consolidacoes = consolidacoes.append(df_consolidado)
 
     # TODO: Indisponível/instável
-    #consolidacao_tcm = consolidar_tcm(data_extracao)
-    #consolidacoes = consolidacoes.append(consolidacao_tcm, ignore_index=True, sort=False)
+    # consolidacao_tcm = consolidar_tcm(data_extracao)
+    # consolidacoes = consolidacoes.append(consolidacao_tcm, ignore_index=True, sort=False)
 
     salvar(consolidacoes, 'SP')
-    #salvar(consolidacoes_capital, 'SP')
+    # salvar(consolidacoes_capital, 'SP')
 
-
-#consolidar(datetime.datetime.now())
+# consolidar(datetime.datetime.now())

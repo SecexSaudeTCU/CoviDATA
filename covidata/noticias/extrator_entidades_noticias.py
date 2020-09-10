@@ -5,6 +5,7 @@ from collections import defaultdict
 
 import pandas as pd
 
+from covidata import config
 from covidata.cnpj.busca_util import processar_descricao_contratado
 from covidata.cnpj.indice import buscar_por_razao_social
 from covidata.cnpj.rfb import DAO_RFB
@@ -55,7 +56,7 @@ def identificar_possiveis_empresas_citadas(caminho_arquivo='ner.xlsx'):
     resultado_analise = dict()
 
     for i in range(len(df)):
-        classificacao, data, entidade, link, midia, texto, titulo = __get_valores(df, i)
+        classificacao, data, entidade, link, midia, texto, titulo, uf = __get_valores(df, i)
 
         if (not pd.isna(entidade)) and classificacao == 'ORGANIZAÇÃO':
             # Remove acentuação, caracteres especiais e transforma para maiúsculas, para facilitar a busca.
@@ -64,12 +65,13 @@ def identificar_possiveis_empresas_citadas(caminho_arquivo='ner.xlsx'):
 
             if len(entidade.strip()) > 0:
                 # 1. Executa busca exata na base da Receita Federal
-                empresas = __buscar_rfb(dao_rfb, data, entidade, entidade_original, link, midia, resultado_analise, texto,
-                                        titulo)
+                empresas = __buscar_rfb(dao_rfb, data, entidade, entidade_original, link, midia, resultado_analise,
+                                        texto, titulo, uf)
 
                 if len(empresas) == 0:
                     # 2. Busca no índice Lucene
-                    __buscar_indice(data, entidade, entidade_original, link, midia, resultado_analise, texto, titulo)
+                    __buscar_indice(data, entidade, entidade_original, link, midia, resultado_analise, texto, titulo,
+                                    uf)
 
     df = pd.concat(
         {k: pd.DataFrame(v, columns=['POSSÍVEIS EMPRESAS CITADAS', 'POSSÍVEIS CNPJs CITADOS', 'TIPO BUSCA']) for k, v in
@@ -80,6 +82,8 @@ def identificar_possiveis_empresas_citadas(caminho_arquivo='ner.xlsx'):
 
 
 def __get_valores(df, i):
+    titulo = link = midia = data = texto = uf = ''
+
     if not pd.isna(df.iloc[i, 0]):
         titulo = df.iloc[i, 0]
     if not pd.isna(df.iloc[i, 1]):
@@ -90,12 +94,16 @@ def __get_valores(df, i):
         data = df.iloc[i, 3]
     if not pd.isna(df.iloc[i, 4]):
         texto = df.iloc[i, 4]
-    entidade = df.iloc[i, 6]
-    classificacao = df.iloc[i, 7]
-    return classificacao, data, entidade, link, midia, texto, titulo
+    if not pd.isna(df.iloc[i, 5]):
+        uf = df.iloc[i, 5]
+
+    entidade = df.iloc[i, 7]
+    classificacao = df.iloc[i, 8]
+
+    return classificacao, data, entidade, link, midia, texto, titulo, uf
 
 
-def __buscar_indice(data, entidade, entidade_original, link, midia, resultado_analise, texto, titulo):
+def __buscar_indice(data, entidade, entidade_original, link, midia, resultado_analise, texto, titulo, uf):
     map_empresa_to_cnpjs = defaultdict(list)
     resultados_no_indice = buscar_por_razao_social(entidade)
     if len(resultados_no_indice) > 0:
@@ -104,19 +112,19 @@ def __buscar_indice(data, entidade, entidade_original, link, midia, resultado_an
         for razao_social, cnpj, _ in resultados_no_indice:
             map_empresa_to_cnpjs[razao_social].append(cnpj)
 
-        resultado_analise[(titulo, link, midia, data, texto, entidade_original)] = [
+        resultado_analise[(titulo, link, midia, data, texto, uf, entidade_original)] = [
             (razao_social, cnpjs, tipo_busca) for razao_social, cnpjs in
             map_empresa_to_cnpjs.items()]
 
 
-def __buscar_rfb(dao_rfb, data, entidade, entidade_original, link, midia, resultado_analise, texto, titulo):
+def __buscar_rfb(dao_rfb, data, entidade, entidade_original, link, midia, resultado_analise, texto, titulo, uf):
     empresas = dao_rfb.buscar_empresa_por_razao_social(entidade)
     if len(empresas) > 0:
         map_empresa_to_cnpjs = defaultdict(list)
         for empresa in empresas:
             map_empresa_to_cnpjs[empresa[2]].append(empresa[0])
 
-        resultado_analise[(titulo, link, midia, data, texto, entidade_original)] = [
+        resultado_analise[(titulo, link, midia, data, texto, uf, entidade_original)] = [
             (razao_social, cnpjs, 'BUSCA EXATA RFB') for razao_social, cnpjs in
             map_empresa_to_cnpjs.items()]
     return empresas
@@ -137,5 +145,5 @@ def obter_textos():
 
 
 if __name__ == '__main__':
-    # extrair_entidades(os.path.join(config.diretorio_noticias, 'com_textos_baseline.xlsx'))
+    #extrair_entidades(os.path.join(config.diretorio_noticias, 'com_textos_baseline.xlsx'))
     identificar_possiveis_empresas_citadas()

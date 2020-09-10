@@ -40,7 +40,7 @@ from covidata.webscraping.scrappers.PA.PT_Belem import PT_Belem_Scraper
 from covidata.webscraping.scrappers.PB import uf_pb
 from covidata.webscraping.scrappers.PE.PT_Recife import PT_Recife_Scraper
 from covidata.webscraping.scrappers.PI.TCE_PI import TCE_PI_Scraper
-from covidata.webscraping.scrappers.PR import uf_pr
+from covidata.webscraping.scrappers.PR.PT_Curitiba import PT_CuritibaContratacoes_Scraper, PT_CuritibaAquisicoes_Scraper
 from covidata.webscraping.scrappers.PR.PT_PR import PT_PR_Aquisicoes_Scraper, PT_PR_DadosAbertos_Scraper
 from covidata.webscraping.scrappers.RJ import uf_rj
 from covidata.webscraping.scrappers.RN import uf_rn
@@ -50,9 +50,10 @@ from covidata.webscraping.scrappers.RR.PT_BoaVista import PT_BoaVista_Scraper
 from covidata.webscraping.scrappers.RR.PT_RR import PT_RR_Scraper
 from covidata.webscraping.scrappers.RS import uf_rs
 from covidata.webscraping.scrappers.SC import uf_sc
-from covidata.webscraping.scrappers.SE import uf_se
+from covidata.webscraping.scrappers.SE.PT_Aracaju import PT_Aracaju_Scraper
 from covidata.webscraping.scrappers.SE.PT_SE import PT_SE_Scraper
 from covidata.webscraping.scrappers.SP import uf_sp
+from covidata.webscraping.scrappers.SP.PT_SaoPaulo import PT_SaoPaulo_Scraper
 from covidata.webscraping.scrappers.TO.PT_TO import PT_TO_Scraper
 
 # Adiciona diretorio raiz ao PATH. Devido a ausência de setup.py, isto garante que as importações sempre funcionarão
@@ -81,10 +82,13 @@ if __name__ == '__main__':
         'PA': [PT_Belem_Scraper(config.url_pt_Belem)],
         'PE': [PT_Recife_Scraper(config.url_pt_Recife)],
         'PI': [TCE_PI_Scraper(config.url_tce_PI)],
-        'PR': [PT_PR_Aquisicoes_Scraper(config.url_pt_PR_aquisicoes), PT_PR_DadosAbertos_Scraper()],
+        'PR': [PT_PR_Aquisicoes_Scraper(config.url_pt_PR_aquisicoes), PT_PR_DadosAbertos_Scraper(),
+               PT_CuritibaAquisicoes_Scraper(config.url_pt_Curitiba_aquisicoes),
+               PT_CuritibaContratacoes_Scraper(config.url_pt_Curitiba_contratacoes)],
         'RN': [PT_RN_Scraper(config.url_pt_RN)],
         'RR': [PT_RR_Scraper(config.url_pt_RR), PT_BoaVista_Scraper(config.url_pt_BoaVista)],
-        'SE': [PT_SE_Scraper(config.url_pt_SE)],
+        'SE': [PT_SE_Scraper(config.url_pt_SE), PT_Aracaju_Scraper(config.url_pt_Aracaju)],
+        'SP': [PT_SaoPaulo_Scraper(config.url_pt_SaoPaulo)],
         'TO': [PT_TO_Scraper(config.url_pt_TO)],
     }
     dfs_consolidados = defaultdict(pd.DataFrame)
@@ -144,10 +148,6 @@ if __name__ == '__main__':
     logger.info('# Recuperando dados de Paraíba...')
     uf_pb.main()
 
-    logger.info('# Recuperando dados do Paraná...')
-    uf_pr.main(dfs_consolidados['PR'])
-    dfs_consolidados.pop('PR')
-
     logger.info('# Recuperando dados do Rio de Janeiro...')
     uf_rj.main()
 
@@ -166,12 +166,9 @@ if __name__ == '__main__':
     logger.info('# Recuperando dados de Santa Catarina...')
     uf_sc.main()
 
-    logger.info('# Recuperando dados de Sergipe...')
-    uf_se.main(dfs_consolidados['SE'])
-    dfs_consolidados.pop('SE')
-
     logger.info('# Recuperando dados de São Paulo...')
-    uf_sp.main()
+    uf_sp.main(dfs_consolidados['SP'])
+    dfs_consolidados.pop('SP')
 
     logger.info("--- %s minutos ---" % ((time.time() - start_time) / 60))
 

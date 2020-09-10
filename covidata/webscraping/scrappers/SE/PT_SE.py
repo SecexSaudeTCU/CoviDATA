@@ -10,9 +10,21 @@ import pandas as pd
 from covidata import config
 from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout
-from covidata.webscraping.scrappers.SE.uf_se import dict_meses
 from covidata.webscraping.scrappers.scrapper import Scraper
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
+
+dict_meses = {0: 'Janeiro',
+              1: 'Fevereiro',
+              2: 'Março',
+              3: 'Abril',
+              4: 'Maio',
+              5: 'Junho',
+              6: 'Julho',
+              7: 'Agosto',
+              8: 'Setembro',
+              9: 'Outubro',
+              10: 'Novembro',
+              11: 'Dezembro'}
 
 
 class PT_SE_Scraper(Scraper):

@@ -5,7 +5,6 @@ from collections import defaultdict
 
 import pandas as pd
 
-from covidata import config
 from covidata.cnpj.busca_util import processar_descricao_contratado
 from covidata.cnpj.indice import buscar_por_razao_social
 from covidata.cnpj.rfb import DAO_RFB
@@ -54,9 +53,11 @@ def identificar_possiveis_empresas_citadas(caminho_arquivo='ner.xlsx'):
     df = pd.read_excel(caminho_arquivo)
     dao_rfb = DAO_RFB()
     resultado_analise = dict()
+    data = link = midia = texto = titulo = ufs = None
 
     for i in range(len(df)):
-        classificacao, data, entidade, link, midia, texto, titulo, uf = __get_valores(df, i)
+        classificacao, data, entidade, link, midia, texto, titulo, ufs = __get_valores(df, i, data, link, midia, texto,
+                                                                                      titulo, ufs)
 
         if (not pd.isna(entidade)) and classificacao == 'ORGANIZAÇÃO':
             # Remove acentuação, caracteres especiais e transforma para maiúsculas, para facilitar a busca.
@@ -66,12 +67,12 @@ def identificar_possiveis_empresas_citadas(caminho_arquivo='ner.xlsx'):
             if len(entidade.strip()) > 0:
                 # 1. Executa busca exata na base da Receita Federal
                 empresas = __buscar_rfb(dao_rfb, data, entidade, entidade_original, link, midia, resultado_analise,
-                                        texto, titulo, uf)
+                                        texto, titulo, ufs)
 
                 if len(empresas) == 0:
                     # 2. Busca no índice Lucene
                     __buscar_indice(data, entidade, entidade_original, link, midia, resultado_analise, texto, titulo,
-                                    uf)
+                                    ufs)
 
     df = pd.concat(
         {k: pd.DataFrame(v, columns=['POSSÍVEIS EMPRESAS CITADAS', 'POSSÍVEIS CNPJs CITADOS', 'TIPO BUSCA']) for k, v in
@@ -81,9 +82,7 @@ def identificar_possiveis_empresas_citadas(caminho_arquivo='ner.xlsx'):
     dao_rfb.encerrar_conexao()
 
 
-def __get_valores(df, i):
-    titulo = link = midia = data = texto = uf = ''
-
+def __get_valores(df, i, data, link, midia, texto, titulo, uf):
     if not pd.isna(df.iloc[i, 0]):
         titulo = df.iloc[i, 0]
     if not pd.isna(df.iloc[i, 1]):

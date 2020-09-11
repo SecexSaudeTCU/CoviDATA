@@ -67,10 +67,15 @@ class NER(ABC):
 
             # Utiliza heurística para tentar inferir a UF da ocorrência
             print('Identificando UF da ocorrência...')
-            uf_ocorrencia = self.inferir_uf_ocorrencia(entidades_texto)
+            uf_ocorrencia = self.__inferir_uf_ocorrencia(entidades_texto)
             print("--- %s segundos ---" % (time.time() - start_time))
-            if len(uf_ocorrencia) > 0:
-                uf_ocorrencia = uf_ocorrencia[0][0]
+
+            # Exibe as UFs mais relevantes em formato de string (separadas por vírgula quando houver mais de uma)
+            if len(uf_ocorrencia) > 1:
+                # Converte em representação de string e remove os colchetes
+                uf_ocorrencia = str(uf_ocorrencia)[1:-1].replace('\'','')
+            elif len(uf_ocorrencia) == 1:
+                uf_ocorrencia = uf_ocorrencia[0]
             else:
                 uf_ocorrencia = 'N/A'
 
@@ -81,7 +86,7 @@ class NER(ABC):
 
         return df
 
-    def inferir_uf_ocorrencia(self, entidades_texto):
+    def __inferir_uf_ocorrencia(self, entidades_texto):
         ufs = get_ufs()
         siglas = set(ufs.values())
         cnt = Counter()
@@ -100,7 +105,16 @@ class NER(ABC):
                     for estado in estados:
                         cnt[estado] += 1
 
-        return cnt.most_common(1)
+        common = cnt.most_common()
+        max = -1
+
+        if len(common) > 0:
+            max = common[0][1]
+
+        # Retorna as UFs mais citadas
+        ufs = [uf for uf, qtd in common if qtd == max]
+
+        return ufs
 
     @abstractmethod
     def _extrair_entidades_de_texto(self, texto):

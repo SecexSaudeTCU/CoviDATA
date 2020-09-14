@@ -16,8 +16,57 @@ from covidata import config
 from covidata.municipios.ibge import get_codigo_municipio_por_nome
 from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout
-from covidata.webscraping.downloader import download
+from covidata.webscraping.downloader import download, FileDownloader
 from covidata.webscraping.scrappers.scrapper import Scraper
+
+
+class PT_SP_Scraper(Scraper):
+    def scrap(self):
+        logger = logging.getLogger('covidata')
+        logger.info('Portal de transparência da capital...')
+        start_time = time.time()
+        downloader = FileDownloader(path.join(config.diretorio_dados, 'SP', 'portal_transparencia'), self.url,
+                                    'COVID.csv')
+        downloader.download()
+        logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+    def consolidar(self, data_extracao):
+        return self.consolidar_PT(data_extracao), False
+
+    def consolidar_PT(self, data_extracao):
+        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Secretaria', consolidacao.UG_DESCRICAO: 'Secretaria',
+                            consolidacao.NUMERO_PROCESSO: 'Número do Processo',
+                            consolidacao.CONTRATADO_DESCRICAO: 'Contratada / Conveniada',
+                            consolidacao.CONTRATADO_CNPJ: 'CPF / CNPJ / CGC',
+                            consolidacao.DESPESA_DESCRICAO: 'Descrição Processo',
+                            consolidacao.ITEM_EMPENHO_DESCRICAO: 'Finalidade/Item',
+                            consolidacao.ITEM_EMPENHO_QUANTIDADE: 'Quantidade',
+                            consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'Valor Unitário',
+                            consolidacao.DOCUMENTO_NUMERO: 'Nota de Empenho', consolidacao.VALOR_EMPENHADO: 'Empenho',
+                            consolidacao.FONTE_RECURSOS_COD: 'Código Fonte Recurso',
+                            consolidacao.FONTE_RECURSOS_DESCRICAO: 'Código Nome Fonte Detalhada',
+                            consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local Entrega'}
+        colunas_adicionais = ['Modalidade de Contratação', 'Data da Movimentação', 'Tipo de Pagamento',
+                              'Número de Pagamento', 'Valor NE', 'Valor NL', 'Valor NP', 'Valor OB']
+        df_original = pd.read_csv(path.join(config.diretorio_dados, 'SP', 'portal_transparencia', 'COVID.csv'),
+                                  encoding='ISO-8859-1', sep=';')
+        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+                               consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_SP, 'SP',
+                               None, data_extracao, self.pos_processar_PT)
+        return df
+
+    def pos_processar_PT(self, df):
+        df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
+
+        for i in range(0, len(df)):
+            cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
+
+            if len(cpf_cnpj) == 14:
+                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CPF
+            elif len(cpf_cnpj) == 18:
+                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
+
+        return df
 
 
 class PT_SaoPaulo_Scraper(Scraper):
@@ -117,7 +166,7 @@ class PT_SaoPaulo_Scraper(Scraper):
             download(url, diretorio, path.join(diretorio, mes + '.xls'))
 
     def consolidar(self, data_extracao):
-        return self.consolidar(data_extracao), False
+        return self.consolidar_pt_SP_capital(data_extracao), False
 
     def consolidar_pt_SP_capital(self, data_extracao):
         # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes

@@ -79,9 +79,9 @@ class PT_Recife_Scraper(Scraper):
 
         for planilha_original in planilhas:
             try:
-                df_original = pd.read_csv(planilha_original)
+                df_original = pd.read_csv(planilha_original, sep=';')
             except ParserError:
-                df_original = pd.read_csv(planilha_original, header=1)
+                df_original = pd.read_csv(planilha_original, header=1, sep=';')
 
             df = self.__processar_df_original(colunas_adicionais, data_extracao, df_original, dicionario_dados)
             df_final = df_final.append(df)
@@ -90,13 +90,19 @@ class PT_Recife_Scraper(Scraper):
 
     def __processar_df_original(self, colunas_adicionais, data_extracao, df_original, dicionario_dados):
         # Procura pelo cabeçalho:
-        mask = np.column_stack([df_original[col].str.contains(colunas_adicionais[0], na=False) for col in df_original])
-        df_original.columns = df_original[mask].values.tolist()[0]
-
-        # Remove as linhas anteriores ao cabeçalho
-        while df_original.iloc[0, 0] != df_original.columns[0]:
+        try:
+            mask = np.column_stack(
+                [df_original[col].str.contains(colunas_adicionais[0], na=False) for col in df_original])
+            df_original.columns = df_original[mask].values.tolist()[0]
+            # Remove as linhas anteriores ao cabeçalho
+            while df_original.iloc[0, 0] != df_original.columns[0]:
+                df_original = df_original.drop(df_original.index[0])
             df_original = df_original.drop(df_original.index[0])
-        df_original = df_original.drop(df_original.index[0])
+        except IndexError:
+            pass
+        except AttributeError:
+            pass
+
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Recife
         df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                fonte_dados, 'PE', get_codigo_municipio_por_nome('Recife', 'PE'), data_extracao,
@@ -107,20 +113,14 @@ class PT_Recife_Scraper(Scraper):
         # Elimina a última linha, que só contém um totalizador
         df = df.drop(df.index[-1])
 
-        df = df.astype({consolidacao.CONTRATADO_CNPJ: np.uint64})
         df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
-
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'Recife'
         df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
         df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
 
         # Unifica colunas com nomes parecidos
-        if len(df['DATA DE EMPENHO\nCONTRATO'].value_counts()) > 0:
-            df[consolidacao.DOCUMENTO_DATA] = df['DATA DE EMPENHO\nCONTRATO']
-        elif len(df['DATA DE EMPENHO/\nCONTRATO'].value_counts()) > 0:
-            df[consolidacao.DOCUMENTO_DATA] = df['DATA DE EMPENHO/\nCONTRATO']
-
-        df = df.drop(['DATA DE EMPENHO\nCONTRATO'], axis=1)
-        df = df.drop(['DATA DE EMPENHO/\nCONTRATO'], axis=1)
+        if 'data_de_empenho_contrato' in df.columns and len(df['data_de_empenho_contrato'].value_counts()) > 0:
+            df[consolidacao.DOCUMENTO_DATA] = df['data_de_empenho_contrato']
+            df = df.drop(['data_de_empenho_contrato'], axis=1)
 
         return df

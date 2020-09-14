@@ -58,14 +58,14 @@ class PT_TO_Scraper(Scraper):
 
                             # A quinta coluna, caso preenchida, tem que estar no formato data, e a sexta coluna,
                             # caso prenchida, tem que ser um número.  Estas verificações têm por objetivo contornar o
-                            # problema das colunas não obrigatórias.
-                            try:
-                                datetime.datetime.strptime(linha[5], '%d/%m/%Y')
-                            except ValueError:
-                                linha.insert(5, '')
-
-                            if not linha[6].isnumeric():
-                                linha.insert(6, '')
+                            # # problema das colunas não obrigatórias.
+                            # try:
+                            #     datetime.datetime.strptime(linha[5], '%d/%m/%Y')
+                            # except ValueError:
+                            #     linha.insert(5, '')
+                            #
+                            # if not linha[6].isnumeric():
+                            #     linha.insert(6, '')
 
                             linhas.append(linha)
 

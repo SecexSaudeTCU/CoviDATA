@@ -109,7 +109,8 @@ class PortalTransparencia_Curitiba(SeleniumDownloader):
         campo_data_inicial.send_keys(Keys.HOME)
         campo_data_inicial.send_keys('01032020')
 
-        button = self.driver.find_element_by_class_name('excel')
+        #button = self.driver.find_element_by_class_name('excel')
+        button = self.driver.find_element_by_xpath('/html/body/form/div[6]/div[2]/div[1]/div/div/div[4]/div/div[1]/img[1]')
         button.click()
 
         # Aqui, não é possível confiar na checagem de download da superclasse, uma vez que no mesmo diretório há outros

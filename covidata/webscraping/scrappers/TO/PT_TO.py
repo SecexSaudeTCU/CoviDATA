@@ -13,6 +13,7 @@ from covidata.webscraping.scrappers.scrapper import Scraper
 import pandas as pd
 from os import path
 
+
 class PT_TO_Scraper(Scraper):
     def scrap(self):
         logger = logging.getLogger('covidata')
@@ -42,7 +43,7 @@ class PT_TO_Scraper(Scraper):
                 if texto.startswith('Órgão - '):
                     nome_orgao = texto[len('Órgão - '): len(texto)]
                 elif (not ('Total do Processo/Contrato' in texto)) and (
-                not ('Total do Tipo de Contratação' in texto)) and (
+                        not ('Total do Tipo de Contratação' in texto)) and (
                         not ('Total do Órgão' in texto)):
                     trs = sibling.find_all('tr')
                     for tr in trs:
@@ -55,17 +56,6 @@ class PT_TO_Scraper(Scraper):
                                 texto_tag = td.get_text().strip()
                                 if texto_tag != '':
                                     linha.append(texto_tag)
-
-                            # A quinta coluna, caso preenchida, tem que estar no formato data, e a sexta coluna,
-                            # caso prenchida, tem que ser um número.  Estas verificações têm por objetivo contornar o
-                            # # problema das colunas não obrigatórias.
-                            # try:
-                            #     datetime.datetime.strptime(linha[5], '%d/%m/%Y')
-                            # except ValueError:
-                            #     linha.insert(5, '')
-                            #
-                            # if not linha[6].isnumeric():
-                            #     linha.insert(6, '')
 
                             linhas.append(linha)
 

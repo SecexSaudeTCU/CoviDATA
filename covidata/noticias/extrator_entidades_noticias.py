@@ -145,4 +145,5 @@ def obter_textos():
 
 if __name__ == '__main__':
     #extrair_entidades(os.path.join(config.diretorio_noticias, 'com_textos_baseline.xlsx'))
-    identificar_possiveis_empresas_citadas()
+    #identificar_possiveis_empresas_citadas()
+    obter_textos()

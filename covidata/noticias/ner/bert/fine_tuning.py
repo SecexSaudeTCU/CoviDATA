@@ -66,7 +66,6 @@ def treinar():
     configuracao = AutoConfig.from_pretrained(str(config.subdiretorio_modelo_neuralmind_bert_base), id2label=id2tag,
                                               label2id=tag2id)
     model = BertForTokenClassification.from_pretrained(config.subdiretorio_modelo_neuralmind_bert_base,
-                                                       # num_labels=len(unique_tags),
                                                        config=configuracao)
 
     training_args = TrainingArguments(

@@ -8,7 +8,6 @@ import pathlib
 diretorio_raiz = pathlib.Path(__file__).parent.parent
 diretorio_dados = diretorio_raiz.joinpath('dados')
 
-diretorio_base_cnpjs = diretorio_dados.joinpath('CNPJ-sqlite', 'CNPJ_full.db')
 diretorio_noticias = diretorio_dados.joinpath('noticias')
 arquivo_noticias_rotulado = diretorio_noticias.joinpath('labeled_4_labels.jsonl')
 diretorio_raiz_modelos = diretorio_noticias.joinpath('modelos')
@@ -27,6 +26,10 @@ diretorio_modelo_bert_finetuned = diretorio_raiz_modelos.joinpath('bert-neuralmi
 
 # URL para a API de localidades do IBGE
 url_api_ibge = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados'
+
+# URL para a API/microserviço que encapsula a consulta a dados de CNPJ.  A ideia é que no futuro esta solução possa ser
+# substituída, por exemplo, a alguma API do Solr do TCU ou da solução MAPA da STI.
+url_api_cnpj = 'http://127.0.0.1:5000/cnpj_util/razao_social?q='
 
 # Urls de portais de tansparência do governos estaduais
 url_pt_AM = 'http://www.transparencia.am.gov.br/covid-19/contratos/'

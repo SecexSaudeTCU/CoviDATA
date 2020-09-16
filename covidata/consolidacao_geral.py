@@ -4,10 +4,8 @@ import time
 import pandas as pd
 
 from covidata import config
-from covidata.cnpj.busca_util import processar_descricao_contratado
-from covidata.cnpj.rfb import DAO_RFB
+from covidata.cnpj import cnpj_util
 from covidata.persistencia import consolidacao
-from covidata.cnpj.indice import buscar_por_razao_social
 
 
 def consolidar():
@@ -56,7 +54,7 @@ def consolidar():
 
 def __processar_uf(df, map_nome_cnpjs, map_nomes_cnpjs_sugeridos):
     df = df.drop(columns='Unnamed: 0', axis=1, errors='ignore')
-    dao_rfb = DAO_RFB()
+    #    dao_rfb = DAO_RFB()
 
     for i in range(0, len(df)):
         if consolidacao.CONTRATADO_DESCRICAO in df.columns and df.loc[
@@ -65,24 +63,25 @@ def __processar_uf(df, map_nome_cnpjs, map_nomes_cnpjs_sugeridos):
                 cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
 
                 if ((type(cnpj) is str) and cnpj.strip() == '') or pd.isna(cnpj) or pd.isnull(cnpj):
-                    __inferir_cnpj(dao_rfb, df, i, map_nome_cnpjs, map_nomes_cnpjs_sugeridos)
+                    __inferir_cnpj(df, i, map_nome_cnpjs, map_nomes_cnpjs_sugeridos)
                 else:
                     df.loc[i, consolidacao.CNPJ_INFERIDO] = 'NÃO'
             else:
-                __inferir_cnpj(dao_rfb, df, i, map_nome_cnpjs, map_nomes_cnpjs_sugeridos)
+                __inferir_cnpj(df, i, map_nome_cnpjs, map_nomes_cnpjs_sugeridos)
 
-    dao_rfb.encerrar_conexao()
+    # dao_rfb.encerrar_conexao()
 
     return df
 
 
-def __inferir_cnpj(dao_rfb, df, i, map_nomes_exatos_cnpjs, map_nomes_cnpjs_sugeridos):
+def __inferir_cnpj(df, i, map_nomes_exatos_cnpjs, map_nomes_cnpjs_sugeridos):
     descricao_contratado = df.loc[i, consolidacao.CONTRATADO_DESCRICAO]
-    if not pd.isna(descricao_contratado) and not pd.isnull(descricao_contratado):
-        descricao_contratado = processar_descricao_contratado(descricao_contratado)
 
-        if descricao_contratado != '':
-            cnpjs = dao_rfb.buscar_cnpj_por_razao_social(descricao_contratado)
+    if not pd.isna(descricao_contratado) and not pd.isnull(descricao_contratado):
+        map_empresa_to_cnpjs, tipo_busca = cnpj_util.buscar_empresas_por_razao_social(descricao_contratado)
+
+        if tipo_busca == 'BUSCA EXATA RFB':
+            empresa, cnpjs = list(map_empresa_to_cnpjs.items())[0]
 
             if len(cnpjs) == 1:
                 df.loc[i, consolidacao.CONTRATADO_CNPJ] = cnpjs[0]
@@ -90,11 +89,15 @@ def __inferir_cnpj(dao_rfb, df, i, map_nomes_exatos_cnpjs, map_nomes_cnpjs_suger
             elif len(cnpjs) > 1:
                 map_nomes_exatos_cnpjs[df.loc[i, consolidacao.CONTRATADO_DESCRICAO]] = cnpjs
                 df.loc[i, consolidacao.CNPJ_INFERIDO] = 'VER ABA CNPJs'
-            elif len(cnpjs) == 0:
-                # busca no índice Lucene
-                resultados_no_indice = buscar_por_razao_social(descricao_contratado)
-                df.loc[i, consolidacao.CNPJ_INFERIDO] = 'VER ABA CNPJs SUGERIDOS'
-                map_nomes_cnpjs_sugeridos[df.loc[i, consolidacao.CONTRATADO_DESCRICAO]] = resultados_no_indice
+        else:
+            df.loc[i, consolidacao.CNPJ_INFERIDO] = 'VER ABA CNPJs SUGERIDOS'
+            resultados_no_indice = []
+
+            for empresa, cnpjs in map_empresa_to_cnpjs.items():
+                for cnpj in cnpjs:
+                    resultados_no_indice.append((empresa, cnpj))
+
+            map_nomes_cnpjs_sugeridos[df.loc[i, consolidacao.CONTRATADO_DESCRICAO]] = resultados_no_indice
 
 
 consolidar()

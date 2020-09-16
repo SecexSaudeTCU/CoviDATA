@@ -29,7 +29,7 @@ url_api_ibge = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados'
 
 # URL para a API/microserviço que encapsula a consulta a dados de CNPJ.  A ideia é que no futuro esta solução possa ser
 # substituída, por exemplo, a alguma API do Solr do TCU ou da solução MAPA da STI.
-url_api_cnpj = 'http://127.0.0.1:5000/cnpj_util/razao_social?q='
+url_api_cnpj = 'http://localhost:8090/cnpj_util/razao_social?q='
 
 # Urls de portais de tansparência do governos estaduais
 url_pt_AM = 'http://www.transparencia.am.gov.br/covid-19/contratos/'

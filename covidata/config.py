@@ -8,22 +8,6 @@ import pathlib
 diretorio_raiz = pathlib.Path(__file__).parent.parent
 diretorio_dados = diretorio_raiz.joinpath('dados')
 
-diretorio_noticias = diretorio_dados.joinpath('noticias')
-arquivo_noticias_rotulado = diretorio_noticias.joinpath('labeled_4_labels.jsonl')
-diretorio_raiz_modelos = diretorio_noticias.joinpath('modelos')
-
-diretorio_modelo_neuralmind_bert_base = diretorio_raiz_modelos.joinpath('bert-neuralmind').joinpath('base')
-subdiretorio_modelo_neuralmind_bert_base = diretorio_modelo_neuralmind_bert_base.joinpath(
-    'bert-base-portuguese-cased_pytorch_checkpoint')
-vocab_bert_base = diretorio_modelo_neuralmind_bert_base.joinpath('vocab.txt')
-
-diretorio_modelo_neuralmind_bert_large = diretorio_raiz_modelos.joinpath('bert-neuralmind').joinpath('large')
-subdiretorio_modelo_neuralmind_bert_large = diretorio_modelo_neuralmind_bert_large.joinpath(
-    'bert-large-portuguese-cased_pytorch_checkpoint')
-vocab_bert_large = diretorio_modelo_neuralmind_bert_large.joinpath('vocab.txt')
-
-diretorio_modelo_bert_finetuned = diretorio_raiz_modelos.joinpath('bert-neuralmind-finetuned')
-
 # URL para a API de localidades do IBGE
 url_api_ibge = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados'
 
@@ -40,7 +24,6 @@ url_pt_RR = 'http://transparencia.rr.gov.br/covid/public/consultas/despesas/covi
 url_pt_RO = 'http://comprasemergenciais-covid19.ro.gov.br/Grafico/DespesasDiretasToCSV'
 url_pt_AC = 'http://sesacrenetnovo.ac.gov.br/relatorio/api/public/dashboard/c80bba1d-c560-4273-b15c-a4fbb3a0d954/card/786?parameters=%5B%5D'
 url_pt_ES = 'https://coronavirus.es.gov.br/Media/Coronavirus/Transparencia/DadosAbertos/dados-contratos-emergenciais-covid-19.csv?v=49'
-#url_pt_SP = 'https://www.saopaulo.sp.gov.br/coronavirus/transparencia/'
 url_pt_SP = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2020/09/COVID.csv'
 url_pt_AL = 'http://transparencia.al.gov.br/despesa/json-despesa-covid19-itens/?order=asc&offset=0'
 url_pt_MA = 'http://www.transparencia.ma.gov.br/app/compras/covid#lista'
@@ -79,7 +62,7 @@ url_pt_Belem = 'http://contratoemergencial.belem.pa.gov.br/despesas/'
 url_pt_Rio_favorecidos = 'http://riotransparente.rio.rj.gov.br/arquivos/Open_Data_Favorecidos_Covid19_2020.xlsx'
 url_pt_Rio_contratos = 'http://riotransparente.rio.rj.gov.br/arquivos/Open_Data_Contratos_Covid19_2020.xlsx'
 url_pt_Rio_despesas_por_ato = 'http://riotransparente.rio.rj.gov.br/arquivos/Open_Data_Desp_Ato_Covid19_2020.txt'
-url_pt_Recife='http://dados.recife.pe.gov.br/group/covid'
+url_pt_Recife = 'http://dados.recife.pe.gov.br/group/covid'
 url_pt_Macapa = 'http://transparencia2.macapa.ap.gov.br/tipo_contrato/covid-19/'
 url_pt_BoaVista = 'https://transparencia.boavista.rr.gov.br/cpl/export/csv/covid-19'
 url_pt_PortoVelho = 'https://ecidadetransparencia.portovelho.ro.gov.br/despesas_covid#'

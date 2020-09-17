@@ -1,4 +1,7 @@
+import json
+
 import os
+import requests
 import time
 
 import pandas as pd
@@ -78,7 +81,7 @@ def __inferir_cnpj(df, i, map_nomes_exatos_cnpjs, map_nomes_cnpjs_sugeridos):
     descricao_contratado = df.loc[i, consolidacao.CONTRATADO_DESCRICAO]
 
     if not pd.isna(descricao_contratado) and not pd.isnull(descricao_contratado):
-        map_empresa_to_cnpjs, tipo_busca = cnpj_util.buscar_empresas_por_razao_social(descricao_contratado)
+        map_empresa_to_cnpjs, tipo_busca = __buscar_empresas_por_razao_social(descricao_contratado)
 
         if tipo_busca == 'BUSCA EXATA RFB':
             empresa, cnpjs = list(map_empresa_to_cnpjs.items())[0]
@@ -98,6 +101,13 @@ def __inferir_cnpj(df, i, map_nomes_exatos_cnpjs, map_nomes_cnpjs_sugeridos):
                     resultados_no_indice.append((empresa, cnpj))
 
             map_nomes_cnpjs_sugeridos[df.loc[i, consolidacao.CONTRATADO_DESCRICAO]] = resultados_no_indice
+
+
+def __buscar_empresas_por_razao_social(razao_social):
+    resultado = json.loads(requests.get(config.url_api_cnpj + razao_social).content)
+    map_empresa_to_cnpjs = resultado['dados']['empresas']
+    tipo_busca = resultado['dados']['tipo_busca']
+    return map_empresa_to_cnpjs, tipo_busca
 
 
 consolidar()

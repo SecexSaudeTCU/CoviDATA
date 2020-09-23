@@ -33,9 +33,8 @@ class PT_Belem_Scraper(Scraper):
                             consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.FONTE_RECURSOS_DESCRICAO: 'Fonte',
                             consolidacao.CONTRATADO_DESCRICAO: 'Fornecedor', consolidacao.VALOR_CONTRATO: 'Valor',
                             consolidacao.DOCUMENTO_DATA: 'Data', consolidacao.SITUACAO: 'Situacao'}
-        planilha_original = path.join(config.diretorio_dados, 'PA', 'portal_transparencia', 'Belem',
-                                      'Prefeitura Municipal de Belém - Transparência COVID-19 - Despesas.xlsx')
-        df_original = pd.read_excel(planilha_original, header=1)
+        planilha_original = path.join(config.diretorio_dados, 'PA', 'portal_transparencia', 'Belem', 'Despesas.csv')
+        df_original = pd.read_csv(planilha_original)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Belem
         df = consolidar_layout([], df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL, fonte_dados, 'PA',
                                get_codigo_municipio_por_nome('Belém', 'PA'), data_extracao,
@@ -67,7 +66,7 @@ class PortalTransparencia_Belem(SeleniumDownloader):
         frame = wait.until(EC.visibility_of_element_located((By.NAME, 'myiFrame')))
         self.driver.switch_to.frame(frame)
 
-        element = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'buttons-excel')))
+        element = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'buttons-csv')))
         self.driver.execute_script("arguments[0].click();", element)
 
         self.driver.switch_to.default_content()

@@ -120,11 +120,7 @@ class TCE_AC_DespesasScraper(TCE_AC_Scraper):
                             consolidacao.CONTRATADO_CNPJ: '\nCPF/CNPJ\n',
                             consolidacao.DOCUMENTO_DATA: '\nData do Empenho\n',
                             consolidacao.FONTE_RECURSOS_COD: '\nFonte de Recurso\n',
-                            consolidacao.VALOR_EMPENHADO: '\nValor Empenhado\r\n  ($)\n',
-                            # TODO: Dúvida: Podemos assumir para VALOR_R$ o valor empenhado, quando essa informação não estiver disponível?
-                            consolidacao.VALOR_CONTRATO: '\nValor Empenhado\r\n  ($)\n'}
-        # TODO: Sugerir uma nova coluna 'TIPO_FONTE'
-        # TODO: Nem sempre esta informação está presente
+                            consolidacao.VALOR_EMPENHADO: '\nValor Empenhado\r\n  ($)\n'}
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'despesas.xls'), header=4)
         df = consolidar_layout(['\nTipo de Credor\n'], df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_despesas, 'AC', '',

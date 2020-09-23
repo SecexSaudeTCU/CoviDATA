@@ -15,8 +15,9 @@ class PT_PR_Aquisicoes_Scraper(Scraper):
     def scrap(self):
         page = requests.get(self.url)
         soup = BeautifulSoup(page.content, 'html.parser')
-        link = soup.findAll('span', {'class': 'embedded-entity', 'title': 'clique aqui.'})[0].find_all('a')[0].attrs[
-            'href']
+        article = soup.findAll('article',{'about':'/Campanha/Pagina/Transparencia-Aquisicoes-e-Contratacoes-Contratos'})
+        li = article[0].find_all('ul')[0].find_all('li')[1]
+        link = li.find_all('a')[0].attrs['href']
         pt_PR_aquisicoes = FileDownloader(path.join(config.diretorio_dados, 'PR', 'portal_transparencia'),
                                           link, 'contratos.xls')
         pt_PR_aquisicoes.download()
@@ -35,7 +36,13 @@ class PT_PR_Aquisicoes_Scraper(Scraper):
                             consolidacao.DATA_PUBLICACAO: 'DATA  PUBLICAÇÃO                       DIOE / FOLHA'}
         colunas_adicionais = ['PRAZO              CONTRATO (mês)', 'NÚMERO DISPENSA', 'PROTOCOLO / PROCESSO']
         planilha_original = path.join(config.diretorio_dados, 'PR', 'portal_transparencia', 'contratos.xls')
-        df_original = pd.read_excel(planilha_original, header=6, sheet_name='UNIFICAÇÃO DOS 6 MESES')
+        #df_original = pd.read_excel(planilha_original, header=6, sheet_name='UNIFICAÇÃO DOS 6 MESES')
+
+        #Obtém a última aba da planilha
+        xl = pd.ExcelFile(planilha_original)
+        aba = xl.sheet_names[-1]
+        df_original = pd.read_excel(planilha_original, header=6, sheet_name=aba)
+
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + self.url
         df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                fonte_dados, 'PR', '', data_extracao)

@@ -85,7 +85,6 @@ def __consolidar_despesas_capital(data_extracao):
 
 
 def consolidar(data_extracao):
-    # TODO: Unificar formatação de datas
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Ceará')
     gastos = __consolidar_gastos(data_extracao)

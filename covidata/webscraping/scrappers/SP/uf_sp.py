@@ -10,7 +10,7 @@ def main(df_consolidado):
     logger = logging.getLogger('covidata')
 
     # TODO: Desabilitado devido a instabiliades do Selenium
-    # tcm_sp.main()
+    tcm_sp.main()
 
     logger.info('Consolidando as informações no layout padronizado...')
     start_time = time.time()

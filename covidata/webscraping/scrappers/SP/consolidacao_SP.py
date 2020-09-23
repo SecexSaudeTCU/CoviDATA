@@ -53,8 +53,8 @@ def consolidar(data_extracao, df_consolidado):
     logger.info('Iniciando consolidação dados Sâo Paulo')
 
     # TODO: Indisponível/instável
-    # consolidacao_tcm = consolidar_tcm(data_extracao)
-    # consolidacoes = consolidacoes.append(consolidacao_tcm, ignore_index=True, sort=False)
+    consolidacao_tcm = consolidar_tcm(data_extracao)
+    df_consolidado = df_consolidado.append(consolidacao_tcm, ignore_index=True, sort=False)
 
     salvar(df_consolidado, 'SP')
 

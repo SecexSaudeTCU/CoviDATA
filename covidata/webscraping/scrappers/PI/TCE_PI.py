@@ -48,7 +48,7 @@ class TCE_PI_Scraper(Scraper):
         # On hold por 5 segundos
         time.sleep(5)
 
-        select_qtd = Select(driver.find_element_by_id('formDtContratos:dtContratos:j_id21'))
+        select_qtd = Select(driver.find_element_by_id('formDtContratos:dtContratos:j_id16'))
         select_qtd.select_by_visible_text('100')
         time.sleep(5)
 

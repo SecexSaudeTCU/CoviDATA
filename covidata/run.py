@@ -21,8 +21,8 @@ from covidata.webscraping.scrappers.AC.TCE_AC import TCE_AC_ContratosScraper, TC
 from covidata.webscraping.scrappers.AL.PT_AL import PT_AL_Scraper
 from covidata.webscraping.scrappers.AL.PT_Maceio import PT_Maceio_Scraper
 from covidata.webscraping.scrappers.AM import uf_am
-from covidata.webscraping.scrappers.AP import uf_ap
 from covidata.webscraping.scrappers.AP.PT_AP import PT_AP_Scraper
+from covidata.webscraping.scrappers.AP.PT_Macapa import PT_Macapa_Scraper
 from covidata.webscraping.scrappers.BA import uf_ba
 from covidata.webscraping.scrappers.CE import uf_ce
 from covidata.webscraping.scrappers.DF.PT_DF import PT_DF_Scraper
@@ -74,7 +74,7 @@ if __name__ == '__main__':
                TCE_AC_ContratosMunicipiosScraper(config.url_tce_AC_contratos_municipios),
                TCE_AC_DespesasMunicipiosScraper(config.url_tce_AC_despesas_municipios)],
         'AL': [PT_AL_Scraper(config.url_pt_AL), PT_Maceio_Scraper(config.url_pt_Maceio)],
-        'AP': [PT_AP_Scraper(config.url_pt_AP)],
+        'AP': [PT_AP_Scraper(config.url_pt_AP), PT_Macapa_Scraper(config.url_pt_Macapa)],
         'DF': [PT_DF_Scraper(config.url_pt_DF)],
         'GO': [PT_Goiania_Scraper(config.url_pt_Goiania_despesas)],
         'MA': [TCE_MA_Scraper(config.url_tce_MA), PT_SaoLuis_Scraper(config.url_pt_SaoLuis)],
@@ -110,10 +110,6 @@ if __name__ == '__main__':
                 erros.append(scraper.url)
 
     start_time = time.time()
-
-    logger.info('# Recuperando dados do Amapá...')
-    uf_ap.main(dfs_consolidados['AP'])
-    dfs_consolidados.pop('AP')
 
     logger.info('# Recuperando dados do Amazonas...')
     uf_am.main()

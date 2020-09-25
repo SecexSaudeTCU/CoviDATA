@@ -20,7 +20,8 @@ from covidata.webscraping.scrappers.AC.TCE_AC import TCE_AC_ContratosScraper, TC
     TCE_AC_ContratosMunicipiosScraper, TCE_AC_DespesasMunicipiosScraper
 from covidata.webscraping.scrappers.AL.PT_AL import PT_AL_Scraper
 from covidata.webscraping.scrappers.AL.PT_Maceio import PT_Maceio_Scraper
-from covidata.webscraping.scrappers.AM import uf_am
+from covidata.webscraping.scrappers.AM.PT_AM import PT_AM_Scraper
+from covidata.webscraping.scrappers.AM.PT_Manaus import PT_Manaus_Scraper
 from covidata.webscraping.scrappers.AP.PT_AP import PT_AP_Scraper
 from covidata.webscraping.scrappers.AP.PT_Macapa import PT_Macapa_Scraper
 from covidata.webscraping.scrappers.BA import uf_ba
@@ -44,7 +45,7 @@ from covidata.webscraping.scrappers.PI.TCE_PI import TCE_PI_Scraper
 from covidata.webscraping.scrappers.PR.PT_Curitiba import PT_CuritibaContratacoes_Scraper, PT_CuritibaAquisicoes_Scraper
 from covidata.webscraping.scrappers.PR.PT_PR import PT_PR_Aquisicoes_Scraper, PT_PR_DadosAbertos_Scraper
 from covidata.webscraping.scrappers.RJ import uf_rj
-from covidata.webscraping.scrappers.RN import uf_rn
+from covidata.webscraping.scrappers.RN.PT_Natal import PT_Natal_Scraper
 from covidata.webscraping.scrappers.RN.PT_RN import PT_RN_Scraper
 from covidata.webscraping.scrappers.RO import uf_ro
 from covidata.webscraping.scrappers.RR.PT_BoaVista import PT_BoaVista_Scraper
@@ -74,6 +75,7 @@ if __name__ == '__main__':
                TCE_AC_ContratosMunicipiosScraper(config.url_tce_AC_contratos_municipios),
                TCE_AC_DespesasMunicipiosScraper(config.url_tce_AC_despesas_municipios)],
         'AL': [PT_AL_Scraper(config.url_pt_AL), PT_Maceio_Scraper(config.url_pt_Maceio)],
+        'AM': [PT_AM_Scraper(config.url_pt_AM), PT_Manaus_Scraper(config.url_pt_Manaus)],
         'AP': [PT_AP_Scraper(config.url_pt_AP), PT_Macapa_Scraper(config.url_pt_Macapa)],
         'DF': [PT_DF_Scraper(config.url_pt_DF)],
         'GO': [PT_Goiania_Scraper(config.url_pt_Goiania_despesas)],
@@ -86,7 +88,7 @@ if __name__ == '__main__':
         'PR': [PT_PR_Aquisicoes_Scraper(config.url_pt_PR_aquisicoes), PT_PR_DadosAbertos_Scraper(),
                PT_CuritibaAquisicoes_Scraper(config.url_pt_Curitiba_aquisicoes),
                PT_CuritibaContratacoes_Scraper(config.url_pt_Curitiba_contratacoes)],
-        'RN': [PT_RN_Scraper(config.url_pt_RN)],
+        'RN': [PT_RN_Scraper(config.url_pt_RN), PT_Natal_Scraper(config.url_pt_Natal)],
         'RR': [PT_RR_Scraper(config.url_pt_RR), PT_BoaVista_Scraper(config.url_pt_BoaVista)],
         'SE': [PT_SE_Scraper(config.url_pt_SE), PT_Aracaju_Scraper(config.url_pt_Aracaju)],
         'SP': [PT_SP_Scraper(config.url_pt_SP), PT_SaoPaulo_Scraper(config.url_pt_SaoPaulo)],
@@ -110,9 +112,6 @@ if __name__ == '__main__':
                 erros.append(scraper.url)
 
     start_time = time.time()
-
-    logger.info('# Recuperando dados do Amazonas...')
-    uf_am.main()
 
     logger.info('# Recuperando dados da Bahia...')
     uf_ba.main()
@@ -143,10 +142,6 @@ if __name__ == '__main__':
 
     logger.info('# Recuperando dados do Rio de Janeiro...')
     uf_rj.main()
-
-    logger.info('# Recuperando dados de Rio Grande do Norte...')
-    uf_rn.main(dfs_consolidados['RN'])
-    dfs_consolidados.pop('RN')
 
     logger.info('# Recuperando dados do Rio Grande do Sul...')
     uf_rs.main()

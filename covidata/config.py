@@ -32,8 +32,7 @@ url_pt_BA = 'http://www.saude.ba.gov.br/temasdesaude/coronavirus/contratacoes-co
 url_pt_MT = 'http://consultas.transparencia.mt.gov.br/compras/contratos_covid_completo/'
 url_pt_GO = 'http://www.monitoramentoegestao.com.br/download_arquivos/aquisicoes.csv'
 url_pt_RS = 'https://www.compras.rs.gov.br/transparencia/editais-covid19.csv?contexto=Celic'
-url_pt_PR_aquisicoes = 'http://www.coronavirus.pr.gov.br/Campanha/Pagina/TRANSPARENCIA-Enfrentamento-ao-Coronavirus-18#dados'
-url_pt_PR_dados_abertos = 'http://www.coronavirus.pr.gov.br/sites/cadastrocovid19/arquivos_restritos/files/documento/'
+url_pt_PR = 'http://www.transparencia.download.pr.gov.br/exportacao/DISPENSAS_INEXIGIBILIDADE_COVID/DISPENSAS_INEXIGIBILIDADE_COVID-2020_CSV.zip?windowId=3d5'
 url_pt_SC_contratos = 'http://dados.sc.gov.br/dataset/dfc9ffcd-0f0d-4d92-9b5f-30f2d718105d/resource/18a4438d-4352-45f0-bd97-9edfd4425ae2/download/contrato_item.xlsx'
 url_pt_SC_despesas = 'http://www.transparencia.sc.gov.br/data/despesa/exportcsv?anomesinifiltro%5B%5D=202001&anomesfimfiltro%5B%5D=202012&agrupamentos%5B%5D=orgao&indicador=3779&'
 url_pt_MG = 'http://www.transparencia.mg.gov.br/covid-19/compras-contratos'
@@ -70,7 +69,7 @@ url_pt_RioBranco = 'http://transparencia.riobranco.ac.gov.br/calamidade-publica/
 url_pt_Vitoria = 'http://transparencia.vitoria.es.gov.br/Licitacao.Lista.RelatorioExcel.ashx?municipioID=1&numero=0&exercicio=2020&idsModalidade=0&idComissao=0&idEnquadramento=0&idsSituacao=0&idSecretaria=0&idResponsavel=0&idRequisitante=0&idsFornecedor=0&tipo=tlmDispensa&objeto=&emergencial=covid-19&pesquisa='
 url_pt_SaoPaulo = 'https://www.prefeitura.sp.gov.br/cidade/secretarias/controladoria_geral/transparencia_covid19/index.php?p=295874'
 url_pt_Maceio = 'http://www.licitacao.maceio.al.gov.br/covid/json'  # fonte: http://www.licitacao.maceio.al.gov.br/
-url_pt_SaoLuis = 'http://covid19.saoluis.ma.gov.br/2802'
+url_pt_SaoLuis = 'http://covid19.saoluis.ma.gov.br/pagina/2802'
 url_pt_Cuiaba = 'http://covid.cuiaba.mt.gov.br/publico/busca/13'
 url_pt_PortoAlegre = 'http://www.portaldecompraspublicas.com.br/18/Processos/?slT=3&slO=206&slU=233325&slTag=COVID19'
 url_pt_Curitiba_contratacoes = 'https://mid.curitiba.pr.gov.br/conteudos/coronavirus/transparencia/licitacoes_contratacoes.csv'

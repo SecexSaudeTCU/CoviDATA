@@ -43,7 +43,7 @@ from covidata.webscraping.scrappers.PB import uf_pb
 from covidata.webscraping.scrappers.PE.PT_Recife import PT_Recife_Scraper
 from covidata.webscraping.scrappers.PI.TCE_PI import TCE_PI_Scraper
 from covidata.webscraping.scrappers.PR.PT_Curitiba import PT_CuritibaContratacoes_Scraper, PT_CuritibaAquisicoes_Scraper
-from covidata.webscraping.scrappers.PR.PT_PR import PT_PR_Aquisicoes_Scraper, PT_PR_DadosAbertos_Scraper
+from covidata.webscraping.scrappers.PR.PT_PR import PT_PR_Scraper
 from covidata.webscraping.scrappers.RJ import uf_rj
 from covidata.webscraping.scrappers.RN.PT_Natal import PT_Natal_Scraper
 from covidata.webscraping.scrappers.RN.PT_RN import PT_RN_Scraper
@@ -85,8 +85,7 @@ if __name__ == '__main__':
         'PA': [PT_Belem_Scraper(config.url_pt_Belem)],
         'PE': [PT_Recife_Scraper(config.url_pt_Recife)],
         'PI': [TCE_PI_Scraper(config.url_tce_PI)],
-        'PR': [PT_PR_Aquisicoes_Scraper(config.url_pt_PR_aquisicoes), PT_PR_DadosAbertos_Scraper(),
-               PT_CuritibaAquisicoes_Scraper(config.url_pt_Curitiba_aquisicoes),
+        'PR': [PT_PR_Scraper(config.url_pt_PR), PT_CuritibaAquisicoes_Scraper(config.url_pt_Curitiba_aquisicoes),
                PT_CuritibaContratacoes_Scraper(config.url_pt_Curitiba_contratacoes)],
         'RN': [PT_RN_Scraper(config.url_pt_RN), PT_Natal_Scraper(config.url_pt_Natal)],
         'RR': [PT_RR_Scraper(config.url_pt_RR), PT_BoaVista_Scraper(config.url_pt_BoaVista)],

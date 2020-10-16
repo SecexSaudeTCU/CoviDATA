@@ -30,7 +30,7 @@ from covidata.webscraping.scrappers.DF.PT_DF import PT_DF_Scraper
 from covidata.webscraping.scrappers.ES import uf_es
 from covidata.webscraping.scrappers.GO import uf_go
 from covidata.webscraping.scrappers.GO.PT_Goiania import PT_Goiania_Scraper
-from covidata.webscraping.scrappers.MA import uf_ma
+from covidata.webscraping.scrappers.MA.PT_MA import PT_MA_Scraper
 from covidata.webscraping.scrappers.MA.PT_SaoLuis import PT_SaoLuis_Scraper
 from covidata.webscraping.scrappers.MA.TCE_MA import TCE_MA_Scraper
 from covidata.webscraping.scrappers.MG import uf_mg
@@ -79,7 +79,7 @@ if __name__ == '__main__':
         'AP': [PT_AP_Scraper(config.url_pt_AP), PT_Macapa_Scraper(config.url_pt_Macapa)],
         'DF': [PT_DF_Scraper(config.url_pt_DF)],
         'GO': [PT_Goiania_Scraper(config.url_pt_Goiania_despesas)],
-        'MA': [TCE_MA_Scraper(config.url_tce_MA), PT_SaoLuis_Scraper(config.url_pt_SaoLuis)],
+        'MA': [PT_MA_Scraper(config.url_pt_MA), TCE_MA_Scraper(config.url_tce_MA), PT_SaoLuis_Scraper(config.url_pt_SaoLuis)],
         'MS': [PT_MS_Scraper(config.url_pt_MS), PT_CampoGrande_Scraper(config.url_pt_CampoGrande)],
         'MT': [PT_MT_Scraper(config.url_pt_MT)],
         'PA': [PT_Belem_Scraper(config.url_pt_Belem)],
@@ -124,10 +124,6 @@ if __name__ == '__main__':
     logger.info('# Recuperando dados de Goiás...')
     uf_go.main(dfs_consolidados['GO'])
     dfs_consolidados.pop('GO')
-
-    logger.info('# Recuperando dados do Maranhão...')
-    uf_ma.main(dfs_consolidados['MA'])
-    dfs_consolidados.pop('MA')
 
     logger.info('# Recuperando dados de Minas Gerais...')
     uf_mg.main()

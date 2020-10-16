@@ -18,7 +18,7 @@ class PT_PR_Scraper(Scraper):
         downloader = FileDownloader(diretorio, config.url_pt_PR, csv_zip)
         downloader.download()
 
-        with zipfile.ZipFile(csv_zip, 'r') as zip_ref:
+        with zipfile.ZipFile(diretorio.joinpath(csv_zip), 'r') as zip_ref:
             zip_ref.extractall(diretorio)
 
     def consolidar(self, data_extracao):
@@ -45,7 +45,7 @@ class PT_PR_Scraper(Scraper):
                               'nr_publicacao', 'numero_item', 'data_avaliacao', 'cotacoes']
         planilha_original = path.join(config.diretorio_dados, 'PR', 'portal_transparencia',
                                       'TB_DISPENSAS_INEXIGIBILIDADE-2020.csv')
-        df_original = pd.read_csv(planilha_original)
+        df_original = pd.read_csv(planilha_original, sep=';')
 
         df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                config.url_pt_PR, 'PR', '', data_extracao)

@@ -29,13 +29,11 @@ class PT_MA_Scraper(Scraper):
 
     def __consolidar_portal_transparencia_estado(self, data_extracao):
         dicionario_dados = {consolidacao.CONTRATADO_DESCRICAO: 'Contratado', consolidacao.NUMERO_CONTRATO: 'contrato'}
-        colunas_adicionais = ['Fonte contratado estadual', 'Fonte contratado federal', 'Fonte contratado doações',
-                              'Fonte pago estadual', 'Fonte pago federal', 'Fonte pago doações']
         planilha_original = path.join(config.diretorio_dados, 'MA', 'portal_transparencia',
                                       'Portal da Transparência do Governo do Estado do Maranhão.xlsx')
         df_original = pd.read_excel(planilha_original)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_MA
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                fonte_dados, 'MA', '', data_extracao)
         return df
 

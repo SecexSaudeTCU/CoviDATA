@@ -45,10 +45,9 @@ class PT_AL_Scraper(Scraper):
                             consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'local_entrega',
                             consolidacao.PRAZO_EM_DIAS: 'prazo_contratual', consolidacao.NUMERO_CONTRATO: 'contrato',
                             consolidacao.NUMERO_PROCESSO: 'processo'}
-        colunas_adicionais = ['modalidade_contratacao']
         df_original = pd.read_excel(
             path.join(config.diretorio_dados, 'AL', 'portal_transparencia', 'despesas.xlsx'))
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_AL, 'AL', '',
                                data_extracao, self.pos_processar_despesas)
         return df, False

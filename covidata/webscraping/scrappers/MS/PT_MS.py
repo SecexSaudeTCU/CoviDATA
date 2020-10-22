@@ -39,12 +39,11 @@ class PT_MS_Scraper(Scraper):
         dicionario_dados = {consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ', consolidacao.CONTRATADO_DESCRICAO: 'Credor',
                             consolidacao.CONTRATANTE_DESCRICAO: 'Órgão', consolidacao.DESPESA_DESCRICAO: 'Objeto',
                             consolidacao.MOD_APLIC_DESCRICAO: 'Modalidade', consolidacao.VALOR_CONTRATO: 'Valor'}
-        colunas_adicionais = ['Número Processo']
         planilha_original = path.join(config.diretorio_dados, 'MS', 'portal_transparencia',
                                       'ComprasEmergenciaisMS_COVID19.csv')
         df_original = pd.read_csv(planilha_original, sep=';', header=4, index_col=False)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_MS
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                fonte_dados, 'MS', '', data_extracao)
         df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
         return df

@@ -39,13 +39,11 @@ def __consolidar_dados_contratos_emergenciais(data_extracao):
                         consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local de Entrega / Execução',
                         consolidacao.NUMERO_CONTRATO: 'Número / Ano do instrumento contratual',
                         consolidacao.NUMERO_PROCESSO: 'Número do Processo de Contratação / aquisição'}
-    colunas_adicionais = ['Prazo de vigência', 'Link do Processo de Contratação/Aquisição',
-                          'Termo de Referência / Projeto Básico', 'Íntegra do Instrumento Contratual']
     planilha_original = path.join(config.diretorio_dados, 'ES', 'portal_transparencia',
                                   'dados-contratos-emergenciais-covid-19.csv')
     df_original = pd.read_csv(planilha_original, encoding="ISO-8859-1", sep=';')
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_ES
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+    df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            fonte_dados, 'ES', '', data_extracao, pos_processar_dados_contratos_emergenciais)
 
     return df
@@ -54,12 +52,11 @@ def __consolidar_dados_contratos_emergenciais(data_extracao):
 def __consolidar_licitacoes_capital(data_extracao):
     dicionario_dados = {consolidacao.MOD_APLIC_DESCRICAO: 'Modalidade', consolidacao.DESPESA_DESCRICAO: 'Objeto',
                         consolidacao.NUMERO_PROCESSO: 'Processo/Ano'}
-    colunas_adicionais = ['Número/Ano', 'Data Ratificação', 'Enquadramento']
     planilha_original = path.join(config.diretorio_dados, 'ES', 'portal_transparencia', 'Vitoria',
                                   'TransparenciaWeb.Licitacoes.Lista.xlsx')
     df_original = pd.read_excel(planilha_original, header=3)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Vitoria
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+    df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                            fonte_dados, 'ES', get_codigo_municipio_por_nome('Vitória', 'ES'), data_extracao,
                            pos_processar_licitacoes_capital)
     return df

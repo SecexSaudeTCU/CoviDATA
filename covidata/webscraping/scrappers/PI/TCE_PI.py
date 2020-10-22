@@ -119,10 +119,6 @@ class TCE_PI_Scraper(Scraper):
                             consolidacao.DATA_INICIO_VIGENCIA: 'dt ini vig atual',
                             consolidacao.DATA_FIM_VIGENCIA: 'dt fim vig atual'}
 
-        # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-        colunas_adicionais = ['instrumento', 'nº/ano', 'procedimento', 'tipo contrato', 'status',
-                              'Data Cadastro', 'Data última atualização']
-
         # Lê o arquivo "xlsx" de contratos baixado como um objeto pandas DataFrame
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'PI', 'tce', 'contratos.xls'), header=4)
 
@@ -131,7 +127,7 @@ class TCE_PI_Scraper(Scraper):
         df_original.rename(columns={'objeto.1': 'objeto'}, inplace=True)
 
         # Chama a função "consolidar_layout" definida em módulo importado
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_PI, 'PI', '',
                                data_extracao, self.pos_processar_tce)
 

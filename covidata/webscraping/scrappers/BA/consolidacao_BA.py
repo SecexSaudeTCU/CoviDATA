@@ -57,7 +57,7 @@ def consolidar_contratos(data_extracao):
     planilha_original = path.join(config.diretorio_dados, 'BA', 'portal_transparencia', 'contratos.xls')
     df_original = pd.read_excel(planilha_original, header=4)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_BA
-    df = consolidar_layout([], df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL, fonte_dados, 'BA', '',
+    df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL, fonte_dados, 'BA', '',
                            data_extracao, None)
     df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
     return df
@@ -70,11 +70,6 @@ def consolidar_tce(data_extracao):
                         consolidacao.CONTRATADO_DESCRICAO: 'Credor',
                         consolidacao.CONTRATADO_CNPJ: 'CNPJ Fornecedor'}
 
-    # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-    colunas_adicionais = ['Especificação', 'Unidade Item', 'Quantidade Item', 'PU Item',
-                          'Preço Item', 'Data Compra', 'Origem Dados', 'Data Coleta',
-                          'Quantidade Compras']
-
     # Lê o arquivo "xlsx" de aquisições nacionais baixado como um objeto pandas DataFrame
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'BA', 'tce',
                                           'MiranteRelDadosAbertosPainelPublicoCovid19Nacional.xlsx'),
@@ -84,7 +79,7 @@ def consolidar_tce(data_extracao):
     df = pre_processar_tce(df_original)
 
     # Chama a função "consolidar_layout" definida em módulo importado
-    df = consolidar_layout(colunas_adicionais, df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+    df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_BA, 'BA', '',
                            data_extracao, pos_processar_tce)
 

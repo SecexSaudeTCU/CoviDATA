@@ -86,9 +86,6 @@ class PT_RR_Scraper(Scraper):
                             consolidacao.CONTRATANTE_DESCRICAO: 'UO',
                             consolidacao.ANO: 'ANO'}
 
-        # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-        colunas_adicionais = ['Situação do Processo', 'Tipo Contrato', 'Situação', 'Aditivos']
-
         # Lê o arquivo "xls" de contratos baixado como um objeto list utilizando a função "read_html" da biblioteca pandas
         df_original = pd.read_html(path.join(config.diretorio_dados, 'RR', 'portal_transparencia', arquivo),
                                    decimal=',')
@@ -97,7 +94,7 @@ class PT_RR_Scraper(Scraper):
         df = self.pre_processar_pt_RR(df_original)
 
         # Chama a função "consolidar_layout" definida em módulo importado
-        df = consolidar_layout(colunas_adicionais, df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+        df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_RR, 'RR', '',
                                data_extracao, self.pos_processar_pt_RR)
 

@@ -66,17 +66,14 @@ class PT_MT_Scraper(Scraper):
                             consolidacao.SITUACAO: 'Situação',
                             consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local da Execução'}
 
-        # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-        colunas_adicionais = ['Modalidade de Contratação']
-
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'MT', 'portal_transparencia', 'contratos.xls'),
                                     header=4)
 
         # Chama a função "pre_processar_tce" definida neste módulo
-        #df = self.pre_processar_pt_MT(df_original)
+        # df = self.pre_processar_pt_MT(df_original)
 
         # Chama a função "consolidar_layout" definida em módulo importado
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_MT,
                                'MT', '', data_extracao, self.pos_consolidar_pt_MT)
 

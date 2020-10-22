@@ -78,11 +78,6 @@ class PT_Aracaju_Scraper(Scraper):
                             consolidacao.VALOR_LIQUIDADO: 'Liquidado',
                             consolidacao.VALOR_EMPENHADO: 'Empenhado'}
 
-        # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-        colunas_adicionais = ['Data Pagamento', 'Processo', 'Pagamento Retido', 'Nota de Pagamento',
-                              'Data Liquidação', 'Liquidação', 'Documento', 'Liquidado Retido',
-                              'Data Empenho', 'Empenhado Anulado', 'Empenhado Reforçado']
-
         df_empenhos = pd.read_excel(path.join(config.diretorio_dados, 'SE', 'portal_transparencia',
                                               'Aracaju', 'Dados_Portal_Transparencia_Aracaju.xlsx'),
                                     sheet_name='Empenhos')
@@ -98,7 +93,7 @@ class PT_Aracaju_Scraper(Scraper):
         df = self.pre_processar_pt_Aracaju(df_empenhos, df_liquidacoes, df_pagamentos)
 
         # Chama a função "consolidar_layout" definida em módulo importado
-        df = consolidar_layout(colunas_adicionais, df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+        df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Aracaju, 'SE',
                                get_codigo_municipio_por_nome('Aracaju', 'SE'), data_extracao, self.pos_processar_pt)
 

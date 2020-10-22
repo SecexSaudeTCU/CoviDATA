@@ -93,14 +93,6 @@ def consolidar_pt_SC_contratos(data_extracao):
                         consolidacao.ORGAO_COD: 'CDORGAO',
                         consolidacao.CONTRATANTE_DESCRICAO: 'NMORGAO'}
 
-    # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-    colunas_adicionais = ['Código Gestão', 'Nome Gestão Contratante', 'Modalidade Licitação',
-                          'Código Item', 'Descrição Item', 'Marca Item',
-                          'Descrição Detalhada Item', 'Quantidade Item', 'PU Item',
-                          'Preço Item', 'Unidade Item', 'Número Serviço/Material',
-                          'Descrição Subitem', 'PU Subitem', 'Quantidade Subitem',
-                          'Preço Subitem', 'Unidade Subitem', 'Sigla Órgão']
-
     # Lê o arquivo "xlsx" de contratos baixado como um objeto pandas DataFrame
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'SC', 'portal_transparencia',
                                           'contrato_item.xlsx'))
@@ -109,7 +101,7 @@ def consolidar_pt_SC_contratos(data_extracao):
     df = pre_processar_pt_SC_contratos(df_original)
 
     # Chama a função "consolidar_layout" definida em módulo importado
-    df = consolidar_layout(colunas_adicionais, df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+    df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_SC_contratos, 'SC', '',
                            data_extracao, pos_processar_pts)
 
@@ -124,9 +116,6 @@ def consolidar_pt_SC_despesas(data_extracao):
                         consolidacao.VALOR_LIQUIDADO: 'vlliquidado',
                         consolidacao.VALOR_PAGO: 'vlpago'}
 
-    # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-    colunas_adicionais = ['Valor Dotação Inicial', 'Valor Dotação Atualizada']
-
     # Lê o arquivo "csv" de despesas baixado como um objeto pandas DataFrame
     df_original = pd.read_csv(path.join(config.diretorio_dados, 'SC', 'portal_transparencia',
                                         'analisedespesa.csv'),
@@ -137,7 +126,7 @@ def consolidar_pt_SC_despesas(data_extracao):
     df = pre_processar_pt_SC_despesas(df_original)
 
     # Chama a função "consolidar_layout" definida em módulo importado
-    df = consolidar_layout(colunas_adicionais, df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+    df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_SC_despesas, 'SC', '',
                            data_extracao)
 
@@ -154,11 +143,6 @@ def consolidar_pt_Florianopolis(data_extracao):
                         consolidacao.VALOR_CONTRATO: 'Valor Global',
                         consolidacao.DATA_ASSINATURA: 'Data Assinatura Contrato'}
 
-    # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-    colunas_adicionais = ['Número Dispensa', 'Local Entrega', 'Unidade Objeto',
-                          'Quantidade Objeto', 'Número Processo', 'Número Contrato',
-                          'Modalidade Licitação']
-
     # Lê o arquivo "csv" de despesas baixado como um objeto pandas DataFrame
     df_original = pd.read_csv(path.join(config.diretorio_dados, 'SC', 'portal_transparencia',
                                         'Florianopolis', 'aquisicoes.csv'),
@@ -169,7 +153,7 @@ def consolidar_pt_Florianopolis(data_extracao):
     df = pre_processar_pt_Florianopolis(df_original)
 
     # Chama a função "consolidar_layout" definida em módulo importado
-    df = consolidar_layout(colunas_adicionais, df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+    df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                            consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Florianopolis, 'SC',
                            get_codigo_municipio_por_nome('Florianópolis', 'SC'), data_extracao, pos_processar_pts)
 

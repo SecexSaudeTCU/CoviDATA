@@ -14,6 +14,7 @@ from covidata.persistencia.dao import persistir
 from covidata.webscraping.scrappers.scrapper import Scraper
 from requests.packages.urllib3.util.retry import Retry
 
+
 class PT_RN_Scraper(Scraper):
     def scrap(self):
         logger = logging.getLogger('covidata')
@@ -23,7 +24,7 @@ class PT_RN_Scraper(Scraper):
         headers = {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) '
                           'Chrome/50.0.2661.102 Safari/537.36'}
-        #page = requests.get(config.url_pt_RN, headers=headers, verify=False)
+        # page = requests.get(config.url_pt_RN, headers=headers, verify=False)
         session = requests.Session()
         retry = Retry(connect=3, backoff_factor=0.5)
         adapter = HTTPAdapter(max_retries=retry)
@@ -68,14 +69,11 @@ class PT_RN_Scraper(Scraper):
                             consolidacao.VALOR_PAGO: 'Valor Pago (R$)', consolidacao.DATA_ASSINATURA: 'Data Assinatura',
                             consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local de execução'}
 
-        # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-        colunas_adicionais = ['Modalidade', 'Vigência', 'Valor anulado (R$)']
-
         df_original = pd.read_excel(
             path.join(config.diretorio_dados, 'RN', 'portal_transparencia', 'compras_e_servicos.xls'), header=4)
 
         # Chama a função "consolidar_layout" definida em módulo importado
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_RN, 'RN', '',
                                data_extracao, self.pos_processar_pt)
         return df
@@ -88,24 +86,5 @@ class PT_RN_Scraper(Scraper):
                 df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CPF
             elif len(cpf_cnpj) > 14:
                 df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-
-            vigencia = df.loc[i, 'VIGÊNCIA']
-
-            if not pd.isna(vigencia):
-                indice_quebra_datas = vigencia.find(' a')
-
-                if indice_quebra_datas != -1:
-                    data_inicio = vigencia[0:indice_quebra_datas]
-                    indice_prazo_dias = vigencia.find(' (')
-
-                    if indice_prazo_dias != -1:
-                        data_fim = vigencia[indice_quebra_datas + 3:indice_prazo_dias]
-                    else:
-                        data_fim = vigencia[indice_quebra_datas:len(vigencia)]
-
-                    df.loc[i, consolidacao.DATA_INICIO_VIGENCIA] = data_inicio
-                    df.loc[i, consolidacao.DATA_FIM_VIGENCIA] = data_fim
-
-        df.drop(columns='VIGÊNCIA', axis=1, inplace=True)
 
         return df

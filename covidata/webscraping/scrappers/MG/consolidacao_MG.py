@@ -29,14 +29,11 @@ def __consolidar_compras(data_extracao):
                         consolidacao.DATA_FIM_VIGENCIA: 'Fim da Vigência ',
                         consolidacao.DATA_INICIO_VIGENCIA: 'Início da Vigência ',
                         consolidacao.NUMERO_CONTRATO: 'Número do Contrato '}
-    colunas_adicionais = ['Número do Processo de Compra ', 'Data de Cadastramento do Processo ',
-                          'Situação do Processo ', 'Fim da Vigência Atualizada ', 'Valor de Referência ',
-                          'Valor Homologado ']
     planilha_original = path.join(config.diretorio_dados, 'MG', 'portal_transparencia',
                                   '_Compras - Programa de enfrentamento COVID-19.csv')
     df_original = pd.read_csv(planilha_original, sep=';')
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_MG
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+    df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            fonte_dados, 'MG', '', data_extracao)
     df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
     return df
@@ -53,12 +50,11 @@ def __consolidar_contratacoes_capital(data_extracao):
                         consolidacao.DATA_INICIO_VIGENCIA: 'DATA_INICIO_VIGENCIA',
                         consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'LOCAL_EXECUCAO',
                         consolidacao.DATA_FIM_VIGENCIA: 'DATA_FIM_VIGENCIA'}
-    colunas_adicionais = ['DATA_CELEBRACAO', 'PROCESSO_COMPRA']
     planilha_original = path.join(config.diretorio_dados, 'MG', 'portal_transparencia', 'Belo Horizonte',
                                   'contratacaocorona.xlsx')
     df_original = pd.read_excel(planilha_original)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_BeloHorizonte
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+    df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                            fonte_dados, 'MG', get_codigo_municipio_por_nome('Belo Horizonte', 'MG'), data_extracao,
                            pos_processar_contratacoes_capital)
     return df

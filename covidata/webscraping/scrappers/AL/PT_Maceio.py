@@ -31,13 +31,10 @@ class PT_Maceio_Scraper(Scraper):
                             consolidacao.ANO: 'ano_modalidade', consolidacao.MOD_APLIC_DESCRICAO: 'modalidade',
                             consolidacao.CONTRATANTE_DESCRICAO: 'orgao_nome', consolidacao.UG_DESCRICAO: 'orgao_nome',
                             consolidacao.NUMERO_PROCESSO: 'num_processo'}
-        colunas_adicionais = ['data_abertura', 'hora_abertura', 'data_fechamento', 'hora_fechamento', 'orgao_sigla',
-                              'cota',
-                              'status', 'responsavel']
         df_original = pd.read_excel(
             path.join(config.diretorio_dados, 'AL', 'portal_transparencia', 'Maceio', 'compras.xlsx'))
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Maceio
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                fonte_dados, 'AL', get_codigo_municipio_por_nome('Maceió', 'AL'), data_extracao)
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'Maceió'
 

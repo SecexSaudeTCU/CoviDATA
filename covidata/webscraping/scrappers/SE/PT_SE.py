@@ -50,11 +50,7 @@ class PT_SE_Scraper(Scraper):
                             consolidacao.VALOR_EMPENHADO: 'Empenhado',
                             consolidacao.VALOR_LIQUIDADO: 'Liquidado'}
 
-        # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-        colunas_adicionais = ['Mês Empenho', 'Empenhado Original', 'Empenhado Reforço', 'Mês Liquidação']
-
         # Lê o arquivo "xlsx" de nome "Dados_Portal_Transparencia_Sergipe" de contratos baixado como um objeto pandas DataFrame
-
         df_empenhos = pd.read_excel(path.join(config.diretorio_dados, 'SE', 'portal_transparencia',
                                               'Sergipe', 'Dados_Portal_Transparencia_Sergipe.xlsx'),
                                     sheet_name='Empenhos')
@@ -67,7 +63,7 @@ class PT_SE_Scraper(Scraper):
         df = self.pre_processar_pt_SE(df_empenhos, df_liquidacoes)
 
         # Chama a função "consolidar_layout" definida em módulo importado
-        df = consolidar_layout(colunas_adicionais, df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+        df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_SE, 'SE', '',
                                data_extracao, self.pos_processar_pt)
         return df

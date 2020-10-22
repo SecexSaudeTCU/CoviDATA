@@ -37,17 +37,11 @@ class PT_PR_Scraper(Scraper):
                             consolidacao.CONTRATADO_CNPJ: 'cpf_cnpj_fornecedor',
                             consolidacao.CONTRATADO_DESCRICAO: 'fornecedor'
                             }
-        colunas_adicionais = ['sigla', 'tempo_prazo_contrato', 'unidade_tempo_prazo_contrato', 'ordem_de_compra',
-                              'ano_ordem_de_compra', 'situacao_ordem_compra', 'situacao_item_ordem_compra',
-                              'ordem_de_servico', 'ano_ordem_de_servico', 'situacao_ordem_servico',
-                              'situacao_item_ordem_compra', 'situacao_contrato', 'numero_solicitacao',
-                              'ano_solicitacao', 'modalidade', 'protocolo', 'natureza', 'descricao_publicacao',
-                              'nr_publicacao', 'numero_item', 'data_avaliacao', 'cotacoes']
         planilha_original = path.join(config.diretorio_dados, 'PR', 'portal_transparencia',
                                       'TB_DISPENSAS_INEXIGIBILIDADE-2020.csv')
         df_original = pd.read_csv(planilha_original, sep=';')
 
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                config.url_pt_PR, 'PR', '', data_extracao)
 
         df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ

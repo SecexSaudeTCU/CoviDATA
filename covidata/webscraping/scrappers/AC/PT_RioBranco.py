@@ -35,7 +35,7 @@ class PT_RioBranco_Scraper(Scraper):
                             consolidacao.DATA_FIM_VIGENCIA: 'Prazo de Vigência'}
         df_original = pd.read_excel(
             path.join(config.diretorio_dados, 'AC', 'portal_transparencia', 'Rio Branco', 'webexcel.xls'), header=11)
-        df = consolidar_layout([], df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_RioBranco, 'AC',
                                get_codigo_municipio_por_nome('Rio Branco', 'AC'), data_extracao,
                                self.pos_processar_portal_transparencia_capital)

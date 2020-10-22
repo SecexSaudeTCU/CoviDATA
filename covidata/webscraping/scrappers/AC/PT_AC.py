@@ -35,15 +35,12 @@ class PT_AC_Scraper(Scraper):
                             consolidacao.DOCUMENTO_DATA: 'DATAEMPENHO',
                             consolidacao.FONTE_RECURSOS_COD: 'FONTERECURSO'}
 
-        # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-        colunas_adicionais = ['CLASSECREDOR']
-
         # Lê o arquivo "xlsx" de empenhos baixado como um objeto pandas DataFrame
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'portal_transparencia', 'empenhos.xls'),
                                     header=4)
 
         # Chama a função "consolidar_layout" definida em módulo importado
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_AC, 'AC', '',
                                data_extracao, self.pos_processar_portal_transparencia_estadual)
 
@@ -98,4 +95,3 @@ class PortalTransparenciaAcre(JSONParser):
 
     def _get_elemento_raiz(self, conteudo):
         return None
-

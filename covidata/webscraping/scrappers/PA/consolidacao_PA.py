@@ -34,11 +34,10 @@ def __consolidar_portal_transparencia_estadual(data_extracao):
                         consolidacao.DATA_CELEBRACAO: 'Data de celebração do contrato',
                         consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local da execuçao',
                         consolidacao.NUMERO_PROCESSO: 'N˚ Processo'}
-    colunas_adicionais = ['Prazo Contratual', 'Contrato', 'DOE N˚']
     planilha_original = path.join(config.diretorio_dados, 'PA', 'portal_transparencia', 'covid.xlsx')
     df_original = pd.read_excel(planilha_original)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_PA
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+    df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            fonte_dados, 'PA', '', data_extracao, pos_processar_portal_transparencia_estadual)
     return df
 

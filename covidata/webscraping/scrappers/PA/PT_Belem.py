@@ -36,7 +36,7 @@ class PT_Belem_Scraper(Scraper):
         planilha_original = path.join(config.diretorio_dados, 'PA', 'portal_transparencia', 'Belem', 'Despesas.csv')
         df_original = pd.read_csv(planilha_original)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Belem
-        df = consolidar_layout([], df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL, fonte_dados, 'PA',
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL, fonte_dados, 'PA',
                                get_codigo_municipio_por_nome('Belém', 'PA'), data_extracao,
                                self.pos_processar_portal_transparencia_capital)
         return df

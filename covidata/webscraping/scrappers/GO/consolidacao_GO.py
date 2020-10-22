@@ -32,12 +32,10 @@ def __consolidar_aquisicoes(data_extracao):
                         consolidacao.CONTRATADO_CNPJ: 'CPF_CNPJ_COTACOES',
                         consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local de Execução',
                         consolidacao.NUMERO_PROCESSO: 'Processo'}
-    colunas_adicionais = ['Fase da Licitação', 'TR', 'Mapa de Preços', 'Contrato', 'Data Solicitação', 'Natureza',
-                          'Tempo de Contratação']
     planilha_original = path.join(config.diretorio_dados, 'GO', 'portal_transparencia', 'aquisicoes.csv')
     df_original = pd.read_csv(planilha_original)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_GO
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+    df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            fonte_dados, 'GO', '', data_extracao, pos_processar_aquisicoes)
     return df
 

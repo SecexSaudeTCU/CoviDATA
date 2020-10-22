@@ -50,12 +50,11 @@ class PT_SaoLuis_Scraper(Scraper):
                             consolidacao.DATA_ASSINATURA: 'Data de Assinatura',
                             consolidacao.LINK_CONTRATO: 'Link contrato',
                             consolidacao.NUMERO_CONTRATO: 'Nº Contrato'}
-        colunas_adicionais = ['Nº do Processo', 'Destinação de Uso', 'Vigência']
         planilha_original = path.join(config.diretorio_dados, 'MA', 'portal_transparencia', 'São Luís',
                                       'contratacoes.xls')
         df_original = pd.read_excel(planilha_original, header=4)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_SaoLuis
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                fonte_dados, 'MA', get_codigo_municipio_por_nome('São Luís', 'MA'), data_extracao,
                                self.pos_processar_portal_transparencia_capital)
         return df

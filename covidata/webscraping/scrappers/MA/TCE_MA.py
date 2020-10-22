@@ -44,11 +44,10 @@ class TCE_MA_Scraper(Scraper):
                             consolidacao.DATA_ASSINATURA: 'DATA ASSINATURA',
                             consolidacao.NUMERO_CONTRATO: 'Nº CONTRATO',
                             consolidacao.NUMERO_PROCESSO: 'Nº PROCESSO'}
-        colunas_adicionais = ['VIGÊNCIA']
         planilha_original = path.join(config.diretorio_dados, 'MA', 'tce', 'licitacoes.xls')
         df_original = pd.read_excel(planilha_original, header=1)
         fonte_dados = consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_MA
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                fonte_dados, 'MA', '', data_extracao, self.pos_processar_licitacoes)
         return df
 
@@ -72,13 +71,6 @@ class TCE_MA_Scraper(Scraper):
             elif len(cpf_cnpj) > 11:
                 df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
 
-            vigencia = df.loc[i, 'VIGÊNCIA']
-            data_inicio = vigencia[0:vigencia.find(' à ')]
-            data_fim = vigencia[vigencia.find(' à ') + 3:len(vigencia)]
-            df.loc[i, consolidacao.DATA_INICIO_VIGENCIA] = data_inicio
-            df.loc[i, consolidacao.DATA_FIM_VIGENCIA] = data_fim
-
-        df = df.drop(['VIGÊNCIA'], axis=1)
         return df
 
 

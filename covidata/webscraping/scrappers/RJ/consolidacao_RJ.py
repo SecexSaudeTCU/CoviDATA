@@ -78,14 +78,12 @@ def __consolidar_despesas_capital(data_extracao):
                         consolidacao.DESPESA_DESCRICAO: 'ObjetoContrato', consolidacao.CONTA_CORRENTE: 'ContaCorrente',
                         consolidacao.FUNDAMENTO_LEGAL: 'Legislacao', consolidacao.NUMERO_CONTRATO: 'NumeroContrato',
                         consolidacao.NUMERO_PROCESSO: 'processo', consolidacao.ORGAO_COD: 'Orgao'}
-    colunas_adicionais = ['Poder', 'UO', 'NomeUO', 'Licitacao', 'Liquidacao', 'Pagamento', 'Banco', 'NomeBanco',
-                          'Agencia', 'NomeContaCorrente', 'ASPS', 'MDE', 'ExercicioContrato', 'Historico']
     planilha_original = path.join(config.diretorio_dados, 'RJ', 'portal_transparencia', 'Rio de Janeiro',
                                   '_arquivos_Open_Data_Desp_Ato_Covid19_2020.txt')
     df_original = pd.read_csv(planilha_original, sep=';', encoding='ISO-8859-1')
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Rio_despesas_por_ato
     codigo_municipio_ibge = get_codigo_municipio_por_nome('Rio de Janeiro', 'RJ')
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+    df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                            fonte_dados, 'RJ', codigo_municipio_ibge, data_extracao, pos_processar_despesas_capital)
     return df
 
@@ -116,18 +114,12 @@ def __consolidar_contratos_capital(data_extracao):
                         consolidacao.NUMERO_PROCESSO: 'Processo instrutivo', consolidacao.SITUACAO: 'Situação',
                         consolidacao.DATA_INICIO_VIGENCIA: 'Data início previsto'
                         }
-    colunas_adicionais = ['Nr instrumento', 'Valor inicial do instrumento', 'Valor do acréscimo ou redução',
-                          'Valor atualizado do instrumento', 'Saldo a executar do instrumento', 'Data da assinatura',
-                          'Órgão executor', 'Unidade orçamentária executora',
-                          'Descrição da unidade orçamentária executora', 'Modalidade de licitação',
-                          'Natureza da despesa', 'Descrição da natureza da despesa', 'Poder', 'Tipo Administração',
-                          'Dir Ind', 'Programa de trabalho']
     planilha_original = path.join(config.diretorio_dados, 'RJ', 'portal_transparencia', 'Rio de Janeiro',
                                   'Open_Data_Contratos_Covid19_2020.xlsx')
     df_original = pd.read_excel(planilha_original)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Rio_contratos
     codigo_municipio_ibge = get_codigo_municipio_por_nome('Rio de Janeiro', 'RJ')
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+    df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                            fonte_dados, 'RJ', codigo_municipio_ibge, data_extracao, pos_processar_contratos_capital)
     return df
 
@@ -154,23 +146,12 @@ def __consolidar_favorecidos_capital(data_extracao):
                         consolidacao.CATEGORIA_ECONOMICA_DESCRICAO: 'Descrição da categoria econômica',
                         consolidacao.CONTA_CORRENTE: 'Conta banco',
                         consolidacao.FUNDAMENTO_LEGAL: 'Fundamentação Legal'}
-    colunas_adicionais = ['Órgão do empenho', 'Descrição do órgão do empenho', 'Órgão programa de trabalho',
-                          'Unidade programa de trabalho', 'Natureza da despesa', 'Descrição da natureza',
-                          'Data da liquidação', 'Data do pagamento', 'Número da liquidação', 'Vl anul liq',
-                          'vl anul liq rp', 'Dt anul liq', 'Dt anul pag', 'Vl anul disp', 'Vl anul emp', 'Vl anul rp',
-                          'Processo de liquidação', 'Processo do empenho', 'Vl Soma Retencao', 'Vl inss', 'Vl iss',
-                          'Vl ir', 'Vl descontos', 'Vl multas', 'Vl csll', 'Vl cofins', 'Vl pis pasep',
-                          'Vl cofins pis pasep csll', 'Vl tafi', 'Vl tafc', 'Vl trfc', 'Modalidade', 'Banco',
-                          'Agencia banco', 'Órgão instrumento', 'Nr instrumento', 'Órgão executor',
-                          'Unidade orçamentária executora', 'Descrição da unidade orçamentária executora',
-                          'Programa de trabalho', 'Descrição do programa de trabalho', 'Vl sem retencao',
-                          'Número licitacao', 'Poder', 'Tipo Administração', 'Dir Ind']
     planilha_original = path.join(config.diretorio_dados, 'RJ', 'portal_transparencia', 'Rio de Janeiro',
                                   'Open_Data_Favorecidos_Covid19_2020.xlsx')
     df_original = pd.read_excel(planilha_original)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Rio_favorecidos
     codigo_municipio_ibge = get_codigo_municipio_por_nome('Rio de Janeiro', 'RJ')
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+    df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                            fonte_dados, 'RJ', codigo_municipio_ibge, data_extracao, pos_processar_favorecidos_capital)
     return df
 
@@ -183,7 +164,6 @@ def __consolidar_compras_diretas(data_extracao):
                         consolidacao.ITEM_EMPENHO_DESCRICAO: 'Item',
                         consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'Valor Unitário',
                         consolidacao.FUNDAMENTO_LEGAL: 'Enquadramento Legal', consolidacao.NUMERO_PROCESSO: 'Processo'}
-    colunas_adicionais = ['Afastamento', 'Data Aprovação']
 
     # Renomeia o arquivo
     diretorio = path.join(config.diretorio_dados, 'RJ')
@@ -198,7 +178,7 @@ def __consolidar_compras_diretas(data_extracao):
     planilha_original = path.join(config.diretorio_dados, 'RJ', nome_arquivo)
     df_original = pd.read_excel(planilha_original)
     fonte_dados = consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_RJ
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+    df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            fonte_dados, 'RJ', '', data_extracao)
     return df
 

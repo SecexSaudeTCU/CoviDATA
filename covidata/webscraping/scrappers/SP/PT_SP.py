@@ -46,11 +46,9 @@ class PT_SP_Scraper(Scraper):
                             consolidacao.FONTE_RECURSOS_COD: 'Código Fonte Recurso',
                             consolidacao.FONTE_RECURSOS_DESCRICAO: 'Código Nome Fonte Detalhada',
                             consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local Entrega'}
-        colunas_adicionais = ['Modalidade de Contratação', 'Data da Movimentação', 'Tipo de Pagamento',
-                              'Número de Pagamento', 'Valor NE', 'Valor NL', 'Valor NP', 'Valor OB']
         df_original = pd.read_csv(path.join(config.diretorio_dados, 'SP', 'portal_transparencia', 'COVID.csv'),
                                   encoding='ISO-8859-1', sep=';')
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_SP, 'SP',
                                None, data_extracao, self.pos_processar_PT)
         return df
@@ -176,17 +174,12 @@ class PT_SaoPaulo_Scraper(Scraper):
                             consolidacao.DESPESA_DESCRICAO: 'Objeto',
                             consolidacao.VALOR_CONTRATO: 'Valor Total'}
 
-        # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-        colunas_adicionais = ['Número Processo', 'Data Publicação', 'Modalidade Licitação', 'Item',
-                              'Quantidade', 'Unidade Item', 'PU Item', 'Prazo', 'Unidade tempo',
-                              'Local Entrega', 'Texto Publicado']
-
         # Lê o arquivo "xlsx" de licitações baixado como um objeto pandas DataFrame
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'SP', 'portal_transparencia', 'São Paulo',
                                               'Portal_Transparencia_SP_capital.xlsx'))
 
         # Chama a função "consolidar_layout" definida em módulo importado
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_SaoPaulo, 'SP',
                                get_codigo_municipio_por_nome('São Paulo', 'SP'), data_extracao,
                                self.pos_processar_pt_SP_capital)

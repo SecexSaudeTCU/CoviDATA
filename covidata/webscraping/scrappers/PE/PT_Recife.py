@@ -68,8 +68,6 @@ class PT_Recife_Scraper(Scraper):
                             consolidacao.VALOR_CONTRATO: 'valor_fornecedor',
                             consolidacao.DATA_FIM_VIGENCIA: 'data_vigencia',
                             consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'local_de_execucao'}
-        colunas_adicionais = ['num_dispensa', 'situacao_dispensa', 'data_de_empenho_contrato', 'arquivo_dispensa',
-                              'arquivo_situacao']
         df_final = pd.DataFrame()
 
         # Processando arquivos Excel
@@ -83,28 +81,14 @@ class PT_Recife_Scraper(Scraper):
             except ParserError:
                 df_original = pd.read_csv(planilha_original, header=1, sep=';')
 
-            df = self.__processar_df_original(colunas_adicionais, data_extracao, df_original, dicionario_dados)
+            df = self.__processar_df_original(data_extracao, df_original, dicionario_dados)
             df_final = df_final.append(df)
 
         return df_final
 
-    def __processar_df_original(self, colunas_adicionais, data_extracao, df_original, dicionario_dados):
-        # Procura pelo cabeçalho:
-        try:
-            mask = np.column_stack(
-                [df_original[col].str.contains(colunas_adicionais[0], na=False) for col in df_original])
-            df_original.columns = df_original[mask].values.tolist()[0]
-            # Remove as linhas anteriores ao cabeçalho
-            while df_original.iloc[0, 0] != df_original.columns[0]:
-                df_original = df_original.drop(df_original.index[0])
-            df_original = df_original.drop(df_original.index[0])
-        except IndexError:
-            pass
-        except AttributeError:
-            pass
-
+    def __processar_df_original(self, data_extracao, df_original, dicionario_dados):
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Recife
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                fonte_dados, 'PE', get_codigo_municipio_por_nome('Recife', 'PE'), data_extracao,
                                self.pos_processar_consolidar_dispensas)
         return df

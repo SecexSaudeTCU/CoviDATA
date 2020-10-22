@@ -47,12 +47,11 @@ class PT_Macapa_Scraper(Scraper):
                             consolidacao.MOD_APLIC_DESCRICAO: 'Forma / modalidade',
                             consolidacao.DATA_CELEBRACAO: 'Data de Celebração / Publicação',
                             consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local de execução'}
-        colunas_adicionais = ['Nº e Íntegra do Processo / COntrato', 'Prazo Contratual']
         planilha_original = path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'Macapa',
                                       'transparencia.xlsx')
         df_original = pd.read_excel(planilha_original, header=1)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Macapa
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                fonte_dados, 'AP', get_codigo_municipio_por_nome('Macapá', 'AP'), data_extracao,
                                self.pos_processar_contratacoes_capital)
         return df
@@ -80,14 +79,6 @@ class PT_Macapa_Scraper(Scraper):
                 df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CPF
             elif len(cpf_cnpj) > 14:
                 df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-
-            prazo_contratual = df.loc[i, 'PRAZO CONTRATUAL']
-            data_inicio = prazo_contratual[0:prazo_contratual.find(' a ')]
-            data_fim = prazo_contratual[prazo_contratual.find(' a ') + 3:len(prazo_contratual)]
-            df.loc[i, consolidacao.DATA_INICIO_VIGENCIA] = data_inicio
-            df.loc[i, consolidacao.DATA_FIM_VIGENCIA] = data_fim
-
-        df = df.drop(['PRAZO CONTRATUAL'], axis=1)
 
         return df
 

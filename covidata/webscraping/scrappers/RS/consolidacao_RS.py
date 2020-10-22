@@ -44,19 +44,12 @@ def consolidar_pt_RS(data_extracao):
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Central Compras',
                         consolidacao.DESPESA_DESCRICAO: 'Descrição Item'}
 
-    # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-    colunas_adicionais = ['Número Licitação', 'Tipo Objeto', 'Modalidade Licitação', 'Data Abertura',
-                          'Situação Oferta', 'Número Lote', 'Situação Lote', 'Número Item',
-                          'Quantidade', 'Preço Unitário', 'Preço Total', 'Nome Arrematante',
-                          'CNPJ Arrematante', 'URL Documentos', 'URL Propostas', 'Unidade Valor',
-                          'Data Homologação']
-
     # Lê o arquivo "xlsx" de licitações baixado como um objeto pandas DataFrame
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'RS', 'portal_transparencia',
                                 'RioGrandeSul', 'Dados_Portal_Transparencia_RioGrandeSul.xlsx'))
 
     # Chama a função "consolidar_layout" definida em módulo importado
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+    df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_RS, 'RS', '',
                            data_extracao)
 
@@ -68,10 +61,6 @@ def consolidar_tce(data_extracao):
     dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Órgão',
                         consolidacao.DESPESA_DESCRICAO: 'Objeto'}
 
-    # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-    colunas_adicionais = ['Modalidade Licitação', 'Número Licitação', 'Ano', 'Processo',
-                          'Valor Homologado', 'Resultado Licitação', 'Vencedor Licitação']
-
     # Lê o arquivo "xls" de licitações baixado como um objeto list utilizando a função "read_html" da biblioteca pandas
     df_original = pd.read_html(path.join(config.diretorio_dados, 'RS', 'tce', 'licitações_-_covid-19.xls'),
                                decimal=',')
@@ -80,7 +69,7 @@ def consolidar_tce(data_extracao):
     df = pre_processar_tce(df_original)
 
     # Chama a função "consolidar_layout" definida em módulo importado
-    df = consolidar_layout(colunas_adicionais, df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+    df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_RS, 'RS', '', data_extracao)
 
     return df

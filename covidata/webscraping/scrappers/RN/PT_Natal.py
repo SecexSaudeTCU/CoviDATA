@@ -33,9 +33,6 @@ class PT_Natal_Scraper(Scraper):
                             consolidacao.VALOR_LIQUIDADO: 'Liquidado',
                             consolidacao.VALOR_PAGO: 'Pago'}
 
-        # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-        colunas_adicionais = ['Anulado']
-
         # Lê o arquivo "xlsx" de nome de despesas baixado como um objeto pandas DataFrame
         df_original = pd.read_excel(
             path.join(config.diretorio_dados, 'RN', 'portal_transparencia', 'Natal', 'Natal Transparente.xlsx'),
@@ -45,7 +42,7 @@ class PT_Natal_Scraper(Scraper):
         df = self.pre_processar_pt_Natal(df_original)
 
         # Chama a função "consolidar_layout" definida em módulo importado
-        df = consolidar_layout(colunas_adicionais, df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+        df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Natal, 'RN',
                                get_codigo_municipio_por_nome('Natal', 'RN'), data_extracao, self.pos_processar_pt)
 

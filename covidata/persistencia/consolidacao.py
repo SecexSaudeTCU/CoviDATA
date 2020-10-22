@@ -248,7 +248,7 @@ PRAZO_EM_DIAS = 'PRAZO_EM_DIAS'
 SITUACAO = 'SITUACAO'
 
 
-def consolidar_layout(colunas_adicionais, df_original, dicionario_dados, esfera, fonte_dados, uf, codigo_municipio_ibge,
+def consolidar_layout(df_original, dicionario_dados, esfera, fonte_dados, uf, codigo_municipio_ibge,
                       data_extracao, funcao_posprocessamento=None):
     """
     Consolida um conjunto de informações no formato padronizado, convetendo um dataframe de um formato em outro, em
@@ -257,8 +257,6 @@ def consolidar_layout(colunas_adicionais, df_original, dicionario_dados, esfera,
     :param df_original: O dataframe original.
     :param dicionario_dados: Dicionário que mapeia nomes de colunas no dataframe original nos respectivos nomes de
         coluna no formato padronizado.
-    :param colunas_adicionais: Colunas adicionais, que não estão presentes no formato padronizado, mas que
-        ainda assim serão incluídas.
     :param uf: Sigla da unidade da federação.
     :param codigo_municipio_ibge: Código do município do IBGE, se aplicável.
     :param fonte_dados: Fonte dos dados (ex.: TCE | TCM | Portal de Transparência - <URL para a fonte dos dados>)
@@ -267,30 +265,26 @@ def consolidar_layout(colunas_adicionais, df_original, dicionario_dados, esfera,
     :param funcao_posprocessamento: Callback para função que complementa a conversão.
     :return: df: Dataframe resultante.
     """
-    df = __converter_dataframes(df_original, dicionario_dados, colunas_adicionais, uf, codigo_municipio_ibge,
-                                fonte_dados, esfera, data_extracao)
+    df = __converter_dataframes(df_original, dicionario_dados, uf, codigo_municipio_ibge, fonte_dados, esfera,
+                                data_extracao)
     if funcao_posprocessamento:
         df = funcao_posprocessamento(df)
 
     # Remove espaços extras do início e do final das colunas do tipo string
-    #df_obj = df.select_dtypes(['object'])
-    #df[df_obj.columns] = df_obj.apply(lambda x: x.str.strip())
+    # df_obj = df.select_dtypes(['object'])
+    # df[df_obj.columns] = df_obj.apply(lambda x: x.str.strip())
 
     df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
 
     return df
 
 
-def __converter_dataframes(df_original, dicionario_dados, colunas_adicionais, uf, codigo_municipio_ibge, fonte_dados,
+def __converter_dataframes(df_original, dicionario_dados, uf, codigo_municipio_ibge, fonte_dados,
                            esfera, data_extracao):
     df = pd.DataFrame(columns=[FONTE_DADOS, DATA_EXTRACAO_DADOS, ESFERA, UF, COD_IBGE_MUNICIPIO, MUNICIPIO_DESCRICAO])
 
     for coluna_padronizada, coluna_correspondente in dicionario_dados.items():
         df[coluna_padronizada] = df_original.get(coluna_correspondente, np.nan)
-
-    if colunas_adicionais:
-        for coluna in colunas_adicionais:
-            df[coluna.upper().strip()] = df_original.get(coluna, np.nan)
 
     df[FONTE_DADOS] = fonte_dados
 

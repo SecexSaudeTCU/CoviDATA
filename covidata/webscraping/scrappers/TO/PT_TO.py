@@ -82,11 +82,10 @@ class PT_TO_Scraper(Scraper):
                             consolidacao.DOCUMENTO_NUMERO: 'Número', consolidacao.DOCUMENTO_DATA: 'Data',
                             consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local de Entrega',
                             consolidacao.PRAZO_EM_DIAS: 'Prazo (dias)', consolidacao.NUMERO_PROCESSO: 'Processo'}
-        colunas_adicionais = ['Modalidade']
         planilha_original = path.join(config.diretorio_dados, 'TO', 'portal_transparencia', 'contratos.xls')
         df_original = pd.read_excel(planilha_original, header=4)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_TO
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                fonte_dados, 'TO', '', data_extracao, self.pos_processar_contratos)
         return df
 

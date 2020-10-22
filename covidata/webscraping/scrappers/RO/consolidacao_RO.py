@@ -10,7 +10,6 @@ from covidata.municipios.ibge import get_codigo_municipio_por_nome
 from covidata.persistencia.consolidacao import consolidar_layout, salvar
 
 
-
 def pos_consolidar_pt_RO(df):
     # Remove notação científica
     df = df.astype({consolidacao.CONTRATADO_CNPJ: np.uint64})
@@ -45,12 +44,10 @@ def consolidar_pt_RO(data_extracao):
                         consolidacao.SUBFUNCAO_DESCRICAO: 'DescricaoSubfuncao',
                         consolidacao.VALOR_EMPENHADO: 'ValorEmpenhada', consolidacao.VALOR_LIQUIDADO: 'ValorLiquidada',
                         consolidacao.VALOR_PAGO: 'ValorPaga', consolidacao.ORGAO_COD: 'CodOrgao'}
-    colunas_adicionais = ['CodProjeto', 'EVENTO', 'N_PROCESSO_NE', 'CodEspecificacaoDespesa', 'NomSigla', 'NumEmpenho',
-                          'DOCUMENT_NE', 'VLR_EMPENHO', 'valorDespesa', 'Status']
     planilha_original = path.join(config.diretorio_dados, 'RO', 'portal_transparencia', 'Despesas.CSV')
     df_original = pd.read_csv(planilha_original, sep=';', header=0, encoding='utf_16_le')
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_RO
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+    df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            fonte_dados, 'RO', '', data_extracao, pos_consolidar_pt_RO)
     return df
 
@@ -63,12 +60,9 @@ def consolidar_pt_PortoVelho(data_extracao):
                         consolidacao.VALOR_LIQUIDADO: 'Liquidado',
                         consolidacao.VALOR_PAGO: 'Pago'}
 
-    # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-    colunas_adicionais = ['Valor Anulado']
-
     # Lê o arquivo "csv" de despesas baixado como um objeto pandas DataFrame
     df_original = pd.read_csv(path.join(config.diretorio_dados, 'RO', 'portal_transparencia',
-                              'PortoVelho', 'Download.csv'),
+                                        'PortoVelho', 'Download.csv'),
                               sep=';',
                               encoding='iso-8859-1')
     # Desconsidera a última coluna (não nomeada e sem dados) do objeto pandas DataFrame "df_original"
@@ -78,7 +72,7 @@ def consolidar_pt_PortoVelho(data_extracao):
     df.rename(columns={'Anulado': 'Valor Anulado'}, inplace=True)
 
     # Chama a função "consolidar_layout" definida em módulo importado
-    df = consolidar_layout(colunas_adicionais, df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+    df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                            consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_PortoVelho, 'RO',
                            get_codigo_municipio_por_nome('Porto Velho', 'RO'), data_extracao)
 

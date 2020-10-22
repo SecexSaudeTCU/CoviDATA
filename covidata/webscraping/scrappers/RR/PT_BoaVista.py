@@ -12,6 +12,7 @@ from covidata.persistencia.consolidacao import consolidar_layout
 from covidata.webscraping.scrappers.scrapper import Scraper
 from os import path
 
+
 class PT_BoaVista_Scraper(Scraper):
     def scrap(self):
         logger = logging.getLogger('covidata')
@@ -127,17 +128,12 @@ class PT_BoaVista_Scraper(Scraper):
                             consolidacao.VALOR_CONTRATO: 'Valor Contrato',
                             consolidacao.DATA_CELEBRACAO: 'Data Contrato'}
 
-        # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-        colunas_adicionais = ['Número Licitação', 'Situação Licitação', 'Modalidade Licitacao',
-                              'Data Abertura', 'Data Publicação', 'Descrição Produto',
-                              'Quantidade Produto', 'PU Produto', 'Prazo Execução']
-
         # Lê o arquivo "xlsx" de despesas baixado como um objeto pandas DataFrame
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'RR', 'portal_transparencia',
                                               'BoaVista', 'Dados_Portal_Transparencia_BoaVista.xlsx'))
 
         # Chama a função "consolidar_layout" definida em módulo importado
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_BoaVista, 'RR',
                                get_codigo_municipio_por_nome('Boa Vista', 'RR'), data_extracao,
                                self.pos_processar_pt_BoaVista)
@@ -155,5 +151,3 @@ class PT_BoaVista_Scraper(Scraper):
 
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'Boa Vista'
         return df
-
-

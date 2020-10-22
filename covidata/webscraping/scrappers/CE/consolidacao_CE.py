@@ -55,12 +55,11 @@ def __consolidar_gastos(data_extracao):
                         consolidacao.NUMERO_CONTRATO: 'numero_contrato',
                         consolidacao.NUMERO_PROCESSO: 'numero_processo', consolidacao.DATA_FIM_VIGENCIA: 'data_termino',
                         consolidacao.LINK_CONTRATO:'integra_contrato'}
-    colunas_adicionais = ['natureza', 'num_certidao', 'processo_licitacao']
     planilha_original = path.join(config.diretorio_dados, 'CE', 'portal_transparencia',
                                   'gasto_covid_dados_abertos.xlsx')
     df_original = pd.read_excel(planilha_original)
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_CE
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+    df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            fonte_dados, 'CE', '', data_extracao)
     df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
     return df
@@ -74,11 +73,10 @@ def __consolidar_despesas_capital(data_extracao):
                         consolidacao.CONTRATADO_DESCRICAO: 'CREDOR', consolidacao.CONTRATADO_CNPJ: 'CNPJ / CPF',
                         consolidacao.NUMERO_CONTRATO: 'N. CONTRATO',
                         consolidacao.NUMERO_PROCESSO: 'N. PROCESSO DE AQUISICAO'}
-    colunas_adicionais = ['TIPO DESPESA', 'SITUACAO EMPENHO', 'VALOR ANULADO']
     planilha_original = path.join(config.diretorio_dados, 'CE', 'portal_transparencia', 'Fortaleza', 'despesas.csv')
     df_original = pd.read_csv(planilha_original, sep=';')
     fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Fortaleza
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+    df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                            fonte_dados, 'CE', get_codigo_municipio_por_nome('Fortaleza', 'CE'), data_extracao,
                            pos_processar_despesas_capital)
     return df

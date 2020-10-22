@@ -28,10 +28,6 @@ def consolidar_tcm(data_extracao):
                         consolidacao.DESPESA_DESCRICAO: 'Objeto',
                         consolidacao.VALOR_CONTRATO: 'Valor'}
 
-    # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-    colunas_adicionais = ['Identificador Licitação', 'Modalidade Licitação', 'Publicação',
-                          'Data Publicação', 'Unidade', 'Número Licitação', 'Número Processo']
-
     # Lê o arquivo "csv" de licitações baixado como um objeto pandas DataFrame
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'SP', 'tcm', 'licitacoes.xls'),
                                 skiprows=list(range(4)),
@@ -41,7 +37,7 @@ def consolidar_tcm(data_extracao):
     df = pre_processar_tcm(df_original)
 
     # Chama a função "consolidar_layout" definida em módulo importado
-    df = consolidar_layout(colunas_adicionais, df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+    df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                            consolidacao.TIPO_FONTE_TCM + ' - ' + config.url_tcm_SP, 'SP',
                            get_codigo_municipio_por_nome('São Paulo', 'SP'), data_extracao)
 

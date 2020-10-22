@@ -83,10 +83,8 @@ class TCE_AC_ContratosScraper(TCE_AC_Scraper):
                             consolidacao.VALOR_CONTRATO: 'Valor R$', consolidacao.UG_DESCRICAO: 'Entidade',
                             consolidacao.FUNDAMENTO_LEGAL: '\xa0Fundamento Legal\xa0',
                             consolidacao.NUMERO_PROCESSO: 'Nº Processo'}
-        colunas_adicionais = ['Cód.\r\n  Dispensa', 'Data Pedido']
-
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'contratos.xls'), header=4)
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_contratos, 'AC', '',
                                data_extracao)
         # Elimina as duas últimas linhas
@@ -122,7 +120,7 @@ class TCE_AC_DespesasScraper(TCE_AC_Scraper):
                             consolidacao.FONTE_RECURSOS_COD: '\nFonte de Recurso\n',
                             consolidacao.VALOR_EMPENHADO: '\nValor Empenhado\r\n  ($)\n'}
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'despesas.xls'), header=4)
-        df = consolidar_layout(['\nTipo de Credor\n'], df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_despesas, 'AC', '',
                                data_extracao,
                                self.pos_processar_despesas)
@@ -135,9 +133,8 @@ class TCE_AC_DespesasScraper(TCE_AC_Scraper):
                             consolidacao.CONTRATANTE_DESCRICAO: '\nEnte\n', consolidacao.UG_DESCRICAO: '\nEnte\n',
                             consolidacao.CONTRATADO_DESCRICAO: '\nFornecedor\n',
                             consolidacao.NUMERO_PROCESSO: '\nNúmero\r\n  Processo\n'}
-        colunas_adicionais = ['\nData da Alimentação\n']
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'dispensas.xls'), header=4)
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_despesas, 'AC', '',
                                data_extracao, self.pos_processar_dispensas)
         return df
@@ -179,11 +176,10 @@ class TCE_AC_ContratosMunicipiosScraper(TCE_AC_Scraper):
                             consolidacao.VALOR_CONTRATO: 'Valor R$', consolidacao.UG_DESCRICAO: 'Entidade',
                             consolidacao.FUNDAMENTO_LEGAL: '\xa0Fundamento Legal\xa0',
                             consolidacao.NUMERO_PROCESSO: 'Nº Processo'}
-        colunas_adicionais = ['Cód.\r\n  Dispensa', 'Data Pedido']
 
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'contratos_municipios.xls'),
                                     header=4)
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_contratos_municipios, 'AC', '',
                                data_extracao, self.pos_processar_contratos_municipios)
         logger.info("--- %s segundos ---" % (time.time() - start_time))
@@ -220,10 +216,9 @@ class TCE_AC_DespesasMunicipiosScraper(TCE_AC_Scraper):
                             consolidacao.UG_DESCRICAO: '\nPREFEITURAS MUNICIPAIS NO ESTADO DO ACRE\n',
                             consolidacao.CONTRATADO_CNPJ: '\nCNPJ/CPF\n',
                             consolidacao.VALOR_CONTRATO: '\n VALOR CONTRATADO R$\n'}
-        colunas_adicionais = ['\nCONTRATOS/OBSERVAÇÕES\n']
 
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'despesas_municipios.xls'), header=4)
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_despesas_municipios, 'AC', '',
                                data_extracao, self.pos_processar_despesas_municipio)
         return df
@@ -234,10 +229,9 @@ class TCE_AC_DespesasMunicipiosScraper(TCE_AC_Scraper):
                             consolidacao.CONTRATANTE_DESCRICAO: '\nEnte\n', consolidacao.UG_DESCRICAO: '\nEnte\n',
                             consolidacao.CONTRATADO_DESCRICAO: '\nFornecedor\n',
                             consolidacao.NUMERO_PROCESSO: '\nNúmero\r\n  Processo\n'}
-        colunas_adicionais = ['\nData\r\n  da Alimentação\n']
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'dispensas_municipios.xls'),
                                     header=4)
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_despesas_municipios, 'AC', '',
                                data_extracao, self.pos_processar_dispensas_municipios)
         return df

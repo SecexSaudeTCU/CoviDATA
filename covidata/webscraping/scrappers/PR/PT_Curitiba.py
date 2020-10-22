@@ -53,12 +53,11 @@ class PT_CuritibaContratacoes_Scraper(Scraper):
                             consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'LOCAL DA EXECUÇÃO/ENTREGA',
                             consolidacao.NUMERO_CONTRATO: 'Nº CONTRATO',
                             consolidacao.DATA_PUBLICACAO: 'PUBLICAÇÃO NO DIÁRIO OFICIAL'}
-        colunas_adicionais = ['PROTOCOLO', 'VIGENCIA DO CONTRATO', 'VALOR CANCELADO', 'BOLETIM DE PAGAMENTO', 'A PAGAR']
         planilha_original = path.join(config.diretorio_dados, 'PR', 'portal_transparencia', 'Curitiba',
                                       'licitacoes_contratacoes.csv')
         df_original = pd.read_csv(planilha_original, sep=';', header=0, encoding='ISO-8859-1')
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Curitiba_contratacoes
-        df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                fonte_dados, 'PR', get_codigo_municipio_por_nome('Curitiba', 'PR'), data_extracao,
                                pos_processar)
         return df
@@ -92,7 +91,7 @@ class PT_CuritibaAquisicoes_Scraper(Scraper):
         df_original = pd.read_excel(planilha_original, header=7)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Curitiba_aquisicoes
         codigo_municipio_ibge = get_codigo_municipio_por_nome('Curitiba', 'PR')
-        df = consolidar_layout([], df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                fonte_dados, 'PR', codigo_municipio_ibge, data_extracao, pos_processar)
         return df
 

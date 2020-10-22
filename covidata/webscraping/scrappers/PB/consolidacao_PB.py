@@ -51,9 +51,6 @@ def consolidar_pt_PB(data_extracao):
                         consolidacao.DESPESA_DESCRICAO: 'Objetivo',
                         consolidacao.VALOR_CONTRATO: 'Valor', consolidacao.NUMERO_CONTRATO: 'Contrato'}
 
-    # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-    colunas_adicionais = ['Nº Licitação', 'Início', 'Final']
-
     # Lê o arquivo "xlsx" de contratos baixado como um objeto pandas DataFrame selecionando as linhas e colunas úteis
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'Paraiba',
                                           'ListaContratos.xlsx'),
@@ -64,7 +61,7 @@ def consolidar_pt_PB(data_extracao):
     df = pre_processar_pt_PB(df_original)
 
     # Chama a função "consolidar_layout" definida em módulo importado
-    df = consolidar_layout(colunas_adicionais, df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+    df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                            consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_PB, 'PB', '',
                            data_extracao, pos_processar_pt_PB)
 
@@ -82,15 +79,12 @@ def consolidar_pt_JoaoPessoa(data_extracao):
                         consolidacao.VALOR_PAGO: 'Valor Pago',
                         consolidacao.RP_PAGO: 'Saldo a Pagar'}
 
-    # Objeto list cujos elementos retratam campos não considerados tão importantes (for now at least)
-    colunas_adicionais = []
-
     # Lê o arquivo "xlsx" de contratos baixado como um objeto pandas DataFrame selecionando as linhas e colunas úteis
     df_original = pd.read_excel(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'JoaoPessoa',
                                           'Dados_Portal_Transparencia_JoaoPessoa.xlsx'))
 
     # Chama a função "consolidar_layout" definida em módulo importado
-    df = consolidar_layout(colunas_adicionais, df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+    df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                            consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_JoaoPessoa, 'PB',
                            get_codigo_municipio_por_nome('João Pessoa', 'PB'), data_extracao)
 

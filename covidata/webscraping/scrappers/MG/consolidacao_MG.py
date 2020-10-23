@@ -16,27 +16,6 @@ def pos_processar_contratacoes_capital(df):
     return df
 
 
-def __consolidar_compras(data_extracao):
-    dicionario_dados = {consolidacao.ORGAO_COD: 'Código Órgão Demandante ',
-                        consolidacao.CONTRATANTE_DESCRICAO: 'Órgão Demandante ',
-                        consolidacao.UG_DESCRICAO: 'Órgão Demandante ',
-                        consolidacao.MOD_APLIC_DESCRICAO: 'Procedimento de Contratação ',
-                        consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ do Contratado ',
-                        consolidacao.CONTRATADO_DESCRICAO: 'Contratado ',
-                        consolidacao.DESPESA_DESCRICAO: 'Objeto do Processo ',
-                        consolidacao.VALOR_CONTRATO: 'Valor Homologado ',
-                        consolidacao.DATA_PUBLICACAO: 'Data da Publicação ',
-                        consolidacao.DATA_FIM_VIGENCIA: 'Fim da Vigência ',
-                        consolidacao.DATA_INICIO_VIGENCIA: 'Início da Vigência ',
-                        consolidacao.NUMERO_CONTRATO: 'Número do Contrato '}
-    planilha_original = path.join(config.diretorio_dados, 'MG', 'portal_transparencia',
-                                  '_Compras - Programa de enfrentamento COVID-19.csv')
-    df_original = pd.read_csv(planilha_original, sep=';')
-    fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_MG
-    df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
-                           fonte_dados, 'MG', '', data_extracao)
-    df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-    return df
 
 
 def __consolidar_contratacoes_capital(data_extracao):
@@ -60,12 +39,11 @@ def __consolidar_contratacoes_capital(data_extracao):
     return df
 
 
-def consolidar(data_extracao):
+def consolidar(data_extracao, df_consolidado):
     logger = logging.getLogger('covidata')
     logger.info('Iniciando consolidação dados Minas Gerais')
 
-    compras = __consolidar_compras(data_extracao)
     contratacoes_capital = __consolidar_contratacoes_capital(data_extracao)
-    compras = compras.append(contratacoes_capital)
+    df_consolidado = df_consolidado.append(contratacoes_capital)
 
-    salvar(compras, 'MG')
+    salvar(df_consolidado, 'MG')

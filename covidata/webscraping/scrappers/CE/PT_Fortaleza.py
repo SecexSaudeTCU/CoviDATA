@@ -65,7 +65,7 @@ class PT_Fortaleza_Scraper(Scraper):
 
         return df
 
-    def __definir_situacao_empenho(df_original, df, i):
+    def __definir_situacao_empenho(self, df_original, df, i):
         situacao_empenho = df_original.loc[i, 'SITUACAO EMPENHO']
         if situacao_empenho == 'Liquidado':
             df.loc[i, consolidacao.VALOR_LIQUIDADO] = df.loc[i, consolidacao.VALOR_EMPENHADO]

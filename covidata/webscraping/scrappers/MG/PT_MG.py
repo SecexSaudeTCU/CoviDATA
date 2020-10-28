@@ -36,25 +36,17 @@ class PT_MG_Scraper(Scraper):
         return self.__consolidar_compras(data_extracao), False
 
     def __consolidar_compras(self, data_extracao):
-        dicionario_dados = {consolidacao.ORGAO_COD: 'Código Órgão Demandante ',
-                            consolidacao.CONTRATANTE_DESCRICAO: 'Órgão Demandante ',
-                            consolidacao.UG_DESCRICAO: 'Órgão Demandante ',
-                            consolidacao.MOD_APLIC_DESCRICAO: 'Procedimento de Contratação ',
+        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Órgão Demandante ',
                             consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ do Contratado ',
                             consolidacao.CONTRATADO_DESCRICAO: 'Contratado ',
                             consolidacao.DESPESA_DESCRICAO: 'Objeto do Processo ',
-                            consolidacao.VALOR_CONTRATO: 'Valor Homologado ',
-                            consolidacao.DATA_PUBLICACAO: 'Data da Publicação ',
-                            consolidacao.DATA_FIM_VIGENCIA: 'Fim da Vigência ',
-                            consolidacao.DATA_INICIO_VIGENCIA: 'Início da Vigência ',
-                            consolidacao.NUMERO_CONTRATO: 'Número do Contrato '}
+                            consolidacao.VALOR_CONTRATO: 'Valor Homologado '}
         planilha_original = path.join(config.diretorio_dados, 'MG', 'portal_transparencia',
                                       '_Compras - Programa de enfrentamento COVID-19.csv')
         df_original = pd.read_csv(planilha_original, sep=';')
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_MG
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                fonte_dados, 'MG', '', data_extracao)
-        df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
         return df
 
 

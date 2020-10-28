@@ -39,21 +39,14 @@ class PT_DF_Scraper(Scraper):
         return dados, True
 
     def __consolidar_dados_portal_transparencia(self, data_extracao):
-        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'ÓRGÃO', consolidacao.UG_DESCRICAO: 'ÓRGÃO',
+        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'ÓRGÃO',
                             consolidacao.CONTRATADO_DESCRICAO: 'CONTRATADO', consolidacao.CONTRATADO_CNPJ: 'CNPJ',
                             consolidacao.DESPESA_DESCRICAO: 'OBJETO',
-                            consolidacao.ITEM_EMPENHO_QUANTIDADE: 'QUANTIDADE',
-                            consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'VALOR UNITÁRIO',
-                            consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'VALOR TOTAL',
-                            consolidacao.VALOR_CONTRATO: 'VALOR TOTAL',
-                            consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'LOCAL ENTREGA/EXECUÇÃO',
-                            consolidacao.NUMERO_PROCESSO: 'PROCESSO', consolidacao.DATA_CELEBRACAO: 'CELEBRAÇÃO',
-                            consolidacao.NUMERO_CONTRATO: 'INSTRUMENTO CONTRATUAL'}
+                            consolidacao.VALOR_CONTRATO: 'VALOR TOTAL'}
 
         planilha_original = path.join(config.diretorio_dados, 'DF', 'portal_transparencia', 'PLANILHA-COVID2.csv')
         df_original = pd.read_csv(planilha_original, sep=';')
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_DF
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                fonte_dados, 'DF', '', data_extracao)
-        df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
         return df

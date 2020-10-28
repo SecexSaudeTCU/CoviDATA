@@ -31,11 +31,8 @@ class PT_CampoGrande_Scraper(Scraper):
         return despesas_capital, False
 
     def __consolidar_despesas_capital(self, data_extracao):
-        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Órgão', consolidacao.UG_DESCRICAO: 'Unidade',
+        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Órgão',
                             consolidacao.CONTRATADO_DESCRICAO: 'Fornecedor',
-                            consolidacao.ELEMENTO_DESPESA_DESCRICAO: 'Elemento Despesa',
-                            consolidacao.VALOR_EMPENHADO: 'Total Empenhado',
-                            consolidacao.VALOR_LIQUIDADO: 'Total Liquidado', consolidacao.VALOR_PAGO: 'Total Pago',
                             consolidacao.CATEGORIA_ECONOMICA_DESCRICAO: 'Categoria'}
         planilha_original = path.join(config.diretorio_dados, 'MS', 'portal_transparencia', 'Campo Grande',
                                       'Despesas – Transparência Covid19 – Prefeitura de Campo Grande.xlsx')

@@ -38,15 +38,8 @@ class PT_Macapa_Scraper(Scraper):
     def consolidar_contratacoes_capital(self, data_extracao):
         dicionario_dados = {consolidacao.CONTRATADO_CNPJ: 'Contratado - CNPJ / CPF',
                             consolidacao.DESPESA_DESCRICAO: 'Descrição de bem ou serviço',
-                            consolidacao.ITEM_EMPENHO_QUANTIDADE: 'Quantidade',
-                            consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'Valor Unitário',
-                            consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'Valor Total',
                             consolidacao.CONTRATANTE_DESCRICAO: 'Órgão Contratante',
-                            consolidacao.UG_DESCRICAO: 'Órgão Contratante',
-                            consolidacao.VALOR_CONTRATO: 'Valor contratado', consolidacao.VALOR_PAGO: 'Valor pago',
-                            consolidacao.MOD_APLIC_DESCRICAO: 'Forma / modalidade',
-                            consolidacao.DATA_CELEBRACAO: 'Data de Celebração / Publicação',
-                            consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local de execução'}
+                            consolidacao.VALOR_CONTRATO: 'Valor contratado'}
         planilha_original = path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'Macapa',
                                       'transparencia.xlsx')
         df_original = pd.read_excel(planilha_original, header=1)
@@ -61,9 +54,7 @@ class PT_Macapa_Scraper(Scraper):
 
         df['temp'] = df[consolidacao.CONTRATANTE_DESCRICAO]
         df[consolidacao.CONTRATANTE_DESCRICAO] = df.apply(lambda row: row['temp'][0:row['temp'].find('-')], axis=1)
-        df[consolidacao.LOCAL_EXECUCAO_OU_ENTREGA] = df.apply(
-            lambda row: row['temp'][row['temp'].find('-') + len(' LOCAL DE EXECUÇÃO: '):len(row['temp'])], axis=1)
-        df[consolidacao.UG_DESCRICAO] = df[consolidacao.CONTRATANTE_DESCRICAO]
+
         df = df.drop(['temp'], axis=1)
 
         df['temp'] = df[consolidacao.CONTRATADO_CNPJ]
@@ -71,14 +62,6 @@ class PT_Macapa_Scraper(Scraper):
         df[consolidacao.CONTRATADO_CNPJ] = df.apply(lambda row: row['temp'][row['temp'].find('/') + 1:len(row['temp'])],
                                                     axis=1)
         df = df.drop(['temp'], axis=1)
-
-        for i in range(0, len(df)):
-            cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ].strip()
-
-            if len(cpf_cnpj) == 14:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CPF
-            elif len(cpf_cnpj) > 14:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
 
         return df
 

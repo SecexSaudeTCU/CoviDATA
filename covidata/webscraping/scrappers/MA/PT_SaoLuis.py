@@ -46,10 +46,7 @@ class PT_SaoLuis_Scraper(Scraper):
         dicionario_dados = {consolidacao.VALOR_CONTRATO: 'Valor do Contrato (R$)',
                             consolidacao.DESPESA_DESCRICAO: 'Descrição', consolidacao.CONTRATADO_DESCRICAO: 'Empresa',
                             consolidacao.CONTRATADO_CNPJ: 'CNPJ',
-                            consolidacao.CONTRATANTE_DESCRICAO: 'Unidade Contratante',
-                            consolidacao.DATA_ASSINATURA: 'Data de Assinatura',
-                            consolidacao.LINK_CONTRATO: 'Link contrato',
-                            consolidacao.NUMERO_CONTRATO: 'Nº Contrato'}
+                            consolidacao.CONTRATANTE_DESCRICAO: 'Unidade Contratante'}
         planilha_original = path.join(config.diretorio_dados, 'MA', 'portal_transparencia', 'São Luís',
                                       'contratacoes.xls')
         df_original = pd.read_excel(planilha_original, header=4)
@@ -62,13 +59,5 @@ class PT_SaoLuis_Scraper(Scraper):
     def pos_processar_portal_transparencia_capital(self, df):
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'São Luís'
         df = df.rename(columns={'Nº DO PROCESSO': 'Nº PROCESSO'})
-
-        for i in range(0, len(df)):
-            cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
-
-            if len(cpf_cnpj) == 14:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CPF
-            elif len(cpf_cnpj) > 14:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
 
         return df

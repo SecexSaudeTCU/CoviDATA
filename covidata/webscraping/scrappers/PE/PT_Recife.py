@@ -62,12 +62,10 @@ class PT_Recife_Scraper(Scraper):
         return dispensas, True
 
     def __consolidar_dispensas(self, data_extracao):
-        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'unidade', consolidacao.UG_DESCRICAO: 'unidade',
+        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'unidade',
                             consolidacao.DESPESA_DESCRICAO: 'objeto', consolidacao.CONTRATADO_CNPJ: 'cnpj_cpf',
                             consolidacao.CONTRATADO_DESCRICAO: 'nome_fornecedor',
-                            consolidacao.VALOR_CONTRATO: 'valor_fornecedor',
-                            consolidacao.DATA_FIM_VIGENCIA: 'data_vigencia',
-                            consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'local_de_execucao'}
+                            consolidacao.VALOR_CONTRATO: 'valor_fornecedor'}
         df_final = pd.DataFrame()
 
         # Processando arquivos Excel

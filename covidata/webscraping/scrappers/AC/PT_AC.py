@@ -27,13 +27,10 @@ class PT_AC_Scraper(Scraper):
 
     def __consolidar_portal_transparencia_estadual(self, data_extracao):
         # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
-        dicionario_dados = {consolidacao.ANO: 'ANOEMPENHO',
-                            consolidacao.VALOR_EMPENHADO: 'VALOREMPENHADO',
-                            consolidacao.CONTRATADO_CNPJ: 'CPFCNPJCREDOR',
+        dicionario_dados = {consolidacao.CONTRATADO_CNPJ: 'CPFCNPJCREDOR',
                             consolidacao.CONTRATADO_DESCRICAO: 'RAZAOSOCIAL',
                             consolidacao.DOCUMENTO_NUMERO: 'NUMEROEMPENHO',
-                            consolidacao.DOCUMENTO_DATA: 'DATAEMPENHO',
-                            consolidacao.FONTE_RECURSOS_COD: 'FONTERECURSO'}
+                            consolidacao.DOCUMENTO_DATA: 'DATAEMPENHO'}
 
         # Lê o arquivo "xlsx" de empenhos baixado como um objeto pandas DataFrame
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'portal_transparencia', 'empenhos.xls'),
@@ -48,14 +45,6 @@ class PT_AC_Scraper(Scraper):
 
     def pos_processar_portal_transparencia_estadual(self, df):
         df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
-
-        for i in range(len(df)):
-            cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
-
-            if len(str(cpf_cnpj)) >= 14:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-            else:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CPF
 
         return df
 

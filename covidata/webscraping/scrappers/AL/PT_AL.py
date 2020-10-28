@@ -31,19 +31,11 @@ class PT_AL_Scraper(Scraper):
 
     def __consolidar_despesas(self, data_extracao):
         dicionario_dados = {consolidacao.CONTRATADO_CNPJ: 'cpf_cnpj_contratado',
-                            consolidacao.ELEMENTO_DESPESA_DESCRICAO: 'elemento_despesa',
-                            consolidacao.ITEM_EMPENHO_QUANTIDADE: 'quantidade',
                             consolidacao.DESPESA_DESCRICAO: 'objeto',
                             consolidacao.CONTRATANTE_DESCRICAO: 'orgao_contratante',
-                            consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'valor_unitario',
-                            consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'valor_total',
-                            consolidacao.ITEM_EMPENHO_UNIDADE_MEDIDA: 'unidade_medida',
-                            consolidacao.UG_COD: 'ug', consolidacao.CONTRATADO_DESCRICAO: 'nome_contratado',
+                            consolidacao.CONTRATADO_DESCRICAO: 'nome_contratado',
                             consolidacao.DOCUMENTO_NUMERO: 'nota_empenho',
-                            consolidacao.UG_DESCRICAO: 'orgao_contratante',
-                            consolidacao.DATA_CELEBRACAO: 'data_celebracao',
-                            consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'local_entrega',
-                            consolidacao.PRAZO_EM_DIAS: 'prazo_contratual', consolidacao.NUMERO_CONTRATO: 'contrato',
+                            consolidacao.NUMERO_CONTRATO: 'contrato',
                             consolidacao.NUMERO_PROCESSO: 'processo'}
         df_original = pd.read_excel(
             path.join(config.diretorio_dados, 'AL', 'portal_transparencia', 'despesas.xlsx'))

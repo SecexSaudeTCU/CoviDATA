@@ -28,7 +28,7 @@ class PT_MA_Scraper(Scraper):
         return self.__consolidar_portal_transparencia_estado(data_extracao), False
 
     def __consolidar_portal_transparencia_estado(self, data_extracao):
-        dicionario_dados = {consolidacao.CONTRATADO_DESCRICAO: 'Contratado', consolidacao.NUMERO_CONTRATO: 'contrato'}
+        dicionario_dados = {consolidacao.CONTRATADO_DESCRICAO: 'Contratado'}
         planilha_original = path.join(config.diretorio_dados, 'MA', 'portal_transparencia',
                                       'Portal da Transparência do Governo do Estado do Maranhão.xlsx')
         df_original = pd.read_excel(planilha_original)

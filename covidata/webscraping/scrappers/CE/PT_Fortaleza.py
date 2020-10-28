@@ -34,11 +34,8 @@ class PT_Fortaleza_Scraper(Scraper):
     def __consolidar_despesas_capital(self, data_extracao):
         dicionario_dados = {consolidacao.DOCUMENTO_NUMERO: 'N. DO EMPENHO', consolidacao.DOCUMENTO_DATA: 'DATA EMPENHO',
                             consolidacao.CONTRATANTE_DESCRICAO: 'UNIDADE ORCAMENTARIA',
-                            consolidacao.UG_DESCRICAO: 'UNIDADE ORCAMENTARIA',
-                            consolidacao.VALOR_EMPENHADO: 'VALOR EMPENHO', consolidacao.VALOR_CONTRATO: 'VALOR EMPENHO',
-                            consolidacao.CONTRATADO_DESCRICAO: 'CREDOR', consolidacao.CONTRATADO_CNPJ: 'CNPJ / CPF',
-                            consolidacao.NUMERO_CONTRATO: 'N. CONTRATO',
-                            consolidacao.NUMERO_PROCESSO: 'N. PROCESSO DE AQUISICAO'}
+                            consolidacao.VALOR_CONTRATO: 'VALOR EMPENHO',
+                            consolidacao.CONTRATADO_DESCRICAO: 'CREDOR', consolidacao.CONTRATADO_CNPJ: 'CNPJ / CPF'}
         planilha_original = path.join(config.diretorio_dados, 'CE', 'portal_transparencia', 'Fortaleza', 'despesas.csv')
         df_original = pd.read_csv(planilha_original, sep=';')
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Fortaleza
@@ -53,32 +50,11 @@ class PT_Fortaleza_Scraper(Scraper):
         df['temp'] = df[consolidacao.CONTRATANTE_DESCRICAO]
         df[consolidacao.CONTRATANTE_DESCRICAO] = df.apply(
             lambda row: row['temp'][row['temp'].find('- ') + 1:len(row['temp'])], axis=1)
-        df[consolidacao.UG_COD] = df.apply(lambda row: row['temp'][0:row['temp'].find('-')], axis=1)
-        df[consolidacao.UG_DESCRICAO] = df[consolidacao.CONTRATANTE_DESCRICAO]
         df = df.drop(['temp'], axis=1)
-
-        for i in range(0, len(df)):
-            self.__definir_tipo_contratado(df, i)
-            self.__definir_situacao_empenho(df_original, df, i)
 
         df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
 
         return df
-
-    def __definir_situacao_empenho(self, df_original, df, i):
-        situacao_empenho = df_original.loc[i, 'SITUACAO EMPENHO']
-        if situacao_empenho == 'Liquidado':
-            df.loc[i, consolidacao.VALOR_LIQUIDADO] = df.loc[i, consolidacao.VALOR_EMPENHADO]
-        elif situacao_empenho == 'Pago':
-            df.loc[i, consolidacao.VALOR_LIQUIDADO] = df.loc[i, consolidacao.VALOR_EMPENHADO]
-            df.loc[i, consolidacao.VALOR_PAGO] = df.loc[i, consolidacao.VALOR_EMPENHADO]
-
-    def __definir_tipo_contratado(self, df, i):
-        cpf_cnpj = str(df.loc[i, consolidacao.CONTRATADO_CNPJ])
-        if len(cpf_cnpj) == 11:
-            df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CPF
-        elif len(cpf_cnpj) > 11:
-            df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
 
 
 class PortalTransparencia_Fortaleza(SeleniumDownloader):

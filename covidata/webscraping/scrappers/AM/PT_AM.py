@@ -29,20 +29,16 @@ class PT_AM_Scraper(Scraper):
         return self.consolidar_contratos(data_extracao), False
 
     def consolidar_contratos(self, data_extracao):
-        dicionario_dados = {consolidacao.UG_DESCRICAO: 'UG', consolidacao.CONTRATADO_CNPJ: 'CNPJ/CPFfornecedor',
+        dicionario_dados = {consolidacao.CONTRATADO_CNPJ: 'CNPJ/CPFfornecedor',
                             consolidacao.CONTRATADO_DESCRICAO: 'Nomefornecedor',
                             consolidacao.DESPESA_DESCRICAO: 'Objeto',
-                            consolidacao.CONTRATANTE_DESCRICAO: 'UG', consolidacao.DATA_ASSINATURA: 'Dataassinatura',
-                            consolidacao.DATA_INICIO_VIGENCIA: 'Início',
-                            consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local deexecução',
-                            consolidacao.DATA_FIM_VIGENCIA: 'Término'}
+                            consolidacao.CONTRATANTE_DESCRICAO: 'UG'}
         df_original = pd.read_excel(
             path.join(config.diretorio_dados, 'AM', 'portal_transparencia',
                       'Portal SGC - Sistema de Gestão de Contratos.xlsx'))
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_AM, 'AM', '',
                                data_extracao)
-        df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
         return df
 
 

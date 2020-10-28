@@ -36,14 +36,10 @@ class TCE_MA_Scraper(Scraper):
 
     def __consolidar_licitacoes(self, data_extracao):
         dicionario_dados = {consolidacao.MUNICIPIO_DESCRICAO: 'ENTE', consolidacao.CONTRATANTE_DESCRICAO: 'UNIDADE',
-                            consolidacao.UG_DESCRICAO: 'UNIDADE', consolidacao.DESPESA_DESCRICAO: 'OBJETO',
+                            consolidacao.DESPESA_DESCRICAO: 'OBJETO',
                             consolidacao.VALOR_CONTRATO: 'VALOR',
-                            consolidacao.FONTE_RECURSOS_DESCRICAO: 'ORIGEM DO RECURSO',
                             consolidacao.CONTRATADO_DESCRICAO: 'CONTRATADO',
-                            consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ',
-                            consolidacao.DATA_ASSINATURA: 'DATA ASSINATURA',
-                            consolidacao.NUMERO_CONTRATO: 'Nº CONTRATO',
-                            consolidacao.NUMERO_PROCESSO: 'Nº PROCESSO'}
+                            consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ'}
         planilha_original = path.join(config.diretorio_dados, 'MA', 'tce', 'licitacoes.xls')
         df_original = pd.read_excel(planilha_original, header=1)
         fonte_dados = consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_MA
@@ -62,14 +58,6 @@ class TCE_MA_Scraper(Scraper):
         df = df.astype({consolidacao.COD_IBGE_MUNICIPIO: str})
 
         df.loc[(df[consolidacao.COD_IBGE_MUNICIPIO] != ''), consolidacao.ESFERA] = consolidacao.ESFERA_MUNICIPAL
-
-        for i in range(0, len(df)):
-            cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
-
-            if len(cpf_cnpj) == 11:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CPF
-            elif len(cpf_cnpj) > 11:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
 
         return df
 

@@ -50,11 +50,7 @@ class PT_MT_Scraper(Scraper):
     def __consolidar_pt_MT(self, data_extracao):
         # Objeto dict em que os valores têm chaves que retratam campos considerados mais importantes
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Entidade',
-                            consolidacao.UG_DESCRICAO: 'Entidade',
-                            consolidacao.NUMERO_PROCESSO: 'Númerodo Processo',
-                            consolidacao.NUMERO_CONTRATO: 'Contrato',
                             consolidacao.DESPESA_DESCRICAO: 'Objeto',
-                            consolidacao.ITEM_EMPENHO_DESCRICAO: 'Item do Objeto',
                             consolidacao.ITEM_EMPENHO_UNIDADE_MEDIDA: 'Unidade',
                             consolidacao.ITEM_EMPENHO_QUANTIDADE: 'Quantidade',
                             consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'Valor Unitário',

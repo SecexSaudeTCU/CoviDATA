@@ -28,26 +28,15 @@ class PT_Belem_Scraper(Scraper):
 
     def __consolidar_portal_transparencia_capital(self, data_extracao):
         dicionario_dados = {consolidacao.DOCUMENTO_NUMERO: 'Empenho',
-                            consolidacao.UG_DESCRICAO: 'Unidade Gestora/Órgão Contratante',
                             consolidacao.CONTRATANTE_DESCRICAO: 'Unidade Gestora/Órgão Contratante',
-                            consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.FONTE_RECURSOS_DESCRICAO: 'Fonte',
+                            consolidacao.DESPESA_DESCRICAO: 'Objeto',
                             consolidacao.CONTRATADO_DESCRICAO: 'Fornecedor', consolidacao.VALOR_CONTRATO: 'Valor',
-                            consolidacao.DOCUMENTO_DATA: 'Data', consolidacao.SITUACAO: 'Situacao'}
+                            consolidacao.DOCUMENTO_DATA: 'Data'}
         planilha_original = path.join(config.diretorio_dados, 'PA', 'portal_transparencia', 'Belem', 'Despesas.csv')
         df_original = pd.read_csv(planilha_original)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Belem
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL, fonte_dados, 'PA',
-                               get_codigo_municipio_por_nome('Belém', 'PA'), data_extracao,
-                               self.pos_processar_portal_transparencia_capital)
-        return df
-
-    def pos_processar_portal_transparencia_capital(self, df):
-        df['temp'] = df[consolidacao.FONTE_RECURSOS_DESCRICAO]
-        df[consolidacao.FONTE_RECURSOS_COD] = df.apply(lambda row: row['temp'][0:row['temp'].find('-')], axis=1)
-        df[consolidacao.FONTE_RECURSOS_DESCRICAO] = df.apply(
-            lambda row: row['temp'][row['temp'].find('-') + 1:len(row['temp'])], axis=1)
-        df = df.drop(['temp'], axis=1)
-
+                               get_codigo_municipio_por_nome('Belém', 'PA'), data_extracao)
         df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
         return df
 

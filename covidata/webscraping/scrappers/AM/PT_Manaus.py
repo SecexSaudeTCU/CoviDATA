@@ -25,17 +25,11 @@ class PT_Manaus_Scraper(Scraper):
         return self.consolidar_materiais_capital(data_extracao), False
 
     def consolidar_materiais_capital(self, data_extracao):
-        dicionario_dados = {consolidacao.UG_DESCRICAO: 'ÓRGÃO', consolidacao.CONTRATANTE_DESCRICAO: 'ÓRGÃO',
+        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'ÓRGÃO',
                             consolidacao.DESPESA_DESCRICAO: 'MATERIAL/SERVIÇO',
-                            consolidacao.MOD_APLIC_DESCRICAO: 'MODALIDADE', consolidacao.ITEM_EMPENHO_QUANTIDADE: 'QTD',
-                            consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'VLR UNITÁRIO',
-                            consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'VLR  TOTAL POR ITEM',
                             consolidacao.VALOR_CONTRATO: 'VLR TOTAL CONTRATADO',
                             consolidacao.CONTRATADO_DESCRICAO: 'FORNECEDOR', consolidacao.CONTRATADO_CNPJ: 'CNPJ',
-                            consolidacao.DOCUMENTO_NUMERO: 'NOTA DE EMPENHO',
-                            consolidacao.DATA_CELEBRACAO: 'DATA DA CELEBRAÇÃO DO CONTRATO',
-                            consolidacao.PRAZO_EM_DIAS: 'PRAZO DE ENTREGA (EM DIAS)',
-                            consolidacao.NUMERO_PROCESSO: 'PROCESSO', consolidacao.NUMERO_CONTRATO: 'CONTRATO'}
+                            consolidacao.DOCUMENTO_NUMERO: 'NOTA DE EMPENHO'}
         df_original = pd.read_csv(
             path.join(config.diretorio_dados, 'AM', 'portal_transparencia', 'Manaus',
                       'PÚBLICA-CONTROLE-PROCESSOS-COMBATE-COVID-19-MATERIAIS.csv'))
@@ -50,8 +44,6 @@ class PT_Manaus_Scraper(Scraper):
         df.drop(df.tail(17).index, inplace=True)
 
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'Manaus'
-        df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-        df.loc[(pd.isna(df[consolidacao.CONTRATADO_CNPJ])), consolidacao.FAVORECIDO_TIPO] = ''
         df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
 
         return df

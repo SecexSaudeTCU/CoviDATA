@@ -26,13 +26,9 @@ class PT_RioBranco_Scraper(Scraper):
         return self.__consolidar_portal_transparencia_capital(data_extracao), False
 
     def __consolidar_portal_transparencia_capital(self, data_extracao):
-        dicionario_dados = {consolidacao.ANO: 'Exercício', consolidacao.CONTRATADO_DESCRICAO: 'Fornecedor',
-                            consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.MOD_APLIC_DESCRICAO: 'Modalidade',
-                            consolidacao.CONTRATANTE_DESCRICAO: 'Secretaria', consolidacao.VALOR_CONTRATO: 'Valor',
-                            consolidacao.UG_DESCRICAO: 'Secretaria', consolidacao.DATA_ASSINATURA: 'Data de Assinatura',
-                            consolidacao.NUMERO_CONTRATO: 'Número do Contrato',
-                            consolidacao.NUMERO_PROCESSO: 'Número do Processo',
-                            consolidacao.DATA_FIM_VIGENCIA: 'Prazo de Vigência'}
+        dicionario_dados = {consolidacao.CONTRATADO_DESCRICAO: 'Fornecedor',
+                            consolidacao.DESPESA_DESCRICAO: 'Objeto',
+                            consolidacao.CONTRATANTE_DESCRICAO: 'Secretaria', consolidacao.VALOR_CONTRATO: 'Valor'}
         df_original = pd.read_excel(
             path.join(config.diretorio_dados, 'AC', 'portal_transparencia', 'Rio Branco', 'webexcel.xls'), header=11)
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
@@ -44,7 +40,6 @@ class PT_RioBranco_Scraper(Scraper):
     def pos_processar_portal_transparencia_capital(self, df):
         # Elimina as sete últimas linhas
         df.drop(df.tail(7).index, inplace=True)
-        df = df.astype({consolidacao.ANO: np.uint16, consolidacao.NUMERO_CONTRATO: np.int64})
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'RIO BRANCO'
         return df
 

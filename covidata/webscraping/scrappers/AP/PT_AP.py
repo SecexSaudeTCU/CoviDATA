@@ -27,28 +27,15 @@ class PT_AP_Scraper(Scraper):
         return self.consolidar_contratacoes(data_extracao), False
 
     def consolidar_contratacoes(self, data_extracao):
-        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'orgao', consolidacao.UG_DESCRICAO: 'orgao',
-                            consolidacao.MOD_APLIC_DESCRICAO: 'modalidade_processo',
+        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'orgao',
                             consolidacao.DESPESA_DESCRICAO: 'objeto',
                             consolidacao.CONTRATADO_CNPJ: 'fornecedor_cnpj_cpf',
                             consolidacao.CONTRATADO_DESCRICAO: 'fornecedor_razao_social',
-                            consolidacao.ITEM_EMPENHO_QUANTIDADE: 'quantidade',
-                            consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'valor_unitario',
-                            consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'valor_total',
-                            consolidacao.VALOR_CONTRATO: 'valor_total',
-                            consolidacao.FONTE_RECURSOS_COD: 'fontes_de_recursos_fr_codigo',
-                            consolidacao.FONTE_RECURSOS_DESCRICAO: 'fontes_de_recursos_fr_desc',
-                            consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'local',
-                            consolidacao.DATA_ASSINATURA: 'data_assinatura', consolidacao.NUMERO_PROCESSO: 'processo'}
+                            consolidacao.VALOR_CONTRATO: 'valor_total'}
         planilha_original = path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'contratos.xlsx')
         df_original = pd.read_excel(planilha_original)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_AP
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
-                               fonte_dados, 'AP', '', data_extracao, self.pos_processar_contratacoes)
-
-        return df
-
-    def pos_processar_contratacoes(self, df):
+                               fonte_dados, 'AP', '', data_extracao)
         df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
-        df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
         return df

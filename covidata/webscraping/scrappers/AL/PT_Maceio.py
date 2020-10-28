@@ -27,10 +27,7 @@ class PT_Maceio_Scraper(Scraper):
 
     def __consolidar_compras_capital(self, data_extracao):
         dicionario_dados = {consolidacao.DESPESA_DESCRICAO: 'objeto',
-                            consolidacao.MOD_APLICACAO_COD: 'numero_modalidade',
-                            consolidacao.ANO: 'ano_modalidade', consolidacao.MOD_APLIC_DESCRICAO: 'modalidade',
-                            consolidacao.CONTRATANTE_DESCRICAO: 'orgao_nome', consolidacao.UG_DESCRICAO: 'orgao_nome',
-                            consolidacao.NUMERO_PROCESSO: 'num_processo'}
+                            consolidacao.CONTRATANTE_DESCRICAO: 'orgao_nome'}
         df_original = pd.read_excel(
             path.join(config.diretorio_dados, 'AL', 'portal_transparencia', 'Maceio', 'compras.xlsx'))
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Maceio

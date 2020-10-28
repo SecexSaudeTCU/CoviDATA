@@ -60,12 +60,6 @@ class TCE_AC_Scraper(Scraper):
         else:
             return ''
 
-    def pos_processar_dispensas(self, df):
-        # Elimina a última linha, que só contém um totalizador
-        df = df.drop(df.index[-1])
-        df[consolidacao.MOD_APLIC_DESCRICAO] = 'Dispensa de Licitação'
-        return df
-
 
 class TCE_AC_ContratosScraper(TCE_AC_Scraper):
     def scrap(self):
@@ -80,9 +74,7 @@ class TCE_AC_ContratosScraper(TCE_AC_Scraper):
         logger.info('Consolidando as informações de contratos no layout padronizado...')
         start_time = time.time()
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Entidade', consolidacao.DESPESA_DESCRICAO: ' Objeto ',
-                            consolidacao.VALOR_CONTRATO: 'Valor R$', consolidacao.UG_DESCRICAO: 'Entidade',
-                            consolidacao.FUNDAMENTO_LEGAL: '\xa0Fundamento Legal\xa0',
-                            consolidacao.NUMERO_PROCESSO: 'Nº Processo'}
+                            consolidacao.VALOR_CONTRATO: 'Valor R$'}
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'contratos.xls'), header=4)
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_contratos, 'AC', '',
@@ -116,9 +108,7 @@ class TCE_AC_DespesasScraper(TCE_AC_Scraper):
         dicionario_dados = {consolidacao.DOCUMENTO_NUMERO: '\nNUMEROEMPENHO\n',
                             consolidacao.CONTRATADO_DESCRICAO: '\nRazão Social\n',
                             consolidacao.CONTRATADO_CNPJ: '\nCPF/CNPJ\n',
-                            consolidacao.DOCUMENTO_DATA: '\nData do Empenho\n',
-                            consolidacao.FONTE_RECURSOS_COD: '\nFonte de Recurso\n',
-                            consolidacao.VALOR_EMPENHADO: '\nValor Empenhado\r\n  ($)\n'}
+                            consolidacao.DOCUMENTO_DATA: '\nData do Empenho\n'}
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'despesas.xls'), header=4)
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_despesas, 'AC', '',
@@ -130,13 +120,14 @@ class TCE_AC_DespesasScraper(TCE_AC_Scraper):
     def __consolidar_dispensas(self, data_extracao):
         dicionario_dados = {consolidacao.DESPESA_DESCRICAO: '\nObjeto\n',
                             consolidacao.VALOR_CONTRATO: '\nValor\r\n  R$\n',
-                            consolidacao.CONTRATANTE_DESCRICAO: '\nEnte\n', consolidacao.UG_DESCRICAO: '\nEnte\n',
-                            consolidacao.CONTRATADO_DESCRICAO: '\nFornecedor\n',
-                            consolidacao.NUMERO_PROCESSO: '\nNúmero\r\n  Processo\n'}
+                            consolidacao.CONTRATANTE_DESCRICAO: '\nEnte\n',
+                            consolidacao.CONTRATADO_DESCRICAO: '\nFornecedor\n'}
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'dispensas.xls'), header=4)
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_despesas, 'AC', '',
-                               data_extracao, self.pos_processar_dispensas)
+                               data_extracao)
+        # Elimina a última linha, que só contém um totalizador
+        df = df.drop(df.index[-1])
         return df
 
     def pos_processar_despesas(self, df):
@@ -148,14 +139,6 @@ class TCE_AC_DespesasScraper(TCE_AC_Scraper):
 
         df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
         df.fillna('')
-
-        for i in range(0, len(df)):
-            cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
-
-            if len(cpf_cnpj) == 11:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CPF
-            elif len(cpf_cnpj) > 11:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
 
         return df
 
@@ -173,9 +156,7 @@ class TCE_AC_ContratosMunicipiosScraper(TCE_AC_Scraper):
         logger.info('Consolidando as informações de contratos municipais no layout padronizado...')
         start_time = time.time()
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Entidade', consolidacao.DESPESA_DESCRICAO: ' Objeto ',
-                            consolidacao.VALOR_CONTRATO: 'Valor R$', consolidacao.UG_DESCRICAO: 'Entidade',
-                            consolidacao.FUNDAMENTO_LEGAL: '\xa0Fundamento Legal\xa0',
-                            consolidacao.NUMERO_PROCESSO: 'Nº Processo'}
+                            consolidacao.VALOR_CONTRATO: 'Valor R$'}
 
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'contratos_municipios.xls'),
                                     header=4)
@@ -213,7 +194,6 @@ class TCE_AC_DespesasMunicipiosScraper(TCE_AC_Scraper):
 
     def __consolidar_despesas_municipios(self, data_extracao):
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: '\nPREFEITURAS MUNICIPAIS NO ESTADO DO ACRE\n',
-                            consolidacao.UG_DESCRICAO: '\nPREFEITURAS MUNICIPAIS NO ESTADO DO ACRE\n',
                             consolidacao.CONTRATADO_CNPJ: '\nCNPJ/CPF\n',
                             consolidacao.VALOR_CONTRATO: '\n VALOR CONTRATADO R$\n'}
 
@@ -226,9 +206,8 @@ class TCE_AC_DespesasMunicipiosScraper(TCE_AC_Scraper):
     def __consolidar_dispensas_municipios(self, data_extracao):
         dicionario_dados = {consolidacao.DESPESA_DESCRICAO: '\nObjeto\n',
                             consolidacao.VALOR_CONTRATO: '\nValor\r\n  R$\n',
-                            consolidacao.CONTRATANTE_DESCRICAO: '\nEnte\n', consolidacao.UG_DESCRICAO: '\nEnte\n',
-                            consolidacao.CONTRATADO_DESCRICAO: '\nFornecedor\n',
-                            consolidacao.NUMERO_PROCESSO: '\nNúmero\r\n  Processo\n'}
+                            consolidacao.CONTRATANTE_DESCRICAO: '\nEnte\n',
+                            consolidacao.CONTRATADO_DESCRICAO: '\nFornecedor\n'}
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'dispensas_municipios.xls'),
                                     header=4)
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
@@ -241,21 +220,13 @@ class TCE_AC_DespesasMunicipiosScraper(TCE_AC_Scraper):
         df = df.drop(df.index[-1])
         df.fillna('')
 
-        for i in range(0, len(df)):
-            cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ].strip()
-
-            if len(cpf_cnpj) == 14:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CPF
-            elif len(cpf_cnpj) > 14:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-
         df = self._definir_municipios(df, prefixo='\nPrefeitura Municipal de ')
 
         return df
 
     def pos_processar_dispensas_municipios(self, df):
-        df = self.pos_processar_dispensas(df)
+        # Elimina a última linha, que só contém um totalizador
+        df = df.drop(df.index[-1])
         df = self._definir_municipios(df, prefixo='\nPREFEITURA MUNICIPAL DE ')
         df = df.rename(columns={'DATA\r\n  DA ALIMENTAÇÃO': 'DATA DA ALIMENTAÇÃO'})
-        df[consolidacao.MOD_APLIC_DESCRICAO] = 'Dispensa de Licitação'
         return df

@@ -35,13 +35,9 @@ class PT_Goiania_Scraper(Scraper):
         # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
         dicionario_dados = {consolidacao.DOCUMENTO_NUMERO: 'Empenho',
                             consolidacao.DOCUMENTO_DATA: 'Data Empenho',
-                            consolidacao.ELEMENTO_DESPESA_DESCRICAO: 'Natureza Despesa',
                             consolidacao.CONTRATADO_CNPJ: 'CNPJ',
                             consolidacao.CONTRATADO_DESCRICAO: 'Nome Favorecido',
-                            consolidacao.CONTRATANTE_DESCRICAO: 'Órgão',
-                            consolidacao.VALOR_EMPENHADO: 'Valor Empenhado',
-                            consolidacao.VALOR_LIQUIDADO: 'Valor Liquidado',
-                            consolidacao.VALOR_PAGO: 'Valor Pago'}
+                            consolidacao.CONTRATANTE_DESCRICAO: 'Órgão'}
 
         # Obtém objeto list dos arquivos armazenados no path passado como argumento para a função nativa "glob"
         list_files = glob(path.join(config.diretorio_dados, 'GO', 'portal_transparencia', 'Goiania/*'))
@@ -63,8 +59,7 @@ class PT_Goiania_Scraper(Scraper):
         df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Goiania_despesas,
                                'GO',
-                               get_codigo_municipio_por_nome('Goiânia', 'GO'), data_extracao,
-                               self.pos_processar_pt_despesas_Goiania)
+                               get_codigo_municipio_por_nome('Goiânia', 'GO'), data_extracao)
 
         return df
 
@@ -104,17 +99,6 @@ class PT_Goiania_Scraper(Scraper):
         # os converte para datatime, em seguida para date apenas e, por fim, para string no formato "dd/mm/aaaa"
         df['Data Empenho'] = \
             df['Data Empenho'].apply(lambda x: datetime.strptime(x[:10], '%Y-%m-%d').date().strftime('%d/%m/%Y'))
-
-        return df
-
-    def pos_processar_pt_despesas_Goiania(self, df):
-        for i in range(len(df)):
-            cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
-
-            if len(str(cpf_cnpj)) >= 14:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-            else:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = 'CPF/RG'
 
         return df
 

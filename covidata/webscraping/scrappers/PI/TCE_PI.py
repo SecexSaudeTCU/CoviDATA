@@ -109,15 +109,10 @@ class TCE_PI_Scraper(Scraper):
     def __consolidar_tce(self, data_extracao):
         # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'órgão',
-                            consolidacao.UG_DESCRICAO: 'órgão',
                             consolidacao.DESPESA_DESCRICAO: 'objeto',
                             consolidacao.VALOR_CONTRATO: 'valor',
                             consolidacao.CONTRATADO_DESCRICAO: 'contratada',
-                            consolidacao.CONTRATADO_CNPJ: 'doc contratada',
-                            consolidacao.NUMERO_PROCESSO: 'processo tce',
-                            consolidacao.DATA_ASSINATURA: 'Data Assinatura',
-                            consolidacao.DATA_INICIO_VIGENCIA: 'dt ini vig atual',
-                            consolidacao.DATA_FIM_VIGENCIA: 'dt fim vig atual'}
+                            consolidacao.CONTRATADO_CNPJ: 'doc contratada'}
 
         # Lê o arquivo "xlsx" de contratos baixado como um objeto pandas DataFrame
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'PI', 'tce', 'contratos.xls'), header=4)
@@ -129,20 +124,7 @@ class TCE_PI_Scraper(Scraper):
         # Chama a função "consolidar_layout" definida em módulo importado
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_PI, 'PI', '',
-                               data_extracao, self.pos_processar_tce)
-
-        return df
-
-    def pos_processar_tce(self, df):
-
-        for i in range(len(df)):
-            cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
-
-            if len(cpf_cnpj) > 14:
-                df.loc[str(i), consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-            else:
-                df.loc[str(i), consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CPF
-
+                               data_extracao)
         return df
 
     def __configurar_browser(self):

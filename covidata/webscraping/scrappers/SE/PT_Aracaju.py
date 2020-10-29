@@ -67,16 +67,10 @@ class PT_Aracaju_Scraper(Scraper):
     def consolidar_pt_Aracaju(self, data_extracao):
         # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Órgão',
-                            consolidacao.UG_DESCRICAO: 'Unidade',
                             consolidacao.DOCUMENTO_NUMERO: 'Empenho',
                             consolidacao.CONTRATADO_DESCRICAO: 'Nome Favorecido',
                             consolidacao.CONTRATADO_CNPJ: 'CNPJ/CPF Favorecido',
-                            consolidacao.VALOR_PAGO: 'Pago',
-                            consolidacao.DESPESA_DESCRICAO: 'DsEmpenho',
-                            consolidacao.ELEMENTO_DESPESA_DESCRICAO: 'DsItemDespesa',
-                            consolidacao.FONTE_RECURSOS_COD: 'Dotação',
-                            consolidacao.VALOR_LIQUIDADO: 'Liquidado',
-                            consolidacao.VALOR_EMPENHADO: 'Empenhado'}
+                            consolidacao.DESPESA_DESCRICAO: 'DsEmpenho'}
 
         df_empenhos = pd.read_excel(path.join(config.diretorio_dados, 'SE', 'portal_transparencia',
                                               'Aracaju', 'Dados_Portal_Transparencia_Aracaju.xlsx'),
@@ -95,7 +89,7 @@ class PT_Aracaju_Scraper(Scraper):
         # Chama a função "consolidar_layout" definida em módulo importado
         df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Aracaju, 'SE',
-                               get_codigo_municipio_por_nome('Aracaju', 'SE'), data_extracao, self.pos_processar_pt)
+                               get_codigo_municipio_por_nome('Aracaju', 'SE'), data_extracao)
 
         return df
 
@@ -137,16 +131,6 @@ class PT_Aracaju_Scraper(Scraper):
 
         return df
 
-    def pos_processar_pt(self, df):
-        for i in range(len(df)):
-            cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
-
-            if len(str(cpf_cnpj)) >= 14:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-            else:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = 'CPF/RG'
-
-        return df
 
 
 # Define a classe referida como herdeira da class "SeleniumDownloader"

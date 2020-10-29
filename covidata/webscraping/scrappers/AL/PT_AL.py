@@ -1,3 +1,5 @@
+import os
+
 import json
 import logging
 import time
@@ -7,8 +9,9 @@ import pandas as pd
 import requests
 
 from covidata import config
+from covidata.municipios.ibge import get_codigo_municipio_por_nome
 from covidata.persistencia import consolidacao
-from covidata.persistencia.consolidacao import consolidar_layout
+from covidata.persistencia.consolidacao import consolidar_layout, salvar
 from covidata.webscraping.json.parser import JSONParser
 from covidata.webscraping.scrappers.scrapper import Scraper
 
@@ -34,28 +37,14 @@ class PT_AL_Scraper(Scraper):
                             consolidacao.DESPESA_DESCRICAO: 'objeto',
                             consolidacao.CONTRATANTE_DESCRICAO: 'orgao_contratante',
                             consolidacao.CONTRATADO_DESCRICAO: 'nome_contratado',
-                            consolidacao.DOCUMENTO_NUMERO: 'nota_empenho',
-                            consolidacao.NUMERO_CONTRATO: 'contrato',
-                            consolidacao.NUMERO_PROCESSO: 'processo'}
+                            consolidacao.DOCUMENTO_NUMERO: 'nota_empenho'}
         df_original = pd.read_excel(
             path.join(config.diretorio_dados, 'AL', 'portal_transparencia', 'despesas.xlsx'))
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_AL, 'AL', '',
-                               data_extracao, self.pos_processar_despesas)
-        return df, False
-
-    def pos_processar_despesas(self, df):
+                               data_extracao)
         df[consolidacao.TIPO_DOCUMENTO] = 'EMPENHO'
-
-        for i in range(0, len(df)):
-            cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
-
-            if len(cpf_cnpj) == 11:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CPF
-            elif len(cpf_cnpj) > 11:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-
-        return df
+        return df, False
 
 
 class PortalTransparenciaAlagoas(JSONParser):
@@ -64,3 +53,52 @@ class PortalTransparenciaAlagoas(JSONParser):
 
     def _get_elemento_raiz(self, conteudo):
         return conteudo['rows']
+
+
+class PT_Maceio_Scraper(Scraper):
+    def scrap(self):
+        logger = logging.getLogger('covidata')
+        logger.info('Portal de transparência da capital...')
+        start_time = time.time()
+        pt_Maceio = PortalTransparencia_Maceio()
+        pt_Maceio.parse()
+        logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+    def consolidar(self, data_extracao):
+        return self.__consolidar_compras_capital(data_extracao), False
+
+    def __consolidar_compras_capital(self, data_extracao):
+        dicionario_dados = {consolidacao.DESPESA_DESCRICAO: 'objeto',
+                            consolidacao.CONTRATANTE_DESCRICAO: 'orgao_nome'}
+        df_original = pd.read_excel(
+            path.join(config.diretorio_dados, 'AL', 'portal_transparencia', 'Maceio', 'compras.xlsx'))
+        fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Maceio
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+                               fonte_dados, 'AL', get_codigo_municipio_por_nome('Maceió', 'AL'), data_extracao)
+        df[consolidacao.MUNICIPIO_DESCRICAO] = 'Maceió'
+
+        # Salva arquivos adicionais (informações acessórias que podem ser relevantes)
+        planilha_original = os.path.join(config.diretorio_dados, 'AL', 'portal_transparencia', 'Maceio', 'compras.xlsx')
+
+        documentos = pd.read_excel(planilha_original, sheet_name='documentos')
+        documentos[consolidacao.FONTE_DADOS] = fonte_dados
+        salvar(documentos, 'AL', '_Maceio_documentos')
+
+        homologacoes = pd.read_excel(planilha_original, sheet_name='homologacoes')
+        homologacoes[consolidacao.FONTE_DADOS] = fonte_dados
+        salvar(homologacoes, 'AL', '_Maceio_homologacoes')
+
+        atas = pd.read_excel(planilha_original, sheet_name='atas')
+        atas[consolidacao.FONTE_DADOS] = fonte_dados
+        salvar(atas, 'AL', '_Maceio_atas')
+
+        return df
+
+
+class PortalTransparencia_Maceio(JSONParser):
+
+    def __init__(self):
+        super().__init__(config.url_pt_Maceio, 'num_processo', 'compras', 'portal_transparencia', 'AL', 'Maceio')
+
+    def _get_elemento_raiz(self, conteudo):
+        return conteudo['data']

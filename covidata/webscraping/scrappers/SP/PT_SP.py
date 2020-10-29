@@ -34,36 +34,16 @@ class PT_SP_Scraper(Scraper):
         return self.consolidar_PT(data_extracao), False
 
     def consolidar_PT(self, data_extracao):
-        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Secretaria', consolidacao.UG_DESCRICAO: 'Secretaria',
-                            consolidacao.NUMERO_PROCESSO: 'Número do Processo',
+        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Secretaria',
                             consolidacao.CONTRATADO_DESCRICAO: 'Contratada / Conveniada',
                             consolidacao.CONTRATADO_CNPJ: 'CPF / CNPJ / CGC',
                             consolidacao.DESPESA_DESCRICAO: 'Descrição Processo',
-                            consolidacao.ITEM_EMPENHO_DESCRICAO: 'Finalidade/Item',
-                            consolidacao.ITEM_EMPENHO_QUANTIDADE: 'Quantidade',
-                            consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'Valor Unitário',
-                            consolidacao.DOCUMENTO_NUMERO: 'Nota de Empenho', consolidacao.VALOR_EMPENHADO: 'Empenho',
-                            consolidacao.FONTE_RECURSOS_COD: 'Código Fonte Recurso',
-                            consolidacao.FONTE_RECURSOS_DESCRICAO: 'Código Nome Fonte Detalhada',
-                            consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local Entrega'}
+                            consolidacao.DOCUMENTO_NUMERO: 'Nota de Empenho'}
         df_original = pd.read_csv(path.join(config.diretorio_dados, 'SP', 'portal_transparencia', 'COVID.csv'),
                                   encoding='ISO-8859-1', sep=';')
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_SP, 'SP',
-                               None, data_extracao, self.pos_processar_PT)
-        return df
-
-    def pos_processar_PT(self, df):
-        df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
-
-        for i in range(0, len(df)):
-            cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
-
-            if len(cpf_cnpj) == 14:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CPF
-            elif len(cpf_cnpj) == 18:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-
+                               None, data_extracao)
         return df
 
 

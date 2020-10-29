@@ -73,18 +73,11 @@ class PT_RR_Scraper(Scraper):
 
     def __consolidar_arquivo(self, data_extracao, arquivo):
         # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
-        dicionario_dados = {consolidacao.NUMERO_PROCESSO: 'Processo',
-                            consolidacao.DESPESA_DESCRICAO: 'Histórico do Pedido de Empenho',
-                            consolidacao.NUMERO_CONTRATO: 'Contrato',
+        dicionario_dados = {consolidacao.DESPESA_DESCRICAO: 'Histórico do Pedido de Empenho',
                             consolidacao.CONTRATADO_CNPJ: 'CNPJ/CPF',
                             consolidacao.CONTRATADO_DESCRICAO: 'Credor',
                             consolidacao.VALOR_CONTRATO: 'Valor',
-                            consolidacao.VALOR_EMPENHADO: 'Empenhado',
-                            consolidacao.VALOR_LIQUIDADO: 'Liquidado',
-                            consolidacao.VALOR_PAGO: 'Pago', consolidacao.DATA_INICIO_VIGENCIA: 'Inicio',
-                            consolidacao.DATA_FIM_VIGENCIA: 'Témino',
-                            consolidacao.CONTRATANTE_DESCRICAO: 'UO',
-                            consolidacao.ANO: 'ANO'}
+                            consolidacao.CONTRATANTE_DESCRICAO: 'UO'}
 
         # Lê o arquivo "xls" de contratos baixado como um objeto list utilizando a função "read_html" da biblioteca pandas
         df_original = pd.read_html(path.join(config.diretorio_dados, 'RR', 'portal_transparencia', arquivo),
@@ -96,7 +89,7 @@ class PT_RR_Scraper(Scraper):
         # Chama a função "consolidar_layout" definida em módulo importado
         df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_RR, 'RR', '',
-                               data_extracao, self.pos_processar_pt_RR)
+                               data_extracao)
 
         return df
 
@@ -119,13 +112,3 @@ class PT_RR_Scraper(Scraper):
 
         return df
 
-    def pos_processar_pt_RR(self, df):
-        for i in range(len(df)):
-            cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
-
-            if len(cpf_cnpj) == 14:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CPF
-            elif len(cpf_cnpj) > 14:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-
-        return df

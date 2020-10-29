@@ -57,17 +57,10 @@ class PT_RN_Scraper(Scraper):
     def consolidar_pt_RN(self, data_extracao):
         # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Contratante',
-                            consolidacao.UG_DESCRICAO: 'Contratante',
                             consolidacao.DESPESA_DESCRICAO: 'Objeto',
                             consolidacao.CONTRATADO_DESCRICAO: 'Contratado (a)',
-                            consolidacao.NUMERO_CONTRATO: 'N. Contrato',
                             consolidacao.VALOR_CONTRATO: 'Valor do Contrato (R$)',
-                            consolidacao.CONTRATADO_CNPJ: 'CNPJ/CPF',
-                            consolidacao.NUMERO_PROCESSO: 'N. Processo',
-                            consolidacao.FUNDAMENTO_LEGAL: 'Fundamento Legal',
-                            consolidacao.FONTE_RECURSOS_DESCRICAO: 'Fonte do Recurso',
-                            consolidacao.VALOR_PAGO: 'Valor Pago (R$)', consolidacao.DATA_ASSINATURA: 'Data Assinatura',
-                            consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local de execução'}
+                            consolidacao.CONTRATADO_CNPJ: 'CNPJ/CPF'}
 
         df_original = pd.read_excel(
             path.join(config.diretorio_dados, 'RN', 'portal_transparencia', 'compras_e_servicos.xls'), header=4)
@@ -75,16 +68,7 @@ class PT_RN_Scraper(Scraper):
         # Chama a função "consolidar_layout" definida em módulo importado
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_RN, 'RN', '',
-                               data_extracao, self.pos_processar_pt)
+                               data_extracao)
         return df
 
-    def pos_processar_pt(self, df):
-        for i in range(len(df)):
-            cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
 
-            if len(str(cpf_cnpj)) == 14:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CPF
-            elif len(str(cpf_cnpj)) > 14:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-
-        return df

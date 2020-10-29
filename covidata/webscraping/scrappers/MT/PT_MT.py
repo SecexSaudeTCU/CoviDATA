@@ -51,16 +51,8 @@ class PT_MT_Scraper(Scraper):
         # Objeto dict em que os valores têm chaves que retratam campos considerados mais importantes
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Entidade',
                             consolidacao.DESPESA_DESCRICAO: 'Objeto',
-                            consolidacao.ITEM_EMPENHO_UNIDADE_MEDIDA: 'Unidade',
-                            consolidacao.ITEM_EMPENHO_QUANTIDADE: 'Quantidade',
-                            consolidacao.ITEM_EMPENHO_VALOR_UNITARIO: 'Valor Unitário',
-                            consolidacao.ITEM_EMPENHO_VALOR_TOTAL: 'Valor Global',
                             consolidacao.CONTRATADO_CNPJ: 'CNPJ',
-                            consolidacao.CONTRATADO_DESCRICAO: 'Razao Social',
-                            consolidacao.DATA_CELEBRACAO: 'Data de Celebração',
-                            consolidacao.DATA_VIGENCIA: 'Data de Vigência',
-                            consolidacao.SITUACAO: 'Situação',
-                            consolidacao.LOCAL_EXECUCAO_OU_ENTREGA: 'Local da Execução'}
+                            consolidacao.CONTRATADO_DESCRICAO: 'Razao Social'}
 
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'MT', 'portal_transparencia', 'contratos.xls'),
                                     header=4)
@@ -94,17 +86,8 @@ class PT_MT_Scraper(Scraper):
         for i in range(0, len(df)):
             tamanho = len(df.loc[i, consolidacao.CONTRATADO_CNPJ])
 
-            if tamanho > 2:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-
-                if tamanho < 14:
-                    df.loc[i, consolidacao.CONTRATADO_CNPJ] = '0' * (14 - tamanho) + df.loc[
-                        i, consolidacao.CONTRATADO_CNPJ]
-
-            termos = df.loc[i, consolidacao.DATA_VIGENCIA].split()
-            df.loc[i, consolidacao.DATA_INICIO_VIGENCIA] = termos[0]
-            df.loc[i, consolidacao.DATA_FIM_VIGENCIA] = termos[2]
-
-        df = df.drop([consolidacao.DATA_VIGENCIA], axis=1)
+            if tamanho > 2 and tamanho < 14:
+                df.loc[i, consolidacao.CONTRATADO_CNPJ] = '0' * (14 - tamanho) + df.loc[
+                    i, consolidacao.CONTRATADO_CNPJ]
 
         return df

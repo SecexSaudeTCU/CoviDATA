@@ -14,9 +14,37 @@ from covidata import config
 from covidata.municipios.ibge import get_codigo_municipio_por_nome
 from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout
+from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.scrappers.scrapper import Scraper
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
 import pandas as pd
+
+
+class PT_GO_Scraper(Scraper):
+    def scrap(self):
+        logger = logging.getLogger('covidata')
+
+        logger.info('Portal de transparência estadual...')
+        start_time = time.time()
+        pt_GO = FileDownloader(path.join(config.diretorio_dados, 'GO', 'portal_transparencia'), config.url_pt_GO,
+                               'aquisicoes.csv')
+        pt_GO.download()
+        logger.info("--- %s segundos ---" % (time.time() - start_time))
+
+    def consolidar(self, data_extracao):
+        return self.__consolidar_aquisicoes(data_extracao), False
+
+    def __consolidar_aquisicoes(self, data_extracao):
+        dicionario_dados = {consolidacao.DESPESA_DESCRICAO: 'Objeto',
+                            consolidacao.VALOR_CONTRATO: 'Valor',
+                            consolidacao.CONTRATADO_DESCRICAO: 'Credor',
+                            consolidacao.CONTRATADO_CNPJ: 'CPF_CNPJ_COTACOES'}
+        planilha_original = path.join(config.diretorio_dados, 'GO', 'portal_transparencia', 'aquisicoes.csv')
+        df_original = pd.read_csv(planilha_original)
+        fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_GO
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
+                               fonte_dados, 'GO', '', data_extracao)
+        return df
 
 
 class PT_Goiania_Scraper(Scraper):

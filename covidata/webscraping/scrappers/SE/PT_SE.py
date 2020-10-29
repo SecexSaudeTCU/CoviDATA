@@ -43,12 +43,8 @@ class PT_SE_Scraper(Scraper):
         # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Unidade',
                             consolidacao.DOCUMENTO_NUMERO: 'Nº do empenho',
-                            consolidacao.PROGRAMA_DESCRICAO: 'Programa',
-                            consolidacao.ELEMENTO_DESPESA_DESCRICAO: 'Elemento',
                             consolidacao.CONTRATADO_DESCRICAO: 'Razão Social Favorecido',
-                            consolidacao.CONTRATADO_CNPJ: 'CNPJ Favorecido',
-                            consolidacao.VALOR_EMPENHADO: 'Empenhado',
-                            consolidacao.VALOR_LIQUIDADO: 'Liquidado'}
+                            consolidacao.CONTRATADO_CNPJ: 'CNPJ Favorecido'}
 
         # Lê o arquivo "xlsx" de nome "Dados_Portal_Transparencia_Sergipe" de contratos baixado como um objeto pandas DataFrame
         df_empenhos = pd.read_excel(path.join(config.diretorio_dados, 'SE', 'portal_transparencia',
@@ -65,7 +61,7 @@ class PT_SE_Scraper(Scraper):
         # Chama a função "consolidar_layout" definida em módulo importado
         df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_SE, 'SE', '',
-                               data_extracao, self.pos_processar_pt)
+                               data_extracao)
         return df
 
     def pre_processar_pt_SE(self, df1, df2):
@@ -88,18 +84,6 @@ class PT_SE_Scraper(Scraper):
                       how='right',
                       left_on='Nº do empenho',
                       right_on='Nº do empenho')
-
-        return df
-
-    def pos_processar_pt(self, df):
-
-        for i in range(len(df)):
-            cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
-
-            if len(str(cpf_cnpj)) >= 14:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-            else:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = 'CPF/RG'
 
         return df
 

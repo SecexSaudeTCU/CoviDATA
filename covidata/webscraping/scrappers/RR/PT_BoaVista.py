@@ -125,8 +125,7 @@ class PT_BoaVista_Scraper(Scraper):
         dicionario_dados = {consolidacao.DESPESA_DESCRICAO: 'Objeto Licitação',
                             consolidacao.CONTRATADO_CNPJ: 'CNPJ',
                             consolidacao.CONTRATADO_DESCRICAO: 'Contratado',
-                            consolidacao.VALOR_CONTRATO: 'Valor Contrato',
-                            consolidacao.DATA_CELEBRACAO: 'Data Contrato'}
+                            consolidacao.VALOR_CONTRATO: 'Valor Contrato'}
 
         # Lê o arquivo "xlsx" de despesas baixado como um objeto pandas DataFrame
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'RR', 'portal_transparencia',
@@ -135,19 +134,7 @@ class PT_BoaVista_Scraper(Scraper):
         # Chama a função "consolidar_layout" definida em módulo importado
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_BoaVista, 'RR',
-                               get_codigo_municipio_por_nome('Boa Vista', 'RR'), data_extracao,
-                               self.pos_processar_pt_BoaVista)
-
-        return df
-
-    def pos_processar_pt_BoaVista(self, df):
-        for i in range(len(df)):
-            cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
-
-            if len(str(cpf_cnpj)) >= 14:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-            else:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CPF
-
+                               get_codigo_municipio_por_nome('Boa Vista', 'RR'), data_extracao)
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'Boa Vista'
+
         return df

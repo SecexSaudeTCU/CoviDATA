@@ -28,10 +28,7 @@ class PT_Natal_Scraper(Scraper):
     def consolidar_pt_Natal(self, data_extracao):
         # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
         dicionario_dados = {consolidacao.CONTRATADO_DESCRICAO: 'Credor',
-                            consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ',
-                            consolidacao.VALOR_EMPENHADO: 'Empenhado',
-                            consolidacao.VALOR_LIQUIDADO: 'Liquidado',
-                            consolidacao.VALOR_PAGO: 'Pago'}
+                            consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ'}
 
         # Lê o arquivo "xlsx" de nome de despesas baixado como um objeto pandas DataFrame
         df_original = pd.read_excel(
@@ -44,8 +41,7 @@ class PT_Natal_Scraper(Scraper):
         # Chama a função "consolidar_layout" definida em módulo importado
         df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Natal, 'RN',
-                               get_codigo_municipio_por_nome('Natal', 'RN'), data_extracao, self.pos_processar_pt)
-
+                               get_codigo_municipio_por_nome('Natal', 'RN'), data_extracao)
         return df
 
     def pre_processar_pt_Natal(self, df):
@@ -55,17 +51,6 @@ class PT_Natal_Scraper(Scraper):
         # Preenche com zeros à esquerda a coluna especificada convertida em string até ter...
         # tamanho 14
         df['CPF/CNPJ'] = df['CPF/CNPJ'].apply(lambda x: str(x).zfill(14))
-
-        return df
-
-    def pos_processar_pt(self, df):
-        for i in range(len(df)):
-            cpf_cnpj = df.loc[i, consolidacao.CONTRATADO_CNPJ]
-
-            if len(cpf_cnpj) >= 14:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
-            else:
-                df.loc[i, consolidacao.FAVORECIDO_TIPO] = 'CPF/RG'
 
         return df
 

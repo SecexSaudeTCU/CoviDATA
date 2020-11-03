@@ -2,20 +2,20 @@
 Extrai os dados de todos os portais para os quais o respectivo scrapper já foi implementado e salva o resultado
 na pasta dados, na raiz do projeto. Os novos scrapers devem ser adicionados ao script manualmente.
 """
-import datetime
-import logging
-import os
-import sys
-import time
 import traceback
 from collections import defaultdict
 
+import datetime
+import logging
+import os
 import pandas as pd
+import sys
+import time
 
 from covidata import config
 from covidata.persistencia.consolidacao import salvar
 from covidata.webscraping.scrappers.AC.PT_AC import PT_AC_Scraper, PT_RioBranco_Scraper
-from covidata.webscraping.scrappers.AC.TCE_AC import TCE_AC_ContratosScraper, TCE_AC_DespesasScraper, \
+from covidata.webscraping.scrappers.AC.TCE_AC import TCE_AC_DespesasScraper, \
     TCE_AC_ContratosMunicipiosScraper, TCE_AC_DespesasMunicipiosScraper
 from covidata.webscraping.scrappers.AL.PT_AL import PT_AL_Scraper, PT_Maceio_Scraper
 from covidata.webscraping.scrappers.AM.PT_AM import PT_AM_Scraper, PT_Manaus_Scraper
@@ -52,8 +52,8 @@ from covidata.webscraping.scrappers.SC.PT_SC import PT_SC_Contratos_Scraper, PT_
     PT_Florianopolis_Scraper
 from covidata.webscraping.scrappers.SE.PT_Aracaju import PT_Aracaju_Scraper
 from covidata.webscraping.scrappers.SE.PT_SE import PT_SE_Scraper
-from covidata.webscraping.scrappers.SP import uf_sp
 from covidata.webscraping.scrappers.SP.PT_SP import PT_SaoPaulo_Scraper, PT_SP_Scraper
+from covidata.webscraping.scrappers.SP.TCM_SP import TCM_SP_Scraper
 from covidata.webscraping.scrappers.TO.PT_TO import PT_TO_Scraper
 
 # Adiciona diretorio raiz ao PATH. Devido a ausência de setup.py, isto garante que as importações sempre funcionarão
@@ -68,7 +68,6 @@ if __name__ == '__main__':
     # No momento, estão nesta lista os scrapers mais instáveis, que apresentam erros intermitentes.
     map_ufs_scrapers = {
         'AC': [PT_AC_Scraper(config.url_pt_AC), PT_RioBranco_Scraper(config.url_pt_RioBranco),
-               TCE_AC_ContratosScraper(config.url_tce_AC_contratos),
                TCE_AC_DespesasScraper(config.url_tce_AC_despesas),
                TCE_AC_ContratosMunicipiosScraper(config.url_tce_AC_contratos_municipios),
                TCE_AC_DespesasMunicipiosScraper(config.url_tce_AC_despesas_municipios)],
@@ -103,7 +102,8 @@ if __name__ == '__main__':
         'SC': [PT_SC_Contratos_Scraper(config.url_pt_SC_contratos), PT_SC_Contratos_Despesas(config.url_pt_SC_despesas),
                PT_Florianopolis_Scraper(config.url_pt_Florianopolis)],
         'SE': [PT_SE_Scraper(config.url_pt_SE), PT_Aracaju_Scraper(config.url_pt_Aracaju)],
-        'SP': [PT_SP_Scraper(config.url_pt_SP), PT_SaoPaulo_Scraper(config.url_pt_SaoPaulo)],
+        'SP': [PT_SP_Scraper(config.url_pt_SP), PT_SaoPaulo_Scraper(config.url_pt_SaoPaulo),
+               TCM_SP_Scraper(config.url_tcm_SP)],
         'TO': [PT_TO_Scraper(config.url_pt_TO)],
     }
     dfs_consolidados = defaultdict(pd.DataFrame)
@@ -127,10 +127,6 @@ if __name__ == '__main__':
 
     # TODO: Acesso disponível apenas por meio de API
     # pt_rs_capital.main() (acesso disponível apenas por meio de API)
-
-    logger.info('# Recuperando dados de São Paulo...')
-    uf_sp.main(dfs_consolidados['SP'])
-    dfs_consolidados.pop('SP')
 
     logger.info("--- %s minutos ---" % ((time.time() - start_time) / 60))
 

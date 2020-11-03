@@ -77,21 +77,6 @@ class PT_Maceio_Scraper(Scraper):
                                fonte_dados, 'AL', get_codigo_municipio_por_nome('Maceió', 'AL'), data_extracao)
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'Maceió'
 
-        # Salva arquivos adicionais (informações acessórias que podem ser relevantes)
-        planilha_original = os.path.join(config.diretorio_dados, 'AL', 'portal_transparencia', 'Maceio', 'compras.xlsx')
-
-        documentos = pd.read_excel(planilha_original, sheet_name='documentos')
-        documentos[consolidacao.FONTE_DADOS] = fonte_dados
-        salvar(documentos, 'AL', '_Maceio_documentos')
-
-        homologacoes = pd.read_excel(planilha_original, sheet_name='homologacoes')
-        homologacoes[consolidacao.FONTE_DADOS] = fonte_dados
-        salvar(homologacoes, 'AL', '_Maceio_homologacoes')
-
-        atas = pd.read_excel(planilha_original, sheet_name='atas')
-        atas[consolidacao.FONTE_DADOS] = fonte_dados
-        salvar(atas, 'AL', '_Maceio_atas')
-
         return df
 
 

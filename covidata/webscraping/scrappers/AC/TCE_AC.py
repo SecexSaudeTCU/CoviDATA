@@ -61,30 +61,6 @@ class TCE_AC_Scraper(Scraper):
             return ''
 
 
-class TCE_AC_ContratosScraper(TCE_AC_Scraper):
-    def scrap(self):
-        logger = logging.getLogger('covidata')
-        logger.info('Tribunal de Contas estadual - contratos...')
-        start_time = time.time()
-        self._extrair(url=config.url_tce_AC_contratos, informacao='contratos', indice=0)
-        logger.info("--- %s segundos ---" % (time.time() - start_time))
-
-    def consolidar(self, data_extracao):
-        logger = logging.getLogger('covidata')
-        logger.info('Consolidando as informações de contratos no layout padronizado...')
-        start_time = time.time()
-        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Entidade', consolidacao.DESPESA_DESCRICAO: ' Objeto ',
-                            consolidacao.VALOR_CONTRATO: 'Valor R$'}
-        df_original = pd.read_excel(path.join(config.diretorio_dados, 'AC', 'tce', 'contratos.xls'), header=4)
-        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
-                               consolidacao.TIPO_FONTE_TCE + ' - ' + config.url_tce_AC_contratos, 'AC', '',
-                               data_extracao)
-        # Elimina as duas últimas linhas
-        df.drop(df.tail(2).index, inplace=True)
-        logger.info("--- %s segundos ---" % (time.time() - start_time))
-        return df, False
-
-
 class TCE_AC_DespesasScraper(TCE_AC_Scraper):
     def scrap(self):
         logger = logging.getLogger('covidata')

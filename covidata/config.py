@@ -43,7 +43,6 @@ url_pt_DF = 'http://www.coronavirus.df.gov.br/wp-content/uploads/2020/'
 url_pt_RN = 'http://transparencia.rn.gov.br/covidcomprasservicos'
 
 # URLs de portais de transparência dos Tribunais de Contas Estaduais
-url_tce_AC_contratos = 'http://www.tce.ac.gov.br/covid19/Contratos-Estado.html'
 url_tce_AC_despesas = 'http://www.tce.ac.gov.br/covid19/despesa_estado_html.html'
 url_tce_AC_contratos_municipios = 'http://www.tce.ac.gov.br/covid19/Contratos-Municipios.html'
 url_tce_AC_despesas_municipios = 'http://www.tce.ac.gov.br/covid19/despesas_municipios_html.html'

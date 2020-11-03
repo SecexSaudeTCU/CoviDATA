@@ -44,8 +44,7 @@ class PT_MT_Scraper(Scraper):
 
         consolidacoes = self.__consolidar_pt_MT(data_extracao)
 
-        salvar(consolidacoes, 'MT')
-        return consolidacoes, True
+        return consolidacoes, False
 
     def __consolidar_pt_MT(self, data_extracao):
         # Objeto dict em que os valores têm chaves que retratam campos considerados mais importantes

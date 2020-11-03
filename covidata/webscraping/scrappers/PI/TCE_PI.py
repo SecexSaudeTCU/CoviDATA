@@ -1,9 +1,9 @@
+from os import path
+
 import locale
 import logging
-import time
-from datetime import datetime
-
 import pandas as pd
+import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common.exceptions import ElementClickInterceptedException
@@ -18,7 +18,6 @@ from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import salvar, consolidar_layout
 from covidata.persistencia.dao import persistir
 from covidata.webscraping.scrappers.scrapper import Scraper
-from os import path
 
 
 class TCE_PI_Scraper(Scraper):
@@ -101,10 +100,9 @@ class TCE_PI_Scraper(Scraper):
 
         consolidacoes = self.__consolidar_tce(data_extracao)
 
-        salvar(consolidacoes, 'PI')
         logger.info("--- %s segundos ---" % (time.time() - start_time))
 
-        return consolidacoes, True
+        return consolidacoes, False
 
     def __consolidar_tce(self, data_extracao):
         # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes

@@ -102,9 +102,10 @@ class PT_RioBranco_Scraper(Scraper):
         return self.__consolidar_portal_transparencia_capital(data_extracao), False
 
     def __consolidar_portal_transparencia_capital(self, data_extracao):
-        dicionario_dados = {consolidacao.CONTRATADO_DESCRICAO: 'Fornecedor',
+        dicionario_dados = {consolidacao.CONTRATADO_CNPJ:'CPF/CNPJ',
+                            consolidacao.CONTRATADO_DESCRICAO: 'Nome',
                             consolidacao.DESPESA_DESCRICAO: 'Objeto',
-                            consolidacao.CONTRATANTE_DESCRICAO: 'Secretaria', consolidacao.VALOR_CONTRATO: 'Valor'}
+                            consolidacao.CONTRATANTE_DESCRICAO: 'Secretaria', consolidacao.VALOR_CONTRATO: 'Valor Total'}
         df_original = pd.read_excel(
             path.join(config.diretorio_dados, 'AC', 'portal_transparencia', 'Rio Branco', 'webexcel.xls'), header=11)
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,

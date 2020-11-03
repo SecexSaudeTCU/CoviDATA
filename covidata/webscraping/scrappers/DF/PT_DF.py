@@ -34,9 +34,8 @@ class PT_DF_Scraper(Scraper):
         start_time = time.time()
         logger.info('Iniciando consolidação dados Distrito Federal')
         dados = self.__consolidar_dados_portal_transparencia(data_extracao)
-        salvar(dados, 'DF')
         logger.info("--- %s segundos ---" % (time.time() - start_time))
-        return dados, True
+        return dados, False
 
     def __consolidar_dados_portal_transparencia(self, data_extracao):
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'ÓRGÃO',

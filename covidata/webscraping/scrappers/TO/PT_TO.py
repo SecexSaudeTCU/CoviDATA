@@ -1,17 +1,17 @@
-import datetime
 import logging
-import time
+from os import path
 
+import logging
+import pandas as pd
 import requests
+import time
 from bs4 import BeautifulSoup, Tag
 
 from covidata import config
 from covidata.persistencia import consolidacao
-from covidata.persistencia.consolidacao import salvar, consolidar_layout
+from covidata.persistencia.consolidacao import consolidar_layout
 from covidata.persistencia.dao import persistir
 from covidata.webscraping.scrappers.scrapper import Scraper
-import pandas as pd
-from os import path
 
 
 class PT_TO_Scraper(Scraper):
@@ -68,8 +68,7 @@ class PT_TO_Scraper(Scraper):
 
         contratos = self.__consolidar_contratos(data_extracao)
 
-        salvar(contratos, 'TO')
-        return contratos, True
+        return contratos, False
 
     def __consolidar_contratos(self, data_extracao):
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Órgão', consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ',

@@ -86,7 +86,7 @@ if __name__ == '__main__':
         'MT': [PT_MT_Scraper(config.url_pt_MT)],
         'PA': [PT_PA_Scraper(config.url_pt_PA), PT_Belem_Scraper(config.url_pt_Belem),
                TCM_PA_Scraper1(config.url_tcm_PA_1), TCM_PA_Scraper2(config.url_tcm_PA_2)],
-        'PA': [PT_PB_Scraper(config.url_pt_PB), PT_JoaoPessoa_Scraper(config.url_pt_JoaoPessoa)],
+        'PB': [PT_PB_Scraper(config.url_pt_PB), PT_JoaoPessoa_Scraper(config.url_pt_JoaoPessoa)],
         'PE': [PT_Recife_Scraper(config.url_pt_Recife)],
         'PI': [TCE_PI_Scraper(config.url_tce_PI)],
         'PR': [PT_PR_Scraper(config.url_pt_PR), PT_CuritibaAquisicoes_Scraper(config.url_pt_Curitiba_aquisicoes),

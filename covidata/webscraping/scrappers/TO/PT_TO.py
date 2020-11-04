@@ -75,7 +75,8 @@ class PT_TO_Scraper(Scraper):
                             consolidacao.CONTRATADO_DESCRICAO: 'Contratado',
                             consolidacao.DESPESA_DESCRICAO: 'Objeto',
                             consolidacao.TIPO_DOCUMENTO: 'Instrumento',
-                            consolidacao.DOCUMENTO_NUMERO: 'Número', consolidacao.DOCUMENTO_DATA: 'Data'}
+                            consolidacao.DOCUMENTO_NUMERO: 'Número', consolidacao.DOCUMENTO_DATA: 'Data',
+                            consolidacao.VALOR_CONTRATO: 'Total'}
         planilha_original = path.join(config.diretorio_dados, 'TO', 'portal_transparencia', 'contratos.xls')
         df_original = pd.read_excel(planilha_original, header=4)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_TO

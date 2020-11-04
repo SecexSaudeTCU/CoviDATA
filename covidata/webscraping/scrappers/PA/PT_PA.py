@@ -57,7 +57,8 @@ class PT_PA_Scraper(Scraper):
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Contratante',
                             consolidacao.CONTRATADO_DESCRICAO: 'Contratado(a)',
                             consolidacao.CONTRATADO_CNPJ: 'CPF/ CNPJ',
-                            consolidacao.DESPESA_DESCRICAO: 'Descrição do bem ou serviço'}
+                            consolidacao.DESPESA_DESCRICAO: 'Descrição do bem ou serviço',
+                            consolidacao.VALOR_CONTRATO: 'Valor Global'}
         planilha_original = path.join(config.diretorio_dados, 'PA', 'portal_transparencia', 'covid.xlsx')
         df_original = pd.read_excel(planilha_original)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_PA
@@ -88,8 +89,12 @@ class PT_Belem_Scraper(Scraper):
         df_original = pd.read_csv(planilha_original)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Belem
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL, fonte_dados, 'PA',
-                               get_codigo_municipio_por_nome('Belém', 'PA'), data_extracao)
+                               get_codigo_municipio_por_nome('Belém', 'PA'), data_extracao, self.pos_processar)
+        return df
+
+    def pos_processar(self, df):
         df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
+        df[consolidacao.MUNICIPIO_DESCRICAO] = 'Belém'
         return df
 
 

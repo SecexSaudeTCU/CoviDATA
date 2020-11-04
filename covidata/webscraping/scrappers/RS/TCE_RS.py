@@ -9,6 +9,7 @@ from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.scrappers.scrapper import Scraper
 from os import path
 
+
 class TCE_RS_Scraper(Scraper):
     def scrap(self):
         logger = logging.getLogger('covidata')
@@ -25,7 +26,8 @@ class TCE_RS_Scraper(Scraper):
     def consolidar_tce(self, data_extracao):
         # Objeto dict em que os valores têm chaves que retratam campos considerados mais importantes
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Órgão',
-                            consolidacao.DESPESA_DESCRICAO: 'Objeto'}
+                            consolidacao.DESPESA_DESCRICAO: 'Objeto', consolidacao.VALOR_CONTRATO: 'Valor Homologado',
+                            consolidacao.CONTRATADO_DESCRICAO: 'Vencedor Licitação'}
 
         # Lê o arquivo "xls" de licitações baixado como um objeto list utilizando a função "read_html" da biblioteca pandas
         df_original = pd.read_html(path.join(config.diretorio_dados, 'RS', 'tce', 'licitações_-_covid-19.xls'),

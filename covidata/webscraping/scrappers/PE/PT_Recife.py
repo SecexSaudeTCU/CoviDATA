@@ -92,9 +92,6 @@ class PT_Recife_Scraper(Scraper):
         return df
 
     def pos_processar_consolidar_dispensas(self, df):
-        # Elimina a última linha, que só contém um totalizador
-        df = df.drop(df.index[-1])
-
         df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'Recife'
         df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'

@@ -27,7 +27,7 @@ class TCE_BA_Scraper(Scraper):
         dicionario_dados = {consolidacao.DESPESA_DESCRICAO: 'Item de Exibição',
                             consolidacao.CONTRATANTE_DESCRICAO: 'Órgão',
                             consolidacao.CONTRATADO_DESCRICAO: 'Credor',
-                            consolidacao.CONTRATADO_CNPJ: 'CNPJ Fornecedor'}
+                            consolidacao.CONTRATADO_CNPJ: 'CNPJ Fornecedor', consolidacao.VALOR_CONTRATO: 'Preço Item'}
 
         # Lê o arquivo "xlsx" de aquisições nacionais baixado como um objeto pandas DataFrame
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'BA', 'tce',
@@ -51,7 +51,7 @@ class TCE_BA_Scraper(Scraper):
         df.reset_index(drop=True, inplace=True)
 
         # Junta as colunas "Órgão comprador" e "Text" em uma única
-        df['Órgão'] = df[['Órgão comprador', 'Text']].apply(lambda x: ' - '.join(str(x)), axis=1)
+        df['Órgão'] = df[['Órgão comprador', 'Text']].apply(lambda x: ' - '.join(x.values.astype(str)), axis=1)
 
         # Eliminhas as colunas especificadas
         df.drop(['UF', 'Órgão comprador', 'Text'], axis=1, inplace=True)

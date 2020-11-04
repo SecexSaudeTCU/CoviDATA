@@ -83,7 +83,8 @@ class PT_BeloHorizonte_Scraper(Scraper):
     def __consolidar_contratacoes_capital(self, data_extracao):
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'ORGAO_ENTIDADE',
                             consolidacao.CONTRATADO_CNPJ: 'CNPJ_CPF_CONTRATADO',
-                            consolidacao.CONTRATADO_DESCRICAO: 'CONTRATADO', consolidacao.DESPESA_DESCRICAO: 'OBJETO'}
+                            consolidacao.CONTRATADO_DESCRICAO: 'CONTRATADO', consolidacao.DESPESA_DESCRICAO: 'OBJETO',
+                            consolidacao.VALOR_CONTRATO: 'VALOR_TOTAL'}
         planilha_original = path.join(config.diretorio_dados, 'MG', 'portal_transparencia', 'Belo Horizonte',
                                       'contratacaocorona.xlsx')
         df_original = pd.read_excel(planilha_original)

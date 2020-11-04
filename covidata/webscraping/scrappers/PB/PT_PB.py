@@ -210,6 +210,7 @@ class PT_JoaoPessoa_Scraper(Scraper):
             consolidacao.CONTRATADO_DESCRICAO: 'Nome Favorecido',
             consolidacao.DOCUMENTO_NUMERO: 'Empenho',
             consolidacao.DOCUMENTO_DATA: 'Data Empenho',
+            consolidacao.CONTRATANTE_DESCRICAO: 'Unidade'
         }
 
         # Lê o arquivo "xlsx" de contratos baixado como um objeto pandas DataFrame selecionando as linhas e colunas úteis
@@ -220,5 +221,5 @@ class PT_JoaoPessoa_Scraper(Scraper):
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_JoaoPessoa, 'PB',
                                get_codigo_municipio_por_nome('João Pessoa', 'PB'), data_extracao)
-
+        df[consolidacao.MUNICIPIO_DESCRICAO] = 'João Pessoa'
         return df

@@ -44,7 +44,8 @@ class PT_PR_Scraper(Scraper):
         df_original = pd.read_csv(planilha_original, sep=';')
 
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
-                               config.url_pt_PR, 'PR', '', data_extracao)
+                               consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_PR, 'PR', '',
+                               data_extracao)
         return df
 
 
@@ -62,7 +63,8 @@ class PT_CuritibaContratacoes_Scraper(Scraper):
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'ÓRGÃO',
                             consolidacao.DESPESA_DESCRICAO: 'OBJETO',
                             consolidacao.CONTRATADO_DESCRICAO: 'CONTRATADO (s)', consolidacao.CONTRATADO_CNPJ: 'CNPJ',
-                            consolidacao.DOCUMENTO_NUMERO: 'EMPENHO Nº '}
+                            consolidacao.DOCUMENTO_NUMERO: 'EMPENHO Nº ',
+                            consolidacao.VALOR_CONTRATO: 'VALOR TOTAL/GLOBAL'}
         planilha_original = path.join(config.diretorio_dados, 'PR', 'portal_transparencia', 'Curitiba',
                                       'licitacoes_contratacoes.csv')
         df_original = pd.read_csv(planilha_original, sep=';', header=0, encoding='ISO-8859-1')

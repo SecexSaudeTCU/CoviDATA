@@ -12,7 +12,7 @@ from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.scrappers.scrapper import Scraper
 
 
-class PT_SC_Contratos_Scraper(Scraper):
+class PT_SC_Scraper(Scraper):
     def scrap(self):
         logger = logging.getLogger('covidata')
         logger.info('Portal de transparência estadual...')
@@ -78,54 +78,6 @@ class PT_SC_Contratos_Scraper(Scraper):
         return df
 
 
-class PT_SC_Contratos_Despesas(Scraper):
-    def scrap(self):
-        logger = logging.getLogger('covidata')
-        logger.info('Portal de transparência estadual...')
-        start_time = time.time()
-
-        pt_SC = FileDownloader(path.join(config.diretorio_dados, 'SC', 'portal_transparencia'),
-                               config.url_pt_SC_despesas,
-                               'analisedespesa.csv')
-        pt_SC.download()
-
-        logger.info("--- %s segundos ---" % (time.time() - start_time))
-
-    def consolidar(self, data_extracao):
-        return self.consolidar_pt_SC_despesas(data_extracao), False
-
-    def consolidar_pt_SC_despesas(self, data_extracao):
-        # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
-        dicionario_dados = {
-            consolidacao.CONTRATANTE_DESCRICAO: 'descricao',
-        }
-
-        # Lê o arquivo "csv" de despesas baixado como um objeto pandas DataFrame
-        df_original = pd.read_csv(path.join(config.diretorio_dados, 'SC', 'portal_transparencia',
-                                            'analisedespesa.csv'),
-                                  sep=';',
-                                  encoding='iso-8859-1')
-
-        # Chama a função "pre_processar_pt_SC_despesas" definida neste módulo
-        df = self.pre_processar_pt_SC_despesas(df_original)
-
-        # Chama a função "consolidar_layout" definida em módulo importado
-        df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
-                               consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_SC_despesas, 'SC',
-                               '',
-                               data_extracao)
-
-        return df
-
-    def pre_processar_pt_SC_despesas(self, df):
-        # Renomeia as colunas especificadas
-        df.rename(index=str,
-                  columns={'vldotacaoinicial': 'Valor Dotação Inicial',
-                           'vldotacaoatualizada': 'Valor Dotação Atualizada'},
-                  inplace=True)
-
-        return df
-
 class PT_Florianopolis_Scraper(Scraper):
     def scrap(self):
         logger = logging.getLogger('covidata')
@@ -178,4 +130,3 @@ class PT_Florianopolis_Scraper(Scraper):
                   inplace=True)
 
         return df
-

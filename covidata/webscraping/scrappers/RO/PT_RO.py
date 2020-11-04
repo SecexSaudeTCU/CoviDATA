@@ -87,7 +87,7 @@ class PT_PortoVelho_Scraper(Scraper):
         df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_PortoVelho, 'RO',
                                get_codigo_municipio_por_nome('Porto Velho', 'RO'), data_extracao)
-
+        df[consolidacao.MUNICIPIO_DESCRICAO] = 'Porto Velho'
         return df
 
 

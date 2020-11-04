@@ -34,6 +34,7 @@ class PT_RioDeJaneiro_Favorecidos_Scraper(Scraper):
             consolidacao.CONTRATADO_DESCRICAO: 'Favorecido',
             consolidacao.CONTRATADO_CNPJ: 'Código favorecido',
             consolidacao.CONTRATANTE_DESCRICAO: 'Descrição do órgão executor',
+            consolidacao.DESPESA_DESCRICAO:'Descrição da natureza'
         }
         planilha_original = path.join(config.diretorio_dados, 'RJ', 'portal_transparencia', 'Rio de Janeiro',
                                       'Open_Data_Favorecidos_Covid19_2020.xlsx')

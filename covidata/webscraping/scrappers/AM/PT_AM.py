@@ -33,7 +33,8 @@ class PT_AM_Scraper(Scraper):
         dicionario_dados = {consolidacao.CONTRATADO_CNPJ: 'CNPJ/CPFfornecedor',
                             consolidacao.CONTRATADO_DESCRICAO: 'Nomefornecedor',
                             consolidacao.DESPESA_DESCRICAO: 'Objeto',
-                            consolidacao.CONTRATANTE_DESCRICAO: 'UG'}
+                            consolidacao.CONTRATANTE_DESCRICAO: 'Nome UG',
+                            consolidacao.VALOR_CONTRATO: 'Valor atual'}
         df_original = pd.read_excel(
             path.join(config.diretorio_dados, 'AM', 'portal_transparencia',
                       'Portal SGC - Sistema de Gestão de Contratos.xlsx'))
@@ -41,6 +42,7 @@ class PT_AM_Scraper(Scraper):
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_AM, 'AM', '',
                                data_extracao)
         return df
+
 
 # TODO: Em tese, esta carga não precisaria ser via Selenium, porém tem a vantagem de abstrair a URL direta do arquivo,
 #  que no momento contém, por exemplo, "2020/06".
@@ -87,7 +89,7 @@ class PT_Manaus_Scraper(Scraper):
                                self.pos_processar_materiais_capital)
         return df
 
-    def pos_processar_materiais_capital(self,df):
+    def pos_processar_materiais_capital(self, df):
         # Elimina as 17 últimas linhas, que só contêm totalizadores e legendas
         df.drop(df.tail(17).index, inplace=True)
 

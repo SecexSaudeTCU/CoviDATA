@@ -128,7 +128,10 @@ class PT_RS_Scraper(Scraper):
 
         # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Central Compras',
-                            consolidacao.DESPESA_DESCRICAO: 'Descrição Item'}
+                            consolidacao.DESPESA_DESCRICAO: 'Descrição Item',
+                            consolidacao.VALOR_CONTRATO: 'Preço Total',
+                            consolidacao.CONTRATADO_DESCRICAO: 'Nome Arrematante',
+                            consolidacao.CONTRATADO_CNPJ: 'CNPJ Arrematante'}
 
         # Lê o arquivo "xlsx" de licitações baixado como um objeto pandas DataFrame
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'RS', 'portal_transparencia',
@@ -140,4 +143,3 @@ class PT_RS_Scraper(Scraper):
                                data_extracao)
 
         return df
-

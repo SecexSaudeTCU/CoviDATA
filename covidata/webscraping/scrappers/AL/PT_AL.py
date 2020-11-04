@@ -37,7 +37,8 @@ class PT_AL_Scraper(Scraper):
                             consolidacao.DESPESA_DESCRICAO: 'objeto',
                             consolidacao.CONTRATANTE_DESCRICAO: 'orgao_contratante',
                             consolidacao.CONTRATADO_DESCRICAO: 'nome_contratado',
-                            consolidacao.DOCUMENTO_NUMERO: 'nota_empenho'}
+                            consolidacao.DOCUMENTO_NUMERO: 'nota_empenho',
+                            consolidacao.VALOR_CONTRATO: 'valor_total'}
         df_original = pd.read_excel(
             path.join(config.diretorio_dados, 'AL', 'portal_transparencia', 'despesas.xlsx'))
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
@@ -53,37 +54,3 @@ class PortalTransparenciaAlagoas(JSONParser):
 
     def _get_elemento_raiz(self, conteudo):
         return conteudo['rows']
-
-
-class PT_Maceio_Scraper(Scraper):
-    def scrap(self):
-        logger = logging.getLogger('covidata')
-        logger.info('Portal de transparência da capital...')
-        start_time = time.time()
-        pt_Maceio = PortalTransparencia_Maceio()
-        pt_Maceio.parse()
-        logger.info("--- %s segundos ---" % (time.time() - start_time))
-
-    def consolidar(self, data_extracao):
-        return self.__consolidar_compras_capital(data_extracao), False
-
-    def __consolidar_compras_capital(self, data_extracao):
-        dicionario_dados = {consolidacao.DESPESA_DESCRICAO: 'objeto',
-                            consolidacao.CONTRATANTE_DESCRICAO: 'orgao_nome'}
-        df_original = pd.read_excel(
-            path.join(config.diretorio_dados, 'AL', 'portal_transparencia', 'Maceio', 'compras.xlsx'))
-        fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Maceio
-        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
-                               fonte_dados, 'AL', get_codigo_municipio_por_nome('Maceió', 'AL'), data_extracao)
-        df[consolidacao.MUNICIPIO_DESCRICAO] = 'Maceió'
-
-        return df
-
-
-class PortalTransparencia_Maceio(JSONParser):
-
-    def __init__(self):
-        super().__init__(config.url_pt_Maceio, 'num_processo', 'compras', 'portal_transparencia', 'AL', 'Maceio')
-
-    def _get_elemento_raiz(self, conteudo):
-        return conteudo['data']

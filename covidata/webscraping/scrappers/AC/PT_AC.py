@@ -117,7 +117,7 @@ class PT_RioBranco_Scraper(Scraper):
     def pos_processar_portal_transparencia_capital(self, df):
         # Elimina as sete últimas linhas
         df.drop(df.tail(7).index, inplace=True)
-        df[consolidacao.MUNICIPIO_DESCRICAO] = 'RIO BRANCO'
+        df[consolidacao.MUNICIPIO_DESCRICAO] = 'Rio Branco'
         return df
 
 

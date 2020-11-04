@@ -32,7 +32,7 @@ class PT_CE_Scraper(Scraper):
                             consolidacao.DOCUMENTO_DATA: 'data_empenho',
                             consolidacao.CONTRATANTE_DESCRICAO: 'orgao',
                             consolidacao.CONTRATADO_DESCRICAO: 'credor',
-                            consolidacao.VALOR_CONTRATO: 'valor_empenho'}
+                            consolidacao.VALOR_CONTRATO: 'valor_empenho', consolidacao.DESPESA_DESCRICAO: 'item'}
         planilha_original = path.join(config.diretorio_dados, 'CE', 'portal_transparencia',
                                       'gasto_covid_dados_abertos.xlsx')
         df_original = pd.read_excel(planilha_original)

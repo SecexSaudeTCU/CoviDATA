@@ -88,7 +88,7 @@ class PT_Goiania_Scraper(Scraper):
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Goiania_despesas,
                                'GO',
                                get_codigo_municipio_por_nome('Goiânia', 'GO'), data_extracao)
-
+        df[consolidacao.MUNICIPIO_DESCRICAO] = 'Goiânia'
         return df
 
     def pre_processar_pt_despesas_Goiania(self, json):

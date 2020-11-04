@@ -44,7 +44,8 @@ class PT_SE_Scraper(Scraper):
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Unidade',
                             consolidacao.DOCUMENTO_NUMERO: 'Nº do empenho',
                             consolidacao.CONTRATADO_DESCRICAO: 'Razão Social Favorecido',
-                            consolidacao.CONTRATADO_CNPJ: 'CNPJ Favorecido'}
+                            consolidacao.CONTRATADO_CNPJ: 'CNPJ Favorecido', consolidacao.DESPESA_DESCRICAO: 'Elemento',
+                            consolidacao.VALOR_CONTRATO: 'Valor Acumulado (R$)'}
 
         # Lê o arquivo "xlsx" de nome "Dados_Portal_Transparencia_Sergipe" de contratos baixado como um objeto pandas DataFrame
         df_empenhos = pd.read_excel(path.join(config.diretorio_dados, 'SE', 'portal_transparencia',

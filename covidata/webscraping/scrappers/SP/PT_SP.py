@@ -44,6 +44,7 @@ class PT_SP_Scraper(Scraper):
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_SP, 'SP',
                                None, data_extracao)
+        df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
         return df
 
 

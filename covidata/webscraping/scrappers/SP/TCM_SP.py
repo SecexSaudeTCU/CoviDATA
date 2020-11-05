@@ -7,8 +7,8 @@ import re
 import requests
 import time
 from bs4 import BeautifulSoup
+from selenium import webdriver
 from selenium.common.exceptions import UnexpectedAlertPresentException
-from selenium.webdriver.chrome import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait

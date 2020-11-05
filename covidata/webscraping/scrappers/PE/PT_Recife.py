@@ -95,7 +95,6 @@ class PT_Recife_Scraper(Scraper):
         df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'Recife'
         df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
-        df[consolidacao.FAVORECIDO_TIPO] = consolidacao.TIPO_FAVORECIDO_CNPJ
 
         # Unifica colunas com nomes parecidos
         if 'data_de_empenho_contrato' in df.columns and len(df['data_de_empenho_contrato'].value_counts()) > 0:

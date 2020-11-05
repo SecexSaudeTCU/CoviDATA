@@ -40,10 +40,10 @@ class PT_MS_Scraper(Scraper):
     def __consolidar_compras_emergenciais(self, data_extracao):
         dicionario_dados = {consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ', consolidacao.CONTRATADO_DESCRICAO: 'Credor',
                             consolidacao.CONTRATANTE_DESCRICAO: 'Órgão', consolidacao.DESPESA_DESCRICAO: 'Objeto',
-                            consolidacao.VALOR_CONTRATO: 'Valor'}
+                            consolidacao.VALOR_CONTRATO: 'Valor Total da Compra'}
         planilha_original = path.join(config.diretorio_dados, 'MS', 'portal_transparencia',
                                       'ComprasEmergenciaisMS_COVID19.csv')
-        df_original = pd.read_csv(planilha_original, sep=';', header=4, index_col=False)
+        df_original = pd.read_csv(planilha_original, sep=';', header=3, index_col=False)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_MS
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                fonte_dados, 'MS', '', data_extracao)

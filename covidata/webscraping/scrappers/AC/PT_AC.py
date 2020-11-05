@@ -1,6 +1,10 @@
+from os import path
+
 import json
 import logging
+import numpy as np
 import os
+import pandas as pd
 import time
 
 from covidata import config
@@ -11,9 +15,6 @@ from covidata.persistencia.dao import persistir
 from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.json.parser import JSONParser
 from covidata.webscraping.scrappers.scrapper import Scraper
-import pandas as pd
-from os import path
-
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
 
@@ -102,10 +103,11 @@ class PT_RioBranco_Scraper(Scraper):
         return self.__consolidar_portal_transparencia_capital(data_extracao), False
 
     def __consolidar_portal_transparencia_capital(self, data_extracao):
-        dicionario_dados = {consolidacao.CONTRATADO_CNPJ:'CPF/CNPJ',
+        dicionario_dados = {consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ',
                             consolidacao.CONTRATADO_DESCRICAO: 'Nome',
                             consolidacao.DESPESA_DESCRICAO: 'Objeto',
-                            consolidacao.CONTRATANTE_DESCRICAO: 'Secretaria', consolidacao.VALOR_CONTRATO: 'Valor Total'}
+                            consolidacao.CONTRATANTE_DESCRICAO: 'Secretaria',
+                            consolidacao.VALOR_CONTRATO: 'Valor Total'}
         df_original = pd.read_excel(
             path.join(config.diretorio_dados, 'AC', 'portal_transparencia', 'Rio Branco', 'webexcel.xls'), header=11)
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
@@ -118,6 +120,9 @@ class PT_RioBranco_Scraper(Scraper):
         # Elimina as sete últimas linhas
         df.drop(df.tail(7).index, inplace=True)
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'Rio Branco'
+
+        # Remove a notação científica
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(np.int64)
         return df
 
 

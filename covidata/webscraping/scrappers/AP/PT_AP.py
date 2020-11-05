@@ -62,8 +62,6 @@ class PT_Macapa_Scraper(Scraper):
         logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     def consolidar(self, data_extracao):
-        logger = logging.getLogger('covidata')
-        logger.info('Iniciando consolidação dados Amapá')
         return self.consolidar_contratacoes_capital(data_extracao), False
 
     def consolidar_contratacoes_capital(self, data_extracao):

@@ -57,7 +57,7 @@ class PT_PA_Scraper(Scraper):
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Contratante',
                             consolidacao.CONTRATADO_DESCRICAO: 'Contratado(a)',
                             consolidacao.CONTRATADO_CNPJ: 'CPF/ CNPJ',
-                            consolidacao.DESPESA_DESCRICAO: 'Descrição do bem ou serviço',
+                            consolidacao.DESPESA_DESCRICAO: 'Descrição do bem ou serviço',
                             consolidacao.VALOR_CONTRATO: 'Valor Global'}
         planilha_original = path.join(config.diretorio_dados, 'PA', 'portal_transparencia', 'covid.xlsx')
         df_original = pd.read_excel(planilha_original)

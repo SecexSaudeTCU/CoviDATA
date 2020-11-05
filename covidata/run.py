@@ -46,8 +46,7 @@ from covidata.webscraping.scrappers.RR.PT_RR import PT_RR_Scraper
 from covidata.webscraping.scrappers.RS.PT_RS import PT_RS_Scraper
 from covidata.webscraping.scrappers.RS.TCE_RS import TCE_RS_Scraper
 from covidata.webscraping.scrappers.SC.PT_SC import PT_SC_Scraper, PT_Florianopolis_Scraper
-from covidata.webscraping.scrappers.SE.PT_Aracaju import PT_Aracaju_Scraper
-from covidata.webscraping.scrappers.SE.PT_SE import PT_SE_Scraper
+from covidata.webscraping.scrappers.SE.PT_SE import PT_SE_Scraper, PT_Aracaju_Scraper
 from covidata.webscraping.scrappers.SP.PT_SP import PT_SaoPaulo_Scraper, PT_SP_Scraper
 from covidata.webscraping.scrappers.SP.TCM_SP import TCM_SP_Scraper
 from covidata.webscraping.scrappers.TO.PT_TO import PT_TO_Scraper

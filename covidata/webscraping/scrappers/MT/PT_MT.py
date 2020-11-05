@@ -51,26 +51,16 @@ class PT_MT_Scraper(Scraper):
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Entidade',
                             consolidacao.DESPESA_DESCRICAO: 'Objeto',
                             consolidacao.CONTRATADO_CNPJ: 'CNPJ',
-                            consolidacao.CONTRATADO_DESCRICAO: 'Razao Social'}
+                            consolidacao.CONTRATADO_DESCRICAO: 'Razão Social',
+                            consolidacao.VALOR_CONTRATO: 'Valor Global'}
 
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'MT', 'portal_transparencia', 'contratos.xls'),
                                     header=4)
-
-        # Chama a função "pre_processar_tce" definida neste módulo
-        # df = self.pre_processar_pt_MT(df_original)
 
         # Chama a função "consolidar_layout" definida em módulo importado
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_MT,
                                'MT', '', data_extracao, self.pos_consolidar_pt_MT)
-
-        return df
-
-    def pre_processar_pt_MT(self, df):
-        # Insere a substring "," na penúltima posição dos objetos string que compõem...
-        # as colunas especificadas
-        for col in np.array(['PU Item', 'Preço Item']):
-            df[col] = df[col].apply(lambda x: x[:-2] + ',' + x[-2:])
 
         return df
 

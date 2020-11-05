@@ -38,7 +38,7 @@ class PT_PB_Scraper(Scraper):
             consolidacao.CONTRATADO_CNPJ: 'CNPJ/CPF Favorecido',
             consolidacao.CONTRATADO_DESCRICAO: 'Nome Favorecido',
             consolidacao.DESPESA_DESCRICAO: 'Objetivo',
-            consolidacao.VALOR_CONTRATO: 'Valor'}
+            consolidacao.VALOR_CONTRATO: 'Valor', consolidacao.CONTRATANTE_DESCRICAO: 'Órgão'}
 
         # Lê o arquivo "xlsx" de contratos baixado como um objeto pandas DataFrame selecionando as linhas e colunas úteis
         df_original = pd.read_excel(path.join(config.diretorio_dados, 'PB', 'portal_transparencia', 'Paraiba',

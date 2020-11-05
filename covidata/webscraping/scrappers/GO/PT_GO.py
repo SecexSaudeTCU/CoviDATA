@@ -65,7 +65,7 @@ class PT_Goiania_Scraper(Scraper):
                             consolidacao.DOCUMENTO_DATA: 'Data Empenho',
                             consolidacao.CONTRATADO_CNPJ: 'CNPJ',
                             consolidacao.CONTRATADO_DESCRICAO: 'Nome Favorecido',
-                            consolidacao.CONTRATANTE_DESCRICAO: 'Órgão'}
+                            consolidacao.CONTRATANTE_DESCRICAO: 'Nome Órgão'}
 
         # Obtém objeto list dos arquivos armazenados no path passado como argumento para a função nativa "glob"
         list_files = glob(path.join(config.diretorio_dados, 'GO', 'portal_transparencia', 'Goiania/*'))
@@ -86,9 +86,12 @@ class PT_Goiania_Scraper(Scraper):
         # Chama a função "consolidar_layout" definida em módulo importado
         df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Goiania_despesas,
-                               'GO',
-                               get_codigo_municipio_por_nome('Goiânia', 'GO'), data_extracao)
+                               'GO', get_codigo_municipio_por_nome('Goiânia', 'GO'), data_extracao, self.pos_processar)
+        return df
+
+    def pos_processar(self, df):
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'Goiânia'
+        df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
         return df
 
     def pre_processar_pt_despesas_Goiania(self, json):

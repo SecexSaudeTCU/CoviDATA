@@ -105,6 +105,7 @@ class PT_Natal_Scraper(Scraper):
         df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Natal, 'RN',
                                get_codigo_municipio_por_nome('Natal', 'RN'), data_extracao)
+        df[consolidacao.MUNICIPIO_DESCRICAO] = 'Natal'
         return df
 
     def pre_processar_pt_Natal(self, df):

@@ -50,6 +50,9 @@ class PT_AC_Scraper(Scraper):
     def pos_processar_portal_transparencia_estadual(self, df):
         df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
 
+        # Remove a notação científica
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(np.int64)
+
         return df
 
 
@@ -121,8 +124,6 @@ class PT_RioBranco_Scraper(Scraper):
         df.drop(df.tail(7).index, inplace=True)
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'Rio Branco'
 
-        # Remove a notação científica
-        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(np.int64)
         return df
 
 

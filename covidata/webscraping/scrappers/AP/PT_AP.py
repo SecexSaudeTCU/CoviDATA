@@ -31,11 +31,11 @@ class PT_AP_Scraper(Scraper):
         return self.consolidar_contratacoes(data_extracao), False
 
     def consolidar_contratacoes(self, data_extracao):
-        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'orgao',
-                            consolidacao.DESPESA_DESCRICAO: 'objeto',
+        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'orgao_sigla',
+                            consolidacao.DESPESA_DESCRICAO: 'ic_descricao',
                             consolidacao.CONTRATADO_CNPJ: 'fornecedor_cnpj_cpf',
                             consolidacao.CONTRATADO_DESCRICAO: 'fornecedor_razao_social',
-                            consolidacao.VALOR_CONTRATO: 'valor_total'}
+                            consolidacao.VALOR_CONTRATO: 'ic_valor_total'}
         planilha_original = path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'contratos.xlsx')
         df_original = pd.read_excel(planilha_original)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_AP

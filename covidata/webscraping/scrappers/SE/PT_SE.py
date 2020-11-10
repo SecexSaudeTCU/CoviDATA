@@ -68,6 +68,7 @@ class PT_SE_Scraper(Scraper):
         df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_SE, 'SE', '',
                                data_extracao)
+        df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
         return df
 
     def pre_processar_pt_SE(self, df1, df2):
@@ -330,8 +331,8 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
         wait = WebDriverWait(self.driver, 45)
 
         # Entra no iframe de id "dados"
-        #iframe = wait.until(EC.visibility_of_element_located((By.ID, 'dados')))
-        #self.driver.switch_to.frame(iframe)
+        # iframe = wait.until(EC.visibility_of_element_located((By.ID, 'dados')))
+        # self.driver.switch_to.frame(iframe)
 
         # Aba "Empenhos" (default do iframe):
         # Coloca o campo dropdown dos meses do ano com o valor "Selecione"
@@ -386,8 +387,8 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
 
         # Aba "Liquidações":
         # Entra no iframe de id "dados"
-        #iframe = wait.until(EC.visibility_of_element_located((By.ID, 'dados')))
-        #self.driver.switch_to.frame(iframe)
+        # iframe = wait.until(EC.visibility_of_element_located((By.ID, 'dados')))
+        # self.driver.switch_to.frame(iframe)
 
         # Seleciona a aba "Liquidações"
         element = wait.until(EC.visibility_of_element_located((By.ID, 'lnkLiquidacoes')))
@@ -453,8 +454,8 @@ class PortalTransparencia_Aracaju(SeleniumDownloader):
 
         # Aba "Pagamentos":
         # Entra no iframe de id "dados"
-        #iframe = wait.until(EC.visibility_of_element_located((By.ID, 'dados')))
-        #self.driver.switch_to.frame(iframe)
+        # iframe = wait.until(EC.visibility_of_element_located((By.ID, 'dados')))
+        # self.driver.switch_to.frame(iframe)
 
         # Seleciona a aba "Pagamentos"
         element = wait.until(EC.visibility_of_element_located((By.ID, 'lnkPagamentos')))

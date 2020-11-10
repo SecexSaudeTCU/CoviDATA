@@ -1,10 +1,12 @@
-import json
-import logging
-import time
-from datetime import datetime
 from glob import glob
 from os import path
 
+import json
+import logging
+import numpy as np
+import pandas as pd
+import time
+from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
@@ -17,7 +19,6 @@ from covidata.persistencia.consolidacao import consolidar_layout
 from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.scrappers.scrapper import Scraper
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
-import pandas as pd
 
 
 class PT_GO_Scraper(Scraper):
@@ -38,7 +39,8 @@ class PT_GO_Scraper(Scraper):
         dicionario_dados = {consolidacao.DESPESA_DESCRICAO: 'Objeto',
                             consolidacao.VALOR_CONTRATO: 'Valor',
                             consolidacao.CONTRATADO_DESCRICAO: 'Credor',
-                            consolidacao.CONTRATADO_CNPJ: 'CPF_CNPJ_COTACOES'}
+                            consolidacao.CONTRATADO_CNPJ: 'CPF_CNPJ_COTACOES',
+                            consolidacao.CONTRATANTE_DESCRICAO: 'Local de Execução'}
         planilha_original = path.join(config.diretorio_dados, 'GO', 'portal_transparencia', 'aquisicoes.csv')
         df_original = pd.read_csv(planilha_original)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_GO
@@ -65,7 +67,8 @@ class PT_Goiania_Scraper(Scraper):
                             consolidacao.DOCUMENTO_DATA: 'Data Empenho',
                             consolidacao.CONTRATADO_CNPJ: 'CNPJ',
                             consolidacao.CONTRATADO_DESCRICAO: 'Nome Favorecido',
-                            consolidacao.CONTRATANTE_DESCRICAO: 'Nome Órgão'}
+                            consolidacao.CONTRATANTE_DESCRICAO: 'Nome Órgão',
+                            consolidacao.DESPESA_DESCRICAO: 'Natureza Despesa'}
 
         # Obtém objeto list dos arquivos armazenados no path passado como argumento para a função nativa "glob"
         list_files = glob(path.join(config.diretorio_dados, 'GO', 'portal_transparencia', 'Goiania/*'))
@@ -92,6 +95,11 @@ class PT_Goiania_Scraper(Scraper):
     def pos_processar(self, df):
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'Goiânia'
         df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
+
+        # Remove a notação científica
+        df[consolidacao.DOCUMENTO_NUMERO] = df[consolidacao.DOCUMENTO_NUMERO].astype(np.int64)
+        df[consolidacao.DOCUMENTO_NUMERO] = df[consolidacao.DOCUMENTO_NUMERO].astype(str)
+
         return df
 
     def pre_processar_pt_despesas_Goiania(self, json):

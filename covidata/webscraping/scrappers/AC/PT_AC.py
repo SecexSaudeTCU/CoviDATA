@@ -52,6 +52,7 @@ class PT_AC_Scraper(Scraper):
 
         # Remove a notação científica
         df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(np.int64)
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(str)
 
         return df
 

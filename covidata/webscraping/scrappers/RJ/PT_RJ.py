@@ -34,7 +34,7 @@ class PT_RioDeJaneiro_Favorecidos_Scraper(Scraper):
             consolidacao.CONTRATADO_DESCRICAO: 'Favorecido',
             consolidacao.CONTRATADO_CNPJ: 'Código favorecido',
             consolidacao.CONTRATANTE_DESCRICAO: 'Descrição do órgão executor',
-            consolidacao.DESPESA_DESCRICAO:'Descrição da natureza'
+            consolidacao.DESPESA_DESCRICAO: 'Descrição da natureza'
         }
         planilha_original = path.join(config.diretorio_dados, 'RJ', 'portal_transparencia', 'Rio de Janeiro',
                                       'Open_Data_Favorecidos_Covid19_2020.xlsx')
@@ -129,20 +129,15 @@ class PT_RioDeJaneiro_DespesasPorAto_Scraper(Scraper):
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Rio_despesas_por_ato
         codigo_municipio_ibge = get_codigo_municipio_por_nome('Rio de Janeiro', 'RJ')
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
-                               fonte_dados, 'RJ', codigo_municipio_ibge, data_extracao)
-        df[consolidacao.MUNICIPIO_DESCRICAO] = 'Rio de Janeiro'
+                               fonte_dados, 'RJ', codigo_municipio_ibge, data_extracao, self.pos_processar)
+
         return df
 
+    def pos_processar(self, df):
+        df[consolidacao.MUNICIPIO_DESCRICAO] = 'Rio de Janeiro'
 
-class PT_RioDeJaneiro_Scraper(Scraper):
+        # Remove a notação científica
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(np.int64)
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(str)
 
-    def consolidar(self, data_extracao):
-        despesas_capital = self.__consolidar_despesas_capital(data_extracao)
-
-        contratos_capital = self.__consolidar_contratos_capital(data_extracao)
-        despesas_capital = despesas_capital.append(contratos_capital)
-
-        favorecidos_capital = self.__consolidar_favorecidos_capital(data_extracao)
-        despesas_capital = despesas_capital.append(favorecidos_capital)
-
-        return despesas_capital, False
+        return df

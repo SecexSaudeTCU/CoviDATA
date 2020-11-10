@@ -70,11 +70,11 @@ class PT_Fortaleza_Scraper(Scraper):
         df_original = pd.read_csv(planilha_original, sep=';')
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Fortaleza
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
-                               fonte_dados, 'CE', get_codigo_municipio_por_nome('Fortaleza', 'CE'), data_extracao)
-        self.pos_processar_despesas_capital(df_original, df)
+                               fonte_dados, 'CE', get_codigo_municipio_por_nome('Fortaleza', 'CE'), data_extracao,
+                               self.pos_processar_despesas_capital)
         return df
 
-    def pos_processar_despesas_capital(self, df_original, df):
+    def pos_processar_despesas_capital(self, df):
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'Fortaleza'
 
         df['temp'] = df[consolidacao.CONTRATANTE_DESCRICAO]

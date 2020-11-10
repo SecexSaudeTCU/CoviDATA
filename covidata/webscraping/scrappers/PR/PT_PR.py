@@ -1,6 +1,6 @@
 import time
 from os import path
-
+import numpy as np
 import pandas as pd
 import zipfile
 from selenium.webdriver.common.by import By
@@ -45,9 +45,14 @@ class PT_PR_Scraper(Scraper):
 
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_PR, 'PR', '',
-                               data_extracao)
+                               data_extracao, self.pos_processar)
         return df
 
+    def pos_processar(self, df):
+        # Remove a notação científica
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(np.int64)
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(str)
+        return df
 
 class PT_CuritibaContratacoes_Scraper(Scraper):
     def scrap(self):

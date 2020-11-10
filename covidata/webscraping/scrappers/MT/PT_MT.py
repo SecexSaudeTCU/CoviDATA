@@ -65,18 +65,13 @@ class PT_MT_Scraper(Scraper):
         return df
 
     def pos_consolidar_pt_MT(self, df):
-        try:
-            df = df.astype({consolidacao.CONTRATADO_CNPJ: np.uint64})
-            df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
-        except ValueError:
-            # Há linhas com dados inválidos para CNPJ (ex.: data)
-            df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
-
         for i in range(0, len(df)):
             tamanho = len(df.loc[i, consolidacao.CONTRATADO_CNPJ])
 
             if tamanho > 2 and tamanho < 14:
                 df.loc[i, consolidacao.CONTRATADO_CNPJ] = '0' * (14 - tamanho) + df.loc[
                     i, consolidacao.CONTRATADO_CNPJ]
+
+        df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
 
         return df

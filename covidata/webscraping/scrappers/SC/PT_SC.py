@@ -47,10 +47,14 @@ class PT_SC_Scraper(Scraper):
         # Chama a função "consolidar_layout" definida em módulo importado
         df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_SC_contratos, 'SC',
-                               '',
-                               data_extracao)
+                               '', data_extracao, self.pos_processar)
 
         return df
+
+    def pos_processar(self, df):
+        # Remove a notação científica
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(np.int64)
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(str)
 
     def pre_processar_pt_SC_contratos(self, df):
         # Renomeia as colunas especificadas

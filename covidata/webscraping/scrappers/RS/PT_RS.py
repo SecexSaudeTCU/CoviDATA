@@ -2,6 +2,7 @@ from os import path
 
 import json
 import logging
+import numpy as np
 import os
 import pandas as pd
 import requests
@@ -140,6 +141,13 @@ class PT_RS_Scraper(Scraper):
         # Chama a função "consolidar_layout" definida em módulo importado
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_RS, 'RS', '',
-                               data_extracao)
+                               data_extracao, self.pos_processar)
+
+        return df
+
+    def pos_processar(self, df):
+        # Remove a notação científica
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(np.int64)
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(str)
 
         return df

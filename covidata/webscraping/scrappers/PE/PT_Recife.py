@@ -58,8 +58,7 @@ class PT_Recife_Scraper(Scraper):
         logger = logging.getLogger('covidata')
         logger.info('Iniciando consolidação dados Pernambuco')
         dispensas = self.__consolidar_dispensas(data_extracao)
-        salvar(dispensas, 'PE')
-        return dispensas, True
+        return dispensas, False
 
     def __consolidar_dispensas(self, data_extracao):
         dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'unidade',
@@ -94,7 +93,6 @@ class PT_Recife_Scraper(Scraper):
     def pos_processar_consolidar_dispensas(self, df):
         df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'Recife'
-        df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
 
         # Unifica colunas com nomes parecidos
         if 'data_de_empenho_contrato' in df.columns and len(df['data_de_empenho_contrato'].value_counts()) > 0:

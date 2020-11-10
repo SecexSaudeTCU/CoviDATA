@@ -220,6 +220,11 @@ class PT_JoaoPessoa_Scraper(Scraper):
         # Chama a função "consolidar_layout" definida em módulo importado
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_JoaoPessoa, 'PB',
-                               get_codigo_municipio_por_nome('João Pessoa', 'PB'), data_extracao)
+                               get_codigo_municipio_por_nome('João Pessoa', 'PB'), data_extracao, self.pos_processar)
+
+        return df
+
+    def pos_processar(self, df):
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'João Pessoa'
+        df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
         return df

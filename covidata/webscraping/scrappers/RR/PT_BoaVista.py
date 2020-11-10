@@ -1,16 +1,18 @@
+from os import path
+
 import json
 import logging
+import numpy as np
 import os
-import time
 import pandas as pd
 import requests
+import time
 
 from covidata import config
 from covidata.municipios.ibge import get_codigo_municipio_por_nome
 from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout
 from covidata.webscraping.scrappers.scrapper import Scraper
-from os import path
 
 
 class PT_BoaVista_Scraper(Scraper):
@@ -134,7 +136,15 @@ class PT_BoaVista_Scraper(Scraper):
         # Chama a função "consolidar_layout" definida em módulo importado
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_BoaVista, 'RR',
-                               get_codigo_municipio_por_nome('Boa Vista', 'RR'), data_extracao)
+                               get_codigo_municipio_por_nome('Boa Vista', 'RR'), data_extracao, self.pos_processar)
+
+        return df
+
+    def pos_processar(self, df):
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'Boa Vista'
+
+        # Remove a notação científica
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(np.int64)
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(str)
 
         return df

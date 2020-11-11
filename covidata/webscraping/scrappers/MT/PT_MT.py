@@ -60,18 +60,12 @@ class PT_MT_Scraper(Scraper):
         # Chama a função "consolidar_layout" definida em módulo importado
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_MT,
-                               'MT', '', data_extracao, self.pos_consolidar_pt_MT)
-
+                               'MT', '', data_extracao, self.pos_processar)
         return df
 
-    def pos_consolidar_pt_MT(self, df):
-        for i in range(0, len(df)):
-            tamanho = len(df.loc[i, consolidacao.CONTRATADO_CNPJ])
-
-            if tamanho > 2 and tamanho < 14:
-                df.loc[i, consolidacao.CONTRATADO_CNPJ] = '0' * (14 - tamanho) + df.loc[
-                    i, consolidacao.CONTRATADO_CNPJ]
-
-        df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
+    def pos_processar(self, df):
+        # Remove a notação científica
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(np.int64)
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(str)
 
         return df

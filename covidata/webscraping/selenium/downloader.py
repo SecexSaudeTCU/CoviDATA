@@ -81,10 +81,11 @@ class SeleniumDownloader(ABC):
         logger = logging.getLogger('covidata')
         i = 1
 
-        while len(os.listdir(self.diretorio_dados)) == 0:
+        while len(os.listdir(self.diretorio_dados)) == 0 and i < 30:
             # Aguarda o download do arquivo
             logger.info(f"Aguardando download do arquivo... (tentativa {i})")
             time.sleep(5)
             i += 1
 
-        logger.info("Download concluído.")
+        if i < 30:
+            logger.info("Download concluído.")

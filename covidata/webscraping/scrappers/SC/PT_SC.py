@@ -1,6 +1,7 @@
 from os import path
 
 import logging
+import numpy as np
 import pandas as pd
 import time
 
@@ -55,6 +56,7 @@ class PT_SC_Scraper(Scraper):
         # Remove a notação científica
         df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(np.int64)
         df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(str)
+        return df
 
     def pre_processar_pt_SC_contratos(self, df):
         # Renomeia as colunas especificadas

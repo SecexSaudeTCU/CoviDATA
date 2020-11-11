@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import requests
 import time
-
+import numpy as np
 from covidata import config
 from covidata.persistencia import consolidacao
 
@@ -29,7 +29,9 @@ def consolidar():
     writer = pd.ExcelWriter(os.path.join(diretorio, 'UFs.xlsx'), engine='xlsxwriter')
     df_final.to_excel(writer, sheet_name='Dados consolidados')
 
-    # Transforma o CNPJ em string para evitar notação científica
+    # Remove a notação científica
+    df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].fillna(0)
+    df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(np.int64, errors='ignore')
     df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(str)
 
     writer.save()
@@ -38,8 +40,6 @@ def consolidar():
     print('Total de registros com CNPJ originalmente preenchido: %s' % len(
         df_final[df_final[consolidacao.CNPJ_INFERIDO] == 'NÃO']))
     print('Total de registros com CNPJ inferido: %s' % len(df_final[df_final[consolidacao.CNPJ_INFERIDO] == 'SIM']))
-    print('Total de registros com mais de um CNPJ associado ao nome do contratado: %s' % len(
-        df_final[df_final[consolidacao.CNPJ_INFERIDO] == 'VER ABA CNPJs']))
 
     print("--- %s segundos ---" % (time.time() - start_time))
 

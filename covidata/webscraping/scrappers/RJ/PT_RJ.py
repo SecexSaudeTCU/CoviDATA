@@ -49,9 +49,9 @@ class PT_RioDeJaneiro_Favorecidos_Scraper(Scraper):
     def pos_processar_favorecidos_capital(self, df):
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'Rio de Janeiro'
 
-        # Remove notação científica
-        df = df.astype({consolidacao.CONTRATADO_CNPJ: np.uint64})
-        df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
+        # Remove a notação científica
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(np.int64)
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(str)
 
         df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
         df = df.rename(
@@ -93,7 +93,10 @@ class PT_RioDeJaneiro_Contratos_Scraper(Scraper):
 
     def pos_processar_contratos_capital(self, df):
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'Rio de Janeiro'
-        df = df.astype({consolidacao.CONTRATADO_CNPJ: str})
+
+        # Remove a notação científica
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(np.int64)
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(str)
 
         df = df.rename(
             columns={'UNIDADE ORÇAMENTÁRIA EXECUTORA': 'UO', 'DESCRIÇÃO DA UNIDADE ORÇAMENTÁRIA EXECUTORA': 'NOMEUO'})

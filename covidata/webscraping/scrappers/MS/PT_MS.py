@@ -31,8 +31,11 @@ class PT_MS_Scraper(Scraper):
 
         # Renomeia o arquivo
         diretorio = path.join(config.diretorio_dados, 'MS', 'portal_transparencia')
-        arquivo = os.listdir(diretorio)[0]
-        os.rename(path.join(diretorio, arquivo), path.join(diretorio, 'ComprasEmergenciaisMS_COVID19.csv'))
+        arquivos = os.listdir(diretorio)
+
+        if len(arquivos) > 0:
+            arquivo = arquivos[0]
+            os.rename(path.join(diretorio, arquivo), path.join(diretorio, 'ComprasEmergenciaisMS_COVID19.csv'))
 
     def consolidar(self, data_extracao):
         return self.__consolidar_compras_emergenciais(data_extracao), False
@@ -67,9 +70,6 @@ class PT_CampoGrande_Scraper(Scraper):
         logger = logging.getLogger('covidata')
         logger.info('Portal de transparência da capital...')
         start_time = time.time()
-        # downloader = FileDownloader(path.join(config.diretorio_dados, 'MS', 'portal_transparencia', 'Campo Grande'),
-        #                             self.url, 'Despesas – Transparência Covid19 – Prefeitura de Campo Grande.xlsx')
-        # downloader.download()
 
         PortalTransparenciaCampoGrande().parse()
 
@@ -85,7 +85,7 @@ class PT_CampoGrande_Scraper(Scraper):
                             consolidacao.CONTRATADO_CNPJ: 'fornecedor',
                             consolidacao.DESPESA_DESCRICAO: 'itemclassificacaodespesa'}
         planilha_original = path.join(config.diretorio_dados, 'MS', 'portal_transparencia', 'Campo Grande',
-                                      'Despesas – Transparência Covid19 – Prefeitura de Campo Grande.xlsx')
+                                      'despesas.xlsx')
         df_original = pd.read_excel(planilha_original, header=1)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_CampoGrande
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,

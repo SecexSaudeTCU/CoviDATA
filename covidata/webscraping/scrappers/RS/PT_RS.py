@@ -147,8 +147,8 @@ class PT_RS_Scraper(Scraper):
 
     def pos_processar(self, df):
         # Remove a notação científica
-        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].fillna(0)
-        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(np.int64)
-        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(str)
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].apply(
+            lambda x: '{:.0f}'.format(x) if type(x) == float else str(x))
+        df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].fillna('')
 
         return df

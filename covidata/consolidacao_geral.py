@@ -27,12 +27,21 @@ def consolidar():
                 df_final = df_final.append(df)
 
     writer = pd.ExcelWriter(os.path.join(diretorio, 'UFs.xlsx'), engine='xlsxwriter')
-    df_final.to_excel(writer, sheet_name='Dados consolidados')
 
     # Remove a notação científica
-    df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].fillna(0)
-    df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(np.int64, errors='ignore')
-    df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(str)
+    df_final[consolidacao.CONTRATADO_CNPJ] = df_final[consolidacao.CONTRATADO_CNPJ].apply(
+        lambda x: '{:.0f}'.format(x) if type(x) == float else str(x))
+    df_final[consolidacao.CONTRATADO_CNPJ] = df_final[consolidacao.CONTRATADO_CNPJ].fillna('')
+    df_final[consolidacao.CONTRATADO_CNPJ] = df_final[consolidacao.CONTRATADO_CNPJ].replace(np.nan, '', regex=True)
+    df_final[consolidacao.CONTRATADO_CNPJ] = df_final[consolidacao.CONTRATADO_CNPJ].replace('nan', '', regex=True)
+
+    df_final[consolidacao.DOCUMENTO_NUMERO] = df_final[consolidacao.DOCUMENTO_NUMERO].apply(
+        lambda x: '{:.0f}'.format(x) if type(x) == float else str(x))
+    df_final[consolidacao.DOCUMENTO_NUMERO] = df_final[consolidacao.DOCUMENTO_NUMERO].fillna('')
+    df_final[consolidacao.DOCUMENTO_NUMERO] = df_final[consolidacao.DOCUMENTO_NUMERO].replace(np.nan, '', regex=True)
+    df_final[consolidacao.DOCUMENTO_NUMERO] = df_final[consolidacao.DOCUMENTO_NUMERO].replace('nan', '', regex=True)
+
+    df_final.to_excel(writer, sheet_name='Dados consolidados')
 
     writer.save()
 

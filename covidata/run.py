@@ -48,7 +48,6 @@ from covidata.webscraping.scrappers.RS.TCE_RS import TCE_RS_Scraper
 from covidata.webscraping.scrappers.SC.PT_SC import PT_SC_Scraper, PT_Florianopolis_Scraper
 from covidata.webscraping.scrappers.SE.PT_SE import PT_SE_Scraper, PT_Aracaju_Scraper
 from covidata.webscraping.scrappers.SP.PT_SP import PT_SP_Scraper
-from covidata.webscraping.scrappers.SP.TCM_SP import TCM_SP_Scraper
 from covidata.webscraping.scrappers.TO.PT_TO import PT_TO_Scraper
 
 # Adiciona diretorio raiz ao PATH. Devido a ausência de setup.py, isto garante que as importações sempre funcionarão
@@ -93,7 +92,7 @@ if __name__ == '__main__':
         'RS': [PT_RS_Scraper(config.url_pt_RS), TCE_RS_Scraper(config.url_tce_RS)],
         'SC': [PT_SC_Scraper(config.url_pt_SC_contratos), PT_Florianopolis_Scraper(config.url_pt_Florianopolis)],
         'SE': [PT_SE_Scraper(config.url_pt_SE), PT_Aracaju_Scraper(config.url_pt_Aracaju)],
-        'SP': [PT_SP_Scraper(config.url_pt_SP), TCM_SP_Scraper(config.url_tcm_SP)],
+        'SP': [PT_SP_Scraper(config.url_pt_SP)],
         'TO': [PT_TO_Scraper(config.url_pt_TO)],
     }
     dfs_consolidados = defaultdict(pd.DataFrame)

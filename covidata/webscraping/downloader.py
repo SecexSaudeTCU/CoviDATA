@@ -41,6 +41,8 @@ class FileDownloader:
 
         return r.status_code
 
+    def get_caminho_arquivo(self):
+        return os.path.join(self.diretorio_dados, self.nome_arquivo)
 
 def download(url, diretorio, caminho_completo):
     """

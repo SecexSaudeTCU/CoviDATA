@@ -1,20 +1,19 @@
-import logging
-import os
-import time
 from glob import glob
 from os import path
-from urllib.parse import urlparse
 
-import numpy as np
+import logging
+import os
 import pandas as pd
 import requests
+import time
 from bs4 import BeautifulSoup
 from pandas.errors import ParserError
+from urllib.parse import urlparse
 
 from covidata import config
 from covidata.municipios.ibge import get_codigo_municipio_por_nome
 from covidata.persistencia import consolidacao
-from covidata.persistencia.consolidacao import salvar, consolidar_layout
+from covidata.persistencia.consolidacao import consolidar_layout
 from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.scrappers.scrapper import Scraper
 

@@ -36,7 +36,7 @@ url_pt_PR = 'http://www.transparencia.download.pr.gov.br/exportacao/DISPENSAS_IN
 url_pt_SC_contratos = 'http://dados.sc.gov.br/dataset/dfc9ffcd-0f0d-4d92-9b5f-30f2d718105d/resource/18a4438d-4352-45f0-bd97-9edfd4425ae2/download/contrato_item.xlsx'
 url_pt_SC_despesas = 'http://www.transparencia.sc.gov.br/data/despesa/exportcsv?anomesinifiltro%5B%5D=202001&anomesfimfiltro%5B%5D=202012&agrupamentos%5B%5D=orgao&indicador=3779&'
 url_pt_MG = 'http://www.transparencia.mg.gov.br/covid-19/compras-contratos'
-url_pt_MS = 'http://www.comprascoronavirus.ms.gov.br/'
+url_pt_MS = 'http://www.dados.ms.gov.br/dataset/compras-covid-19'
 url_pt_SE = 'http://www.transparenciasergipe.se.gov.br/TRS/Covid/Despesas.xhtml'
 url_pt_PB = 'http://transparencia.pb.gov.br/coronavirus/?rpt=contratoslst_covid'
 url_pt_DF = 'http://www.coronavirus.df.gov.br/wp-content/uploads/2020/'

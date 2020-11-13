@@ -1,15 +1,15 @@
-import logging
-import time
 from os import path
 
+import logging
 import numpy as np
 import pandas as pd
 import requests
+import time
 from bs4 import BeautifulSoup
 
 from covidata import config
 from covidata.persistencia import consolidacao
-from covidata.persistencia.consolidacao import consolidar_layout, salvar
+from covidata.persistencia.consolidacao import consolidar_layout
 from covidata.persistencia.dao import persistir
 from covidata.webscraping.scrappers.scrapper import Scraper
 

@@ -1,3 +1,4 @@
+import os
 from os import path
 
 import json
@@ -21,10 +22,16 @@ class PT_AL_Scraper(Scraper):
         total = resultado['total']
 
         url = config.url_pt_AL + f'&limit={total}'
-        retorno = requests.get(url, timeout=40)
+        retorno = requests.get(url, timeout=80)
         resultado = json.loads(retorno.content)
         df = pd.DataFrame.from_dict(resultado['rows'])
-        df.to_excel('despesas.xlsx')
+
+        diretorio = path.join(config.diretorio_dados, 'AL', 'portal_transparencia')
+
+        if not path.exists(diretorio):
+            os.makedirs(diretorio)
+
+        df.to_excel(path.join(diretorio, 'despesas.xlsx'))
 
         logger.info("--- %s segundos ---" % (time.time() - start_time))
 

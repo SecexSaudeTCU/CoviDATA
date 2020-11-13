@@ -117,7 +117,6 @@ def __converter_dataframes(df_original, dicionario_dados, uf, codigo_municipio_i
         df[coluna_padronizada] = df_original.get(coluna_correspondente, np.nan)
 
     df[FONTE_DADOS] = fonte_dados
-
     df[DATA_EXTRACAO_DADOS] = data_extracao
     df[UF] = uf
     df[COD_IBGE_MUNICIPIO] = codigo_municipio_ibge

@@ -7,6 +7,8 @@ import pathlib
 # Define o caminho do diretório onde os dados serão armazenados
 diretorio_raiz = pathlib.Path(__file__).parent.parent
 diretorio_dados = diretorio_raiz.joinpath('dados')
+diretorio_config = diretorio_raiz.joinpath('config')
+arquivo_config_webdav = diretorio_config.joinpath('webdav.cfg')
 
 # URL para a API de localidades do IBGE
 url_api_ibge = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados'
@@ -75,7 +77,7 @@ url_pt_Curitiba_contratacoes = 'https://mid.curitiba.pr.gov.br/conteudos/coronav
 url_pt_Curitiba_aquisicoes = 'https://www.transparencia.curitiba.pr.gov.br/sgp/DespesasCovid19.aspx'
 url_pt_Florianopolis = 'http://portal.pmf.sc.gov.br/transparencia/arquivos/Aquisicao%20e%20contratos.csv'
 url_pt_BeloHorizonte = 'https://prefeitura.pbh.gov.br/sites/default/files/estrutura-de-governo/controladoria/transparencia/covid19/contratacaocorona.xlsx'
-#url_pt_CampoGrande = 'https://data-export.campogrande.ms.gov.br/despesas/export/xlsx'
+# url_pt_CampoGrande = 'https://data-export.campogrande.ms.gov.br/despesas/export/xlsx'
 url_pt_CampoGrande = 'https://transparenciacovid.campogrande.ms.gov.br/wp-admin/admin-ajax.php?action=despesa_json&_0.6553324393228879&_=1605024725961'
 url_pt_Aracaju = 'https://www.municipioonline.com.br/se/prefeitura/aracaju/cidadao/despesa?covid-19'
 url_pt_JoaoPessoa = 'https://transparencia.joaopessoa.pb.gov.br/#/despesas/despesas-detalhamento?ano=2020&covid=true'

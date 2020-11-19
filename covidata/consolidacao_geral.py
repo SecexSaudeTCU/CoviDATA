@@ -6,6 +6,7 @@ import time
 import numpy as np
 from covidata import config
 from covidata.persistencia import consolidacao
+from covidata.persistencia.disco_virtual import salvar
 
 
 def consolidar():
@@ -44,6 +45,10 @@ def consolidar():
     df_final.to_excel(writer, sheet_name='Dados consolidados')
 
     writer.save()
+
+    #Salva em disco virtual
+    salvar(caminho_arquivo=config.diretorio_dados.joinpath('consolidados').joinpath('UFs.xlsx'),
+           subdiretorio='web_scraping/', nome_arquivo='UFs.xlsx')
 
     print('Total de registros: %s' % len(df_final))
     print('Total de registros com CNPJ originalmente preenchido: %s' % len(

@@ -1,14 +1,13 @@
-import locale
-import logging
-
-import os
-from abc import ABC, abstractmethod
 from os import path
 
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
+import locale
+import logging
+import os
 import time
+from abc import ABC, abstractmethod
+from selenium import webdriver
 from sys import platform
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 class SeleniumDownloader(ABC):
@@ -65,10 +64,10 @@ class SeleniumDownloader(ABC):
 
         if platform == "linux" or platform == "linux2":
             locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+            driver = webdriver.Chrome('/usr/bin/chromedriver')
         else:
             locale.setlocale(locale.LC_ALL, "pt_br")
-
-        driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
+            driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
 
         driver.command_executor._commands["send_command"] = ("POST", '/session/$sessionId/chromium/send_command')
         params = {'cmd': 'Page.setDownloadBehavior',

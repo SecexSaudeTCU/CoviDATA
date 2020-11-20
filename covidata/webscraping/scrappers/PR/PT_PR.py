@@ -12,7 +12,6 @@ from covidata import config
 from covidata.municipios.ibge import get_codigo_municipio_por_nome
 from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout
-from covidata.util.excel import exportar_arquivo_para_xlsx
 from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.scrappers.scrapper import Scraper
 from covidata.webscraping.selenium.downloader import SeleniumDownloader
@@ -54,6 +53,7 @@ class PT_PR_Scraper(Scraper):
         df[consolidacao.CONTRATADO_CNPJ] = df[consolidacao.CONTRATADO_CNPJ].astype(str)
         return df
 
+
 class PT_CuritibaContratacoes_Scraper(Scraper):
     def scrap(self):
         pt_contratacoes = FileDownloader(path.join(config.diretorio_dados, 'PR', 'portal_transparencia', 'Curitiba'),
@@ -85,10 +85,6 @@ class PT_CuritibaAquisicoes_Scraper(Scraper):
         pt_aquisicoes = PortalTransparencia_Curitiba()
         pt_aquisicoes.download()
 
-        exportar_arquivo_para_xlsx(path.join(config.diretorio_dados, 'PR', 'portal_transparencia', 'Curitiba'),
-                                   'Aquisições_para_enfrentamento_da_pandemia_do_COVID-19_-_Transparência_Curitiba.xls',
-                                   'aquisicoes.xlsx')
-
     def consolidar(self, data_extracao):
         aquisicoes_capital = self.__consolidar_aquisicoes_capital(data_extracao)
         return aquisicoes_capital, False
@@ -98,8 +94,8 @@ class PT_CuritibaAquisicoes_Scraper(Scraper):
                             consolidacao.CONTRATANTE_DESCRICAO: 'Órgão',
                             consolidacao.VALOR_CONTRATO: 'Valor R$'}
         planilha_original = path.join(config.diretorio_dados, 'PR', 'portal_transparencia', 'Curitiba',
-                                      'aquisicoes.xlsx')
-        df_original = pd.read_excel(planilha_original, header=7)
+                                      'Aquisições_para_enfrentamento_da_pandemia_do_COVID-19_-_Transparência_Curitiba.csv')
+        df_original = pd.read_csv(planilha_original, sep=';')
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Curitiba_aquisicoes
         codigo_municipio_ibge = get_codigo_municipio_por_nome('Curitiba', 'PR')
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
@@ -121,7 +117,7 @@ class PortalTransparencia_Curitiba(SeleniumDownloader):
 
         # button = self.driver.find_element_by_class_name('excel')
         button = self.driver.find_element_by_xpath(
-            '/html/body/form/div[6]/div[2]/div[1]/div/div/div[4]/div/div[1]/img[1]')
+            '/html/body/form/div[6]/div[2]/div[1]/div/div/div[4]/div/div[1]/img[3]')
         button.click()
 
         # Aqui, não é possível confiar na checagem de download da superclasse, uma vez que no mesmo diretório há outros

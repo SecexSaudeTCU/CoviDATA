@@ -24,6 +24,3 @@ def salvar(caminho_arquivo, nome_arquivo='UFs.xlsx'):
 
     print('Upload concluído.  Listando conteúdo do diretório remoto...')
     print(cliente.list(pasta_virtual))
-
-salvar(caminho_arquivo=config.diretorio_dados.joinpath('consolidados').joinpath('UFs.xlsx'),
-           nome_arquivo='UFs.xlsx')

@@ -32,7 +32,8 @@ class TCE_PI_Scraper(Scraper):
         wait = WebDriverWait(driver, 45)
 
         # Seleciona a seta para baixo do menu dropdown de "Ano contrato"
-        element = wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="anoContrato"]/div[3]/span')))
+        #element = wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="anoContrato"]/div[3]/span')))
+        element = wait.until(EC.visibility_of_element_located((By.XPATH, '//*[@id="tvPrincipal:j_idt25"]/div[3]/span')))
         driver.execute_script("arguments[0].click();", element)
 
         # Seleciona o ano de 2020

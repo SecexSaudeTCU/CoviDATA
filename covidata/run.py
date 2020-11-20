@@ -12,6 +12,10 @@ import pandas as pd
 import sys
 import time
 
+# Adiciona diretorio raiz ao PATH. Devido a ausência de setup.py, isto garante que as importações sempre funcionarão
+diretorio_raiz = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
+sys.path.append(diretorio_raiz)
+
 from covidata import config
 from covidata.persistencia.consolidacao import salvar
 from covidata.webscraping.scrappers.AC.PT_AC import PT_AC_Scraper, PT_RioBranco_Scraper
@@ -49,10 +53,6 @@ from covidata.webscraping.scrappers.SC.PT_SC import PT_SC_Scraper, PT_Florianopo
 from covidata.webscraping.scrappers.SE.PT_SE import PT_SE_Scraper, PT_Aracaju_Scraper
 from covidata.webscraping.scrappers.SP.PT_SP import PT_SP_Scraper
 from covidata.webscraping.scrappers.TO.PT_TO import PT_TO_Scraper
-
-# Adiciona diretorio raiz ao PATH. Devido a ausência de setup.py, isto garante que as importações sempre funcionarão
-diretorio_raiz = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
-sys.path.append(diretorio_raiz)
 
 if __name__ == '__main__':
     logger = logging.getLogger('covidata')

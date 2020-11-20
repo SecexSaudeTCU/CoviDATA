@@ -46,9 +46,9 @@ def consolidar():
 
     writer.save()
 
-    #Salva em disco virtual
+    # Salva em disco virtual
     salvar(caminho_arquivo=config.diretorio_dados.joinpath('consolidados').joinpath('UFs.xlsx'),
-           subdiretorio='web_scraping/', nome_arquivo='UFs.xlsx')
+           nome_arquivo='UFs.xlsx')
 
     print('Total de registros: %s' % len(df_final))
     print('Total de registros com CNPJ originalmente preenchido: %s' % len(
@@ -99,5 +99,5 @@ def __buscar_empresas_por_razao_social(razao_social):
     return map_empresa_to_cnpjs, tipo_busca
 
 
-if __name__ == '__main__':
-    consolidar()
+# if __name__ == '__main__':
+#     consolidar()

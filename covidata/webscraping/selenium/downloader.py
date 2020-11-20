@@ -64,7 +64,8 @@ class SeleniumDownloader(ABC):
 
         if platform == "linux" or platform == "linux2":
             locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
-            driver = webdriver.Chrome('/usr/bin/chromedriver')
+            #TODO Parametrizar este caminho
+            driver = webdriver.Chrome('/home/moniquebm/covidata/chromedriver')
         else:
             locale.setlocale(locale.LC_ALL, "pt_br")
             driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)

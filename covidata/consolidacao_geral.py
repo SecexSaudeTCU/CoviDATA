@@ -47,7 +47,7 @@ def __salvar(df_final, diretorio):
     df_final.to_excel(writer, sheet_name='Dados')
     writer.save()
     # Salva em disco virtual
-    salvar(caminho_arquivo=config.diretorio_dados.joinpath('consolidados').joinpath('UFs.xlsx'),
+    salvar(caminho_arquivo=config.diretorio_dados.joinpath('consolidados').joinpath('WEBSCRAPING.xlsx'),
            nome_arquivo='WEBSCRAPING.xlsx')
 
 

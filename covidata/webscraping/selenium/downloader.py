@@ -66,8 +66,6 @@ class SeleniumDownloader(ABC):
             locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
             # TODO Parametrizar estes caminhos
-            chromeOptions.binary_location = '/home/moniquebm/centos/usr/bin/chromium-browser'
-
             # options = webdriver.ChromeOptions()
             # options.gpu = False
             # options.headless = True
@@ -82,6 +80,7 @@ class SeleniumDownloader(ABC):
             #                           desired_capabilities=desired)
 
             chrome_options = webdriver.ChromeOptions()
+            chrome_options.binary_location = '/home/moniquebm/centos/usr/bin/chromium-browser'
             preferences = {"download.default_directory": diretorio_dados,
                            "directory_upgrade": True,
                            "safebrowsing.enabled": True}

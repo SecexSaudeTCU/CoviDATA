@@ -85,6 +85,13 @@ class SeleniumDownloader(ABC):
                            "directory_upgrade": True,
                            "safebrowsing.enabled": True}
             chrome_options.add_experimental_option("prefs", preferences)
+
+            #teste
+            chrome_options.add_argument(browser_option)
+
+            chrome_options.add_argument("--no-sandbox")
+            chrome_options.add_argument("--disable-dev-shm-usage");
+
             driver = webdriver.Chrome(chrome_options=chrome_options,
                                       executable_path='/home/moniquebm/centos/usr/bin/chromedriver')
         else:

@@ -68,9 +68,6 @@ class SeleniumDownloader(ABC):
             # TODO Parametrizar estes caminhos
             chromeOptions.binary_location = '/home/moniquebm/centos/usr/bin/chromium-browser'
             driver = webdriver.Chrome('/home/moniquebm/centos/usr/bin/chromedriver', chrome_options=chromeOptions)
-
-            driver.command_executor._commands["send_command"] = ("POST", '/session/$sessionId/chromium/send_command')
-            driver.execute("send_command")
         else:
             locale.setlocale(locale.LC_ALL, "pt_br")
             driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
@@ -78,8 +75,6 @@ class SeleniumDownloader(ABC):
             params = {'cmd': 'Page.setDownloadBehavior',
                       'params': {'behavior': 'allow', 'downloadPath': diretorio_dados}}
             driver.execute("send_command", params)
-
-
 
         return driver
 

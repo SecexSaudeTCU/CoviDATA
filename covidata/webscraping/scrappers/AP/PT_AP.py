@@ -1,18 +1,18 @@
-import os
-
-import logging
-import time
 from os import path
 
+import logging
 import pandas as pd
+import requests
+import time
+from bs4 import BeautifulSoup
 
 from covidata import config
 from covidata.municipios.ibge import get_codigo_municipio_por_nome
 from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout
+from covidata.persistencia.dao import persistir
 from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.scrappers.scrapper import Scraper
-from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
 
 class PT_AP_Scraper(Scraper):
@@ -51,13 +51,23 @@ class PT_Macapa_Scraper(Scraper):
 
         logger.info('Portal de transparência da capital...')
         start_time = time.time()
-        pt_Macapa = PortalTransparencia_Macapa()
-        pt_Macapa.download()
 
-        # Renomeia o arquivo
-        diretorio = path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'Macapa')
-        arquivo = os.listdir(diretorio)[0]
-        os.rename(path.join(diretorio, arquivo), path.join(diretorio, 'transparencia.xlsx'))
+        page = requests.get(self.url)
+        soup = BeautifulSoup(page.content, 'lxml')
+        tabela = soup.find_all('table')[0]
+        ths = tabela.find_all('thead')[0].find_all('th')
+        nomes_colunas = [th.get_text() for th in ths]
+        tbody = tabela.find_all('tbody')[0]
+        trs = tbody.find_all('tr')
+        linhas = []
+
+        for tr in trs:
+            tds = tr.find_all('td')
+            valores = [td.get_text().strip() for td in tds]
+            linhas.append(valores)
+
+        df = pd.DataFrame(data=linhas, columns=nomes_colunas)
+        persistir(df, 'portal_transparencia', 'contratacoes', 'AP', cidade='Macapa')
 
         logger.info("--- %s segundos ---" % (time.time() - start_time))
 
@@ -70,8 +80,8 @@ class PT_Macapa_Scraper(Scraper):
                             consolidacao.CONTRATANTE_DESCRICAO: 'Órgão Contratante',
                             consolidacao.VALOR_CONTRATO: 'Valor contratado'}
         planilha_original = path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'Macapa',
-                                      'transparencia.xlsx')
-        df_original = pd.read_excel(planilha_original, header=1)
+                                      'contratacoes.xls')
+        df_original = pd.read_excel(planilha_original, header=4)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_Macapa
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                fonte_dados, 'AP', get_codigo_municipio_por_nome('Macapá', 'AP'), data_extracao,
@@ -93,13 +103,3 @@ class PT_Macapa_Scraper(Scraper):
         df = df.drop(['temp'], axis=1)
 
         return df
-
-
-class PortalTransparencia_Macapa(SeleniumDownloader):
-    def __init__(self):
-        super().__init__(path.join(config.diretorio_dados, 'AP', 'portal_transparencia', 'Macapa'),
-                         config.url_pt_Macapa)
-
-    def _executar(self):
-        button = self.driver.find_element_by_class_name('buttons-excel')
-        button.click()

@@ -5,9 +5,6 @@ import pandas as pd
 import requests
 import time
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 
 from covidata import config
 from covidata.municipios.ibge import get_codigo_municipio_por_nome
@@ -15,7 +12,6 @@ from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout
 from covidata.persistencia.dao import persistir
 from covidata.webscraping.scrappers.scrapper import Scraper
-from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
 
 class PT_MA_Scraper(Scraper):
@@ -24,35 +20,41 @@ class PT_MA_Scraper(Scraper):
 
         logger.info('Portal de transparência estadual...')
         start_time = time.time()
-        pt_ma = PortalTransparencia_MA()
-        pt_ma.download()
+
+        page = requests.get(self.url)
+        soup = BeautifulSoup(page.content, 'lxml')
+        tabela = soup.find_all('table')[0]
+        ths = tabela.find_all('thead')[0].find_all('th')
+        nomes_colunas = [th.get_text() for th in ths]
+        tbody = tabela.find_all('tbody')[0]
+        trs = tbody.find_all('tr')
+        linhas = []
+
+        for tr in trs:
+            tds = tr.find_all('td')
+            valores = [td.get_text().strip() for td in tds]
+            linhas.append(valores)
+
+        df = pd.DataFrame(data=linhas, columns=nomes_colunas)
+        persistir(df, 'portal_transparencia', 'contratos', 'MA')
+
         logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     def consolidar(self, data_extracao):
         return self.__consolidar_portal_transparencia_estado(data_extracao), False
 
     def __consolidar_portal_transparencia_estado(self, data_extracao):
-        dicionario_dados = {consolidacao.CONTRATADO_DESCRICAO: 'Contratado', consolidacao.CONTRATADO_CNPJ:'CNPJ'}
-        planilha_original = path.join(config.diretorio_dados, 'MA', 'portal_transparencia',
-                                      'Portal da Transparência do Governo do Estado do Maranhão.xlsx')
-        df_original = pd.read_excel(planilha_original)
+        dicionario_dados = {consolidacao.CONTRATADO_DESCRICAO: 'contratado',
+                            consolidacao.CONTRATADO_CNPJ: ' cnpj_cpf_contratado',
+                            consolidacao.CONTRATANTE_DESCRICAO: 'orgao_contratante',
+                            consolidacao.DESPESA_DESCRICAO: ' descricao_servico',
+                            consolidacao.VALOR_CONTRATO: 'valor_total'}
+        planilha_original = path.join(config.diretorio_dados, 'MA', 'portal_transparencia', 'contratos.xls')
+        df_original = pd.read_excel(planilha_original, header=4)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_MA
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                fonte_dados, 'MA', '', data_extracao)
         return df
-
-
-class PortalTransparencia_MA(SeleniumDownloader):
-    def __init__(self):
-        super().__init__(path.join(config.diretorio_dados, 'MA', 'portal_transparencia'), config.url_pt_MA)
-
-    def _executar(self):
-        wait = WebDriverWait(self.driver, 30)
-
-        element = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'buttons-excel')))
-        self.driver.execute_script("arguments[0].click();", element)
-
-        self.driver.switch_to.default_content()
 
 
 class PT_SaoLuis_Scraper(Scraper):

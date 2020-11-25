@@ -1,4 +1,3 @@
-import os
 from os import path
 
 import logging
@@ -11,7 +10,6 @@ from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout
 from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.scrappers.scrapper import Scraper
-from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
 
 class PT_CE_Scraper(Scraper):
@@ -48,13 +46,11 @@ class PT_Fortaleza_Scraper(Scraper):
         logger = logging.getLogger('covidata')
         logger.info('Portal de transparência da capital...')
         start_time = time.time()
-        pt_Fortaleza = PortalTransparencia_Fortaleza(config.url_pt_Fortaleza)
-        pt_Fortaleza.download()
 
-        # Renomeia o arquivo
-        diretorio = path.join(config.diretorio_dados, 'CE', 'portal_transparencia', 'Fortaleza')
-        arquivo = os.listdir(diretorio)[0]
-        os.rename(path.join(diretorio, arquivo), path.join(diretorio, 'despesas.csv'))
+        downloader = FileDownloader(path.join(config.diretorio_dados, 'CE', 'portal_transparencia', 'Fortaleza'),
+                                    self.url, 'despesas.csv')
+
+        downloader.download()
 
         logger.info("--- %s segundos ---" % (time.time() - start_time))
 
@@ -85,13 +81,3 @@ class PT_Fortaleza_Scraper(Scraper):
         df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
 
         return df
-
-
-class PortalTransparencia_Fortaleza(SeleniumDownloader):
-
-    def __init__(self, url):
-        super().__init__(path.join(config.diretorio_dados, 'CE', 'portal_transparencia', 'Fortaleza'), url)
-
-    def _executar(self):
-        button = self.driver.find_element_by_id('download')
-        button.click()

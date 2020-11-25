@@ -1,21 +1,18 @@
-import os
-
-import time
-import pandas as pd
-import logging
 from os import path
 
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
+import logging
+import pandas as pd
+import requests
+import time
+from bs4 import BeautifulSoup
 
 from covidata import config
 from covidata.municipios.ibge import get_codigo_municipio_por_nome
 from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout
+from covidata.persistencia.dao import persistir
 from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.scrappers.scrapper import Scraper
-from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
 
 class PT_MG_Scraper(Scraper):
@@ -24,13 +21,32 @@ class PT_MG_Scraper(Scraper):
         logger.info('Portal de transparência estadual...')
         start_time = time.time()
 
-        pt_MG = PortalTransparencia_MG()
-        pt_MG.download()
+        # pt_MG = PortalTransparencia_MG()
+        # pt_MG.download()
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/50.0.2661.102 Safari/537.36'}
+        page = requests.get(self.url, headers=headers)
+        soup = BeautifulSoup(page.content, 'lxml')
+        tabela = soup.find_all('table')[0]
+        ths = tabela.find_all('thead')[0].find_all('th')
+        nomes_colunas = [th.get_text() for th in ths]
+        tbody = tabela.find_all('tbody')[0]
+        trs = tbody.find_all('tr')
+        linhas = []
 
-        arquivo = path.join(config.diretorio_dados, 'MG', 'portal_transparencia',
-                            '_Compras - Programa de enfrentamento COVID-19.csv')
-        if not os.path.exists(arquivo) and os.path.exists(arquivo + '.crdownload'):
-            os.rename(arquivo + '.crdownload', arquivo)
+        for tr in trs:
+            tds = tr.find_all('td')
+            valores = [td.get_text().strip() for td in tds]
+            linhas.append(valores)
+
+        df = pd.DataFrame(data=linhas, columns=nomes_colunas)
+        persistir(df, 'portal_transparencia', 'compras', 'MG')
+
+        # arquivo = path.join(config.diretorio_dados, 'MG', 'portal_transparencia',
+        #                     '_Compras - Programa de enfrentamento COVID-19.csv')
+        # if not os.path.exists(arquivo) and os.path.exists(arquivo + '.crdownload'):
+        #     os.rename(arquivo + '.crdownload', arquivo)
 
         logger.info("--- %s segundos ---" % (time.time() - start_time))
 
@@ -38,29 +54,17 @@ class PT_MG_Scraper(Scraper):
         return self.__consolidar_compras(data_extracao), False
 
     def __consolidar_compras(self, data_extracao):
-        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Órgão Demandante ',
-                            consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ do Contratado ',
-                            consolidacao.CONTRATADO_DESCRICAO: 'Contratado ',
-                            consolidacao.DESPESA_DESCRICAO: 'Objeto do Processo ',
-                            consolidacao.VALOR_CONTRATO: 'Valor Homologado '}
-        planilha_original = path.join(config.diretorio_dados, 'MG', 'portal_transparencia',
-                                      '_Compras - Programa de enfrentamento COVID-19.csv')
-        df_original = pd.read_csv(planilha_original, sep=';')
+        dicionario_dados = {consolidacao.CONTRATANTE_DESCRICAO: 'Órgão Demandante',
+                            consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ do Contratado',
+                            consolidacao.CONTRATADO_DESCRICAO: 'Contratado',
+                            consolidacao.DESPESA_DESCRICAO: 'Objeto do Processo',
+                            consolidacao.VALOR_CONTRATO: 'Valor Homologado'}
+        planilha_original = path.join(config.diretorio_dados, 'MG', 'portal_transparencia', 'compras.xls')
+        df_original = pd.read_excel(planilha_original, header=4)
         fonte_dados = consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_MG
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                fonte_dados, 'MG', '', data_extracao)
         return df
-
-
-class PortalTransparencia_MG(SeleniumDownloader):
-    def __init__(self):
-        super().__init__(path.join(config.diretorio_dados, 'MG', 'portal_transparencia'), config.url_pt_MG)
-
-    def _executar(self):
-        wait = WebDriverWait(self.driver, 30)
-
-        element = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'buttons-csv')))
-        self.driver.execute_script("arguments[0].click();", element)
 
 
 class PT_BeloHorizonte_Scraper(Scraper):

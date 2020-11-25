@@ -15,7 +15,8 @@ arquivo_config_cnpj = diretorio_config.joinpath('cnpj.cfg')
 url_api_ibge = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados'
 
 # Urls de portais de tansparência do governos estaduais
-url_pt_AM = 'http://www.transparencia.am.gov.br/covid-19/contratos/'
+# url_pt_AM = 'http://www.transparencia.am.gov.br/covid-19/contratos/'
+url_pt_AM = 'http://sistemas.sefaz.am.gov.br/sgc-am/contratos.do?csContratoCovid=S&method=Consultar&interno=true'
 url_pt_CE = 'https://cearatransparente.ce.gov.br/files/downloads/transparency/coronavirus/gasto_covid_dados_abertos.xlsx'
 url_pt_PA = 'https://transparenciacovid19.pa.gov.br/covid.json'
 url_pt_AP = 'http://cosiga.ap.gov.br/api/contratos_covidV1_xlsx?termo=&orgao='
@@ -25,7 +26,7 @@ url_pt_AC = 'http://sesacrenetnovo.ac.gov.br/relatorio/api/public/dashboard/c80b
 url_pt_ES = 'https://coronavirus.es.gov.br/Media/Coronavirus/Transparencia/DadosAbertos/dados-contratos-emergenciais-covid-19.csv?v=49'
 url_pt_SP = 'https://www.saopaulo.sp.gov.br/wp-content/uploads/2020/09/COVID.csv'
 url_pt_AL = 'http://transparencia.al.gov.br/despesa/json-despesa-covid19-itens/?order=asc&offset=0'
-url_pt_MA = 'http://www.transparencia.ma.gov.br/app/compras/covid#lista'
+url_pt_MA = 'http://www.transparencia.ma.gov.br/app/compras/covid/dados#lista'
 url_pt_TO = 'http://www.gestao.cge.to.gov.br/projetos/contratos_covid/consulta_contrato_covid_2/'
 url_pt_BA = 'http://www.saude.ba.gov.br/temasdesaude/coronavirus/contratacoes-covid19/'
 url_pt_MT = 'http://consultas.transparencia.mt.gov.br/compras/contratos_covid_completo/'
@@ -53,8 +54,8 @@ url_tce_MT = 'https://covid.tce.mt.gov.br/extensions/covid/painel-licitacao.html
 url_tce_BA = 'https://www.tce.ba.gov.br/covid-19'
 
 # URLSs de portais de transparência de govenos municipais (capitais)
-url_pt_Manaus = 'https://covid19.manaus.am.gov.br/transparencia-covid-19/'
-url_pt_Fortaleza = 'https://transparencia.fortaleza.ce.gov.br/index.php/despesa/despesasCovid19'
+url_pt_Manaus = 'https://covid19.manaus.am.gov.br/wp-content/uploads/P%C3%9ABLICA-CONTROLE-PROCESSOS-COMBATE-COVID-19-MATERIAIS.csv'
+url_pt_Fortaleza = 'https://transparencia.fortaleza.ce.gov.br/index.php/despesa/exibirDespesasCovid19CSV/NULL/NULL/NULL/NULL/RGVzcGVzYXMgYXBsaWNhZGFzIG5vIGNvbWJhdGUgYW8gbm92byBjb3JvbmF2w61ydXM%253D/Despesas%20aplicadas%20no%20combate%20ao%20novo%20coronav%C3%ADrus'
 url_pt_Belem = 'http://contratoemergencial.belem.pa.gov.br/despesas/'
 url_pt_Rio_favorecidos = 'http://riotransparente.rio.rj.gov.br/arquivos/Open_Data_Favorecidos_Covid19_2020.xlsx'
 url_pt_Rio_contratos = 'http://riotransparente.rio.rj.gov.br/arquivos/Open_Data_Contratos_Covid19_2020.xlsx'

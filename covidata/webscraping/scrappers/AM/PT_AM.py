@@ -1,18 +1,18 @@
 from os import path
-import pandas as pd
-import time
 
 import logging
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
+import pandas as pd
+import requests
+import time
+from bs4 import BeautifulSoup
 
 from covidata import config
 from covidata.municipios.ibge import get_codigo_municipio_por_nome
 from covidata.persistencia import consolidacao
 from covidata.persistencia.consolidacao import consolidar_layout
+from covidata.persistencia.dao import persistir
+from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.scrappers.scrapper import Scraper
-from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
 
 class PT_AM_Scraper(Scraper):
@@ -20,8 +20,24 @@ class PT_AM_Scraper(Scraper):
         logger = logging.getLogger('covidata')
         logger.info('Portal de transparência estadual...')
         start_time = time.time()
-        pt_AM = PortalTransparencia_AM()
-        pt_AM.download()
+
+        page = requests.get(self.url)
+        soup = BeautifulSoup(page.content, 'lxml')
+        tabela = soup.find_all('table')[0]
+        ths = tabela.find_all('thead')[0].find_all('th')
+        nomes_colunas = [th.get_text() for th in ths]
+        tbody = tabela.find_all('tbody')[0]
+        trs = tbody.find_all('tr')
+        linhas = []
+
+        for tr in trs:
+            tds = tr.find_all('td')
+            valores = [td.get_text().strip() for td in tds]
+            linhas.append(valores)
+
+        df = pd.DataFrame(data=linhas, columns=nomes_colunas)
+        persistir(df, 'portal_transparencia', 'contratos', 'AM')
+
         logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     def consolidar(self, data_extracao):
@@ -36,30 +52,11 @@ class PT_AM_Scraper(Scraper):
                             consolidacao.CONTRATANTE_DESCRICAO: 'Nome UG',
                             consolidacao.VALOR_CONTRATO: 'Valor atual'}
         df_original = pd.read_excel(
-            path.join(config.diretorio_dados, 'AM', 'portal_transparencia',
-                      'Portal SGC - Sistema de Gestão de Contratos.xlsx'))
+            path.join(config.diretorio_dados, 'AM', 'portal_transparencia', 'contratos.xls'))
         df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_ESTADUAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_AM, 'AM', '',
                                data_extracao)
         return df
-
-
-# TODO: Em tese, esta carga não precisaria ser via Selenium, porém tem a vantagem de abstrair a URL direta do arquivo,
-#  que no momento contém, por exemplo, "2020/06".
-class PortalTransparencia_AM(SeleniumDownloader):
-    def __init__(self):
-        super().__init__(path.join(config.diretorio_dados, 'AM', 'portal_transparencia'), config.url_pt_AM)
-
-    def _executar(self):
-        wait = WebDriverWait(self.driver, 30)
-
-        frame = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'page-iframe')))
-        self.driver.switch_to.frame(frame)
-
-        element = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'buttons-excel')))
-        self.driver.execute_script("arguments[0].click();", element)
-
-        self.driver.switch_to.default_content()
 
 
 class PT_Manaus_Scraper(Scraper):
@@ -67,8 +64,10 @@ class PT_Manaus_Scraper(Scraper):
         logger = logging.getLogger('covidata')
         logger.info('Portal de transparência da capital...')
         start_time = time.time()
-        pt_Manaus = PortalTransparencia_Manaus()
-        pt_Manaus.download()
+
+        downloader = FileDownloader(path.join(config.diretorio_dados, 'AM', 'portal_transparencia', 'Manaus'), self.url,
+                                    'PÚBLICA-CONTROLE-PROCESSOS-COMBATE-COVID-19-MATERIAIS.csv')
+        downloader.download()
         logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     def consolidar(self, data_extracao):
@@ -97,13 +96,3 @@ class PT_Manaus_Scraper(Scraper):
         df[consolidacao.TIPO_DOCUMENTO] = 'Empenho'
 
         return df
-
-
-class PortalTransparencia_Manaus(SeleniumDownloader):
-    def __init__(self):
-        super().__init__(path.join(config.diretorio_dados, 'AM', 'portal_transparencia', 'Manaus'),
-                         config.url_pt_Manaus)
-
-    def _executar(self):
-        button = self.driver.find_element_by_id('btn_csv')
-        button.click()

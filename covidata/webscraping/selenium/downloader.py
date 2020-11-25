@@ -67,7 +67,19 @@ class SeleniumDownloader(ABC):
 
             # TODO Parametrizar estes caminhos
             chromeOptions.binary_location = '/home/moniquebm/centos/usr/bin/chromium-browser'
-            driver = webdriver.Chrome('/home/moniquebm/centos/usr/bin/chromedriver', chrome_options=chromeOptions)
+
+            options = webdriver.ChromeOptions()
+            options.gpu = False
+            options.headless = True
+            options.add_experimental_option("prefs", {
+                "download.default_directory": diretorio_dados,
+                'profile.default_content_setting_values.automatic_downloads': 2,
+            })
+
+            desired = options.to_capabilities()
+            desired['loggingPrefs'] = {'performance': 'ALL'}
+            driver = webdriver.Chrome('/home/moniquebm/centos/usr/bin/chromedriver', chrome_options=chromeOptions,
+                                      desired_capabilities=desired)
         else:
             locale.setlocale(locale.LC_ALL, "pt_br")
             driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)

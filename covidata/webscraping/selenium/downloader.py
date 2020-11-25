@@ -68,18 +68,26 @@ class SeleniumDownloader(ABC):
             # TODO Parametrizar estes caminhos
             chromeOptions.binary_location = '/home/moniquebm/centos/usr/bin/chromium-browser'
 
-            options = webdriver.ChromeOptions()
-            options.gpu = False
-            options.headless = True
-            options.add_experimental_option("prefs", {
-                "download.default_directory": diretorio_dados,
-                'profile.default_content_setting_values.automatic_downloads': 2,
-            })
+            # options = webdriver.ChromeOptions()
+            # options.gpu = False
+            # options.headless = True
+            # options.add_experimental_option("prefs", {
+            #     "download.default_directory": diretorio_dados,
+            #     'profile.default_content_setting_values.automatic_downloads': 2,
+            # })
+            #
+            # desired = options.to_capabilities()
+            # desired['loggingPrefs'] = {'performance': 'ALL'}
+            # driver = webdriver.Chrome('/home/moniquebm/centos/usr/bin/chromedriver', chrome_options=chromeOptions,
+            #                           desired_capabilities=desired)
 
-            desired = options.to_capabilities()
-            desired['loggingPrefs'] = {'performance': 'ALL'}
-            driver = webdriver.Chrome('/home/moniquebm/centos/usr/bin/chromedriver', chrome_options=chromeOptions,
-                                      desired_capabilities=desired)
+            chrome_options = webdriver.ChromeOptions()
+            preferences = {"download.default_directory": diretorio_dados,
+                           "directory_upgrade": True,
+                           "safebrowsing.enabled": True}
+            chrome_options.add_experimental_option("prefs", preferences)
+            driver = webdriver.Chrome(chrome_options=chrome_options,
+                                      executable_path='/home/moniquebm/centos/usr/bin/chromedriver')
         else:
             locale.setlocale(locale.LC_ALL, "pt_br")
             driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)

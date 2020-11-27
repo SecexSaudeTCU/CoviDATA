@@ -46,9 +46,13 @@ class JSONParser(ABC):
         """
         diretorio, nome_arquivo = self._download()
 
-        with open(os.path.join(diretorio, nome_arquivo)) as json_file:
+        with open(os.path.join(diretorio, nome_arquivo), encoding='utf-8') as json_file:
             dados = json.load(json_file)
             conteudo = self._get_elemento_raiz(dados)
+
+            if not conteudo:
+                # Não há elemento-raiz - o próprio conteúdo retornado já é uma lista.
+                conteudo = dados
 
             colunas_df_principal = []
             linhas_df_principal = []

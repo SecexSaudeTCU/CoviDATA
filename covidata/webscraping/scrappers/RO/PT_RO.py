@@ -1,8 +1,10 @@
+from datetime import date
 from os import path
 
 import logging
 import numpy as np
 import pandas as pd
+import requests
 import time
 
 from covidata import config
@@ -60,8 +62,27 @@ class PT_PortoVelho_Scraper(Scraper):
         logger = logging.getLogger('covidata')
         logger.info('Portal de transparência da capital...')
         start_time = time.time()
-        pt_PortoVelho = PortalTransparencia_PortoVelho()
-        pt_PortoVelho.download()
+        # pt_PortoVelho = PortalTransparencia_PortoVelho()
+        # pt_PortoVelho.download()
+
+        data_atual = date.today()
+        aParametros = {'iExercicio': data_atual.year,
+                       'dtDataImportacao': f'{data_atual.year}-{data_atual.month}-{data_atual.day}',
+                       'sViewAtual': 'credores', 'iNivel': 3, 'dtInicio': '', 'dtFim': '',
+                       'aHistorico': [{'descricao': 'Descrição', 'valor_empenhado': 'Valor Empenhado',
+                                       'valor_anulado': 'Valor Anulado', 'valor_liquidado': 'Valor Liquidado',
+                                       'valor_pago': 'Valor Pago'}], 'iIdLink': 3}
+        r = requests.post(config.url_pt_PortoVelho,
+                          data={'aParametros': aParametros, '_search': False, 'nd': '1606513436451', 'rows': 999,
+                                'page': 1, 'sidx': 'nome', 'sord': 'asc'})
+        conteudo_json = r.json()
+        rows = conteudo_json['rows']
+        colunas = ['cpf_cnpj', 'credor']
+        linhas = [[(row['cell'][0]), (row['cell'][1])] for row in rows]
+
+        df = pd.DataFrame(data=linhas, columns=colunas)
+        df.to_excel(path.join(config.diretorio_dados, 'RO', 'portal_transparencia', 'PortoVelho', 'despesas.xlsx'))
+
         logger.info("--- %s segundos ---" % (time.time() - start_time))
 
     def consolidar(self, data_extracao):
@@ -69,22 +90,15 @@ class PT_PortoVelho_Scraper(Scraper):
 
     def consolidar_pt_PortoVelho(self, data_extracao):
         # Objeto dict em que os valores tem chaves que retratam campos considerados mais importantes
-        dicionario_dados = {consolidacao.CONTRATADO_CNPJ: 'CPF/CNPJ',
-                            consolidacao.CONTRATADO_DESCRICAO: 'Credor'}
+        dicionario_dados = {consolidacao.CONTRATADO_CNPJ: 'cpf_cnpj',
+                            consolidacao.CONTRATADO_DESCRICAO: 'credor'}
 
         # Lê o arquivo "csv" de despesas baixado como um objeto pandas DataFrame
-        df_original = pd.read_csv(path.join(config.diretorio_dados, 'RO', 'portal_transparencia',
-                                            'PortoVelho', 'Download.csv'),
-                                  sep=';',
-                                  encoding='iso-8859-1')
-        # Desconsidera a última coluna (não nomeada e sem dados) do objeto pandas DataFrame "df_original"
-        df = df_original[['CPF/CNPJ', 'Credor', 'Empenhado', 'Anulado', 'Liquidado', 'Pago']]
-
-        # Renomeia a coluna especificada do objeto pandas DataFrame "df"
-        df.rename(columns={'Anulado': 'Valor Anulado'}, inplace=True)
+        df_original = pd.read_excel(path.join(config.diretorio_dados, 'RO', 'portal_transparencia',
+                                              'PortoVelho', 'despesas.xlsx'))
 
         # Chama a função "consolidar_layout" definida em módulo importado
-        df = consolidar_layout(df, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
+        df = consolidar_layout(df_original, dicionario_dados, consolidacao.ESFERA_MUNICIPAL,
                                consolidacao.TIPO_FONTE_PORTAL_TRANSPARENCIA + ' - ' + config.url_pt_PortoVelho, 'RO',
                                get_codigo_municipio_por_nome('Porto Velho', 'RO'), data_extracao)
         df[consolidacao.MUNICIPIO_DESCRICAO] = 'Porto Velho'

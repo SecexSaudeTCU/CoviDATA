@@ -3,14 +3,11 @@ from os import path
 
 import logging
 import os
-import re
 import pandas as pd
+import re
 import requests
 import time
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 
 from covidata import config
 from covidata.municipios.ibge import get_codigo_municipio_por_nome
@@ -19,7 +16,6 @@ from covidata.persistencia.consolidacao import consolidar_layout
 from covidata.webscraping.downloader import FileDownloader
 from covidata.webscraping.json.parser import JSONParser
 from covidata.webscraping.scrappers.scrapper import Scraper
-from covidata.webscraping.selenium.downloader import SeleniumDownloader
 
 
 class PT_MS_Scraper(Scraper):
@@ -27,20 +23,6 @@ class PT_MS_Scraper(Scraper):
         logger = logging.getLogger('covidata')
 
         logger.info('Portal de transparência estadual...')
-        start_time = time.time()
-
-        # pt_MS = PortalTransparencia_MS()
-        # pt_MS.download()
-        #
-        # logger.info("--- %s segundos ---" % (time.time() - start_time))
-        #
-        # # Renomeia o arquivo
-        # diretorio = path.join(config.diretorio_dados, 'MS', 'portal_transparencia')
-        # arquivos = os.listdir(diretorio)
-
-        # if len(arquivos) > 0:
-        #     arquivo = arquivos[0]
-        #     os.rename(path.join(diretorio, arquivo), path.join(diretorio, 'ComprasEmergenciaisMS_COVID19.csv'))
 
         page = requests.get(self.url)
         soup = BeautifulSoup(page.content, 'html.parser')
@@ -98,18 +80,6 @@ class PT_MS_Scraper(Scraper):
         # Remove espaços extras do início e do final das colunas do tipo string
         df_consolidado = df_consolidado.applymap(lambda x: x.strip() if isinstance(x, str) else x)
         return df_consolidado
-
-
-class PortalTransparencia_MS(SeleniumDownloader):
-    def __init__(self):
-        super().__init__(path.join(config.diretorio_dados, 'MS', 'portal_transparencia'), config.url_pt_MS + 'compras')
-
-    def _executar(self):
-        wait = WebDriverWait(self.driver, 30)
-        element = wait.until(EC.element_to_be_clickable(
-            (By.XPATH, '/html/body/div[4]/div/div/div[1]/div[1]/div/div[2]/div/div/div[1]/div[2]/div/button[2]/span'
-             )))
-        self.driver.execute_script("arguments[0].click();", element)
 
 
 class PT_CampoGrande_Scraper(Scraper):

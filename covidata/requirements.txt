@@ -94,7 +94,7 @@ wasabi==0.7.1
 webdavclient3==3.14.5
 webdriver-manager==3.2.1
 webencodings==0.5.1
-websockets==8.1
+websockets==9.1
 Whoosh==2.7.4
 wincertstore==0.2
 xlrd==1.2.0

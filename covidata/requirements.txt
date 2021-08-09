@@ -61,7 +61,7 @@ pyquery==1.4.1
 pyspark==3.0.0
 python-dateutil==2.8.1
 pytz==2020.1
-pywin32==228
+pywin32==301
 PyYAML==5.3.1
 regex==2020.7.14
 requests==2.24.0

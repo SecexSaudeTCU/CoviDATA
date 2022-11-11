@@ -58,7 +58,7 @@ pypiwin32==223
 pyppeteer==0.2.2
 PyQt5-sip==12.8.0
 pyquery==1.4.1
-pyspark==3.0.0
+pyspark==3.2.2
 python-dateutil==2.8.1
 pytz==2020.1
 pywin32==228
